@@ -37,11 +37,17 @@
         <Variable Name="UpdateFile" Value="kb3096389_vmmserver_amd64.msp" />
         <Variable Name="Update" Value="Update Rollup 8" />
       </Update>
-      <Update Name="Latest">
+      <Update Name="UR9">
         <Variable Name="IdentifyingNumber" Value="{59518B15-FC64-4CF9-A4D1-0EE1B4A63088}" />
         <Variable Name="PatchID" Value="{736F8D7D-45E5-495C-9CBD-4A479BBE9BCD}" />
         <Variable Name="UpdateFile" Value="kb3129784_vmmserver_amd64.msp" />
         <Variable Name="Update" Value="Update Rollup 9" />
+      </Update>
+      <Update Name="Latest">
+        <Variable Name="IdentifyingNumber" Value="{59518B15-FC64-4CF9-A4D1-0EE1B4A63088}" />
+        <Variable Name="PatchID" Value="{2B128EE0-A455-47EE-BA5A-C3B45DA005DA}" />
+        <Variable Name="UpdateFile" Value="kb3147167_vmmserver_amd64.msp" />
+        <Variable Name="Update" Value="Update Rollup 10" />
       </Update>
     </Role>
     <Role Name="Console">
@@ -72,11 +78,17 @@
         <Variable Name="UpdateFile" Value="kb3097539_AdminConsole_amd64.msp" />
         <Variable Name="Update" Value="Update Rollup 8" />
       </Update>
-      <Update Name="Latest">
+      <Update Name="UR9">
         <Variable Name="IdentifyingNumber" Value="{CDFB453F-5FA4-4884-B282-F46BDFC06051}" />
         <Variable Name="PatchID" Value="{5B289E28-FDB7-4218-ABC0-E56BE080ED3F}" />
         <Variable Name="UpdateFile" Value="kb3129783_AdminConsole_amd64.msp" />
         <Variable Name="Update" Value="Update Rollup 9" />
+      </Update>
+      <Update Name="Latest">
+        <Variable Name="IdentifyingNumber" Value="{CDFB453F-5FA4-4884-B282-F46BDFC06051}" />
+        <Variable Name="PatchID" Value="{32284C81-2545-4853-A628-D30596B857DC}" />
+        <Variable Name="UpdateFile" Value="kb3147191_AdminConsole_amd64.msp" />
+        <Variable Name="Update" Value="Update Rollup 10" />
       </Update>
     </Role>
     <Role Name="Agent">
@@ -99,9 +111,13 @@
         <Variable Name="IdentifyingNumber" Value="{35F7B0C0-A8A5-4FB1-A613-6C5E6C2472FF}" />
         <Variable Name="Update" Value="Update Rollup 8" />
       </Update>
-      <Update Name="Latest">
+      <Update Name="UR9">
         <Variable Name="IdentifyingNumber" Value="{274B38B0-EE78-4EEA-A81D-1A3121889F97}" />
         <Variable Name="Update" Value="Update Rollup 9" />
+      </Update>
+      <Update Name="Latest">
+        <Variable Name="IdentifyingNumber" Value="{9222D80A-7EB8-4668-AB36-88F6F4F2B3C6}" />
+        <Variable Name="Update" Value="Update Rollup 10" />
       </Update>
     </Role>
   </Component>
@@ -469,11 +485,17 @@
         <Variable Name="UpdateFile" Value="kb3096384_Microsoft.SystemCenter.Foundation.Setup_x64.msp" />
         <Variable Name="Update" Value="Update Rollup 8" />
       </Update>
-      <Update Name="Latest">
+      <Update Name="UR9">
         <Variable Name="IdentifyingNumber" Value="{69344E86-7183-4384-A230-499E9914BE14}" />
         <Variable Name="PatchID" Value="{E88BB151-5AE4-4E0A-8DE6-0FA07F0B996F}" />
         <Variable Name="UpdateFile" Value="kb3133705_Microsoft.SystemCenter.Foundation.Setup_x64.msp" />
         <Variable Name="Update" Value="Update Rollup 9" />
+      </Update>
+      <Update Name="Latest">
+        <Variable Name="IdentifyingNumber" Value="{69344E86-7183-4384-A230-499E9914BE14}" />
+        <Variable Name="PatchID" Value="{8E60EABC-FA8B-4F75-ADCE-A94678D27405}" />
+        <Variable Name="UpdateFile" Value="kb3147172_Microsoft.SystemCenter.Foundation.Setup_x64.msp" />
+        <Variable Name="Update" Value="Update Rollup 10" />
       </Update>
     </Role>
   </Component>
@@ -626,11 +648,17 @@
         <Variable Name="UpdateFile" Value="dataprotectionmanager2012r2-kb3086084.exe" />
         <Variable Name="Update" Value="Update Rollup 8" />
       </Update>
-      <Update Name="Latest">
+      <Update Name="UR9">
         <Variable Name="IdentifyingNumber" Value="{99EFD904-A89C-4116-91C9-80FD7FD40DA7}" />
         <Variable Name="PatchID" Value="{1552D724-C114-4ACB-8C7D-895D574A5DC0}" />
         <Variable Name="UpdateFile" Value="dataprotectionmanager2012r2-kb3112306.exe" />
         <Variable Name="Update" Value="Update Rollup 9" />
+      </Update>
+      <Update Name="Latest">
+        <Variable Name="IdentifyingNumber" Value="{99EFD904-A89C-4116-91C9-80FD7FD40DA7}" />
+        <Variable Name="PatchID" Value="{3A546CB0-283D-4445-A53B-800208E2AAC0}" />
+        <Variable Name="UpdateFile" Value="dataprotectionmanager2012r2-kb3143871.exe" />
+        <Variable Name="Update" Value="Update Rollup 10" />
       </Update>
     </Role>
   </Component>
@@ -654,11 +682,17 @@
         <Variable Name="UpdateFile" Value="DPMCENTRALCONSOLESERVER-KB3086084.msp" />
         <Variable Name="Update" Value="Update Rollup 8" />
       </Update>
-      <Update Name="Latest">
+      <Update Name="UR9">
         <Variable Name="IdentifyingNumber" Value="{574CB555-A5C9-4E08-A2CD-FC530C17AD3F}" />
         <Variable Name="PatchID" Value="{EA1C3E9A-3AFA-41F0-B697-AC3F04702BAA}" />
         <Variable Name="UpdateFile" Value="DPMCENTRALCONSOLESERVER-KB3112306.msp" />
         <Variable Name="Update" Value="Update Rollup 9" />
+      </Update>
+      <Update Name="Latest">
+        <Variable Name="IdentifyingNumber" Value="{574CB555-A5C9-4E08-A2CD-FC530C17AD3F}" />
+        <Variable Name="PatchID" Value="{D49AEFB8-86A0-47C0-811A-33F6B774DDB8}" />
+        <Variable Name="UpdateFile" Value="DPMCENTRALCONSOLESERVER-KB3143871.msp" />
+        <Variable Name="Update" Value="Update Rollup 10" />
       </Update>
     </Role>
   </Component>
@@ -682,11 +716,17 @@
         <Variable Name="UpdateFile" Value="DPMMANAGEMENTSHELL-KB3086084.msp" />
         <Variable Name="Update" Value="Update Rollup 8" />
       </Update>
-      <Update Name="Latest">
+      <Update Name="UR9">
         <Variable Name="IdentifyingNumber" Value="{DFF93860-2113-4207-A7AC-3901ABCE8002}" />
         <Variable Name="PatchID" Value="{DA17F03A-F2FE-4009-A384-F4D9E815E201}" />
         <Variable Name="UpdateFile" Value="DPMMANAGEMENTSHELL-KB3112306.msp" />
         <Variable Name="Update" Value="Update Rollup 9" />
+      </Update>
+      <Update Name="Latest">
+        <Variable Name="IdentifyingNumber" Value="{DFF93860-2113-4207-A7AC-3901ABCE8002}" />
+        <Variable Name="PatchID" Value="{13C2779D-164E-4F1E-98CF-C3AFEE8A32F3}" />
+        <Variable Name="UpdateFile" Value="DPMMANAGEMENTSHELL-KB3143871.msp" />
+        <Variable Name="Update" Value="Update Rollup 10" />
       </Update>
     </Role>
   </Component>
@@ -710,11 +750,17 @@
         <Variable Name="UpdateFile" Value="DPMProtectionAgent_KB3086084.msp" />
         <Variable Name="Update" Value="Update Rollup 8" />
       </Update>
-      <Update Name="Latest">
+      <Update Name="UR9">
         <Variable Name="IdentifyingNumber" Value="{6FA0CE18-E1AB-4CA2-B552-03D16516E174}" />
         <Variable Name="PatchID" Value="{1552D724-C114-4ACB-8C7D-895D574A5DC0}" />
         <Variable Name="UpdateFile" Value="DPMProtectionAgent_KB3112306.msp" />
         <Variable Name="Update" Value="Update Rollup 9" />
+      </Update>
+      <Update Name="Latest">
+        <Variable Name="IdentifyingNumber" Value="{6FA0CE18-E1AB-4CA2-B552-03D16516E174}" />
+        <Variable Name="PatchID" Value="{3A546CB0-283D-4445-A53B-800208E2AAC0}" />
+        <Variable Name="UpdateFile" Value="DPMProtectionAgent_KB3143871.msp" />
+        <Variable Name="Update" Value="Update Rollup 10" />
       </Update>
     </Role>
   </Component>
@@ -752,11 +798,17 @@
         <Variable Name="UpdateFile" Value="dataprotectionmanager2012r2-kb3086084.exe" />
         <Variable Name="Update" Value="Update Rollup 8" />
       </Update>
-      <Update Name="Latest">
+      <Update Name="UR9">
         <Variable Name="IdentifyingNumber" Value="{99EFD904-A89C-4116-91C9-80FD7FD40DA7}" />
         <Variable Name="PatchID" Value="{1552D724-C114-4ACB-8C7D-895D574A5DC0}" />
         <Variable Name="UpdateFile" Value="dataprotectionmanager2012r2-kb3112306.exe" />
         <Variable Name="Update" Value="Update Rollup 9" />
+      </Update>
+      <Update Name="Latest">
+        <Variable Name="IdentifyingNumber" Value="{99EFD904-A89C-4116-91C9-80FD7FD40DA7}" />
+        <Variable Name="PatchID" Value="{3A546CB0-283D-4445-A53B-800208E2AAC0}" />
+        <Variable Name="UpdateFile" Value="dataprotectionmanager2012r2-kb3143871.exe" />
+        <Variable Name="Update" Value="Update Rollup 10" />
       </Update>
     </Role>
     <Role Name="ConsoleServer">
@@ -787,11 +839,17 @@
         <Variable Name="UpdateFile" Value="DPMCENTRALCONSOLESERVER-KB3086084.msp" />
         <Variable Name="Update" Value="Update Rollup 8" />
       </Update>
-      <Update Name="Latest">
+      <Update Name="UR9">
         <Variable Name="IdentifyingNumber" Value="{574CB555-A5C9-4E08-A2CD-FC530C17AD3F}" />
         <Variable Name="PatchID" Value="{EA1C3E9A-3AFA-41F0-B697-AC3F04702BAA}" />
         <Variable Name="UpdateFile" Value="DPMCENTRALCONSOLESERVER-KB3112306.msp" />
         <Variable Name="Update" Value="Update Rollup 9" />
+      </Update>
+      <Update Name="Latest">
+        <Variable Name="IdentifyingNumber" Value="{574CB555-A5C9-4E08-A2CD-FC530C17AD3F}" />
+        <Variable Name="PatchID" Value="{D49AEFB8-86A0-47C0-811A-33F6B774DDB8}" />
+        <Variable Name="UpdateFile" Value="DPMCENTRALCONSOLESERVER-KB3143871.msp" />
+        <Variable Name="Update" Value="Update Rollup 10" />
       </Update>
     </Role>
     <Role Name="Console">
@@ -822,11 +880,17 @@
         <Variable Name="UpdateFile" Value="DPMMANAGEMENTSHELL-KB3086084.msp" />
         <Variable Name="Update" Value="Update Rollup 8" />
       </Update>
-      <Update Name="Latest">
+      <Update Name="UR9">
         <Variable Name="IdentifyingNumber" Value="{DFF93860-2113-4207-A7AC-3901ABCE8002}" />
         <Variable Name="PatchID" Value="{DA17F03A-F2FE-4009-A384-F4D9E815E201}" />
         <Variable Name="UpdateFile" Value="DPMMANAGEMENTSHELL-KB3112306.msp" />
         <Variable Name="Update" Value="Update Rollup 9" />
+      </Update>
+      <Update Name="Latest">
+        <Variable Name="IdentifyingNumber" Value="{DFF93860-2113-4207-A7AC-3901ABCE8002}" />
+        <Variable Name="PatchID" Value="{13C2779D-164E-4F1E-98CF-C3AFEE8A32F3}" />
+        <Variable Name="UpdateFile" Value="DPMMANAGEMENTSHELL-KB3143871.msp" />
+        <Variable Name="Update" Value="Update Rollup 10" />
       </Update>
     </Role>
     <Role Name="Agent">
@@ -857,11 +921,17 @@
         <Variable Name="UpdateFile" Value="DPMProtectionAgent_KB3086084.msp" />
         <Variable Name="Update" Value="Update Rollup 8" />
       </Update>
-      <Update Name="Latest">
+      <Update Name="UR9">
         <Variable Name="IdentifyingNumber" Value="{6FA0CE18-E1AB-4CA2-B552-03D16516E174}" />
         <Variable Name="PatchID" Value="{1552D724-C114-4ACB-8C7D-895D574A5DC0}" />
         <Variable Name="UpdateFile" Value="DPMProtectionAgent_KB3112306.msp" />
         <Variable Name="Update" Value="Update Rollup 9" />
+      </Update>
+      <Update Name="Latest">
+        <Variable Name="IdentifyingNumber" Value="{6FA0CE18-E1AB-4CA2-B552-03D16516E174}" />
+        <Variable Name="PatchID" Value="{3A546CB0-283D-4445-A53B-800208E2AAC0}" />
+        <Variable Name="UpdateFile" Value="DPMProtectionAgent_KB3143871.msp" />
+        <Variable Name="Update" Value="Update Rollup 10" />
       </Update>
     </Role>
   </Component>
@@ -961,8 +1031,11 @@
       <Update Name="UR9">
         <Variable Name="IdentifyingNumber" Value="{8B118E0B-5C03-4EC3-87AC-887DD9486145}" />
       </Update>
-      <Update Name="Latest">
+      <Update Name="UR9.1">
         <Variable Name="IdentifyingNumber" Value="{F525AB73-3F65-4AF7-AE32-C6E732B9A7E0}" />
+      </Update>
+      <Update Name="Latest">
+        <Variable Name="IdentifyingNumber" Value="{186B974E-3D39-46F7-BF4A-AE063CE82DC6}" />
       </Update>
     </Role>
     <Role Name="MgmtSvc-WebAppGallery">
@@ -996,8 +1069,11 @@
       <Update Name="UR9">
         <Variable Name="IdentifyingNumber" Value="{ADE315A0-8351-4072-BF8F-FFC6F70DE213}" />
       </Update>
-      <Update Name="Latest">
+      <Update Name="UR9.1">
         <Variable Name="IdentifyingNumber" Value="{9C9D2734-902A-4F41-8C56-AC21E216745F}" />
+      </Update>
+      <Update Name="Latest">
+        <Variable Name="IdentifyingNumber" Value="{0F16DA24-DB44-4A71-A61F-709D0252CF85}" />
       </Update>
     </Role>
     <Role Name="MgmtSvc-Monitoring">
@@ -1031,8 +1107,11 @@
       <Update Name="UR9">
         <Variable Name="IdentifyingNumber" Value="{030F149A-2551-4784-B4B4-E0FF90963190}" />
       </Update>
-      <Update Name="Latest">
+      <Update Name="UR9.1">
         <Variable Name="IdentifyingNumber" Value="{649E3CE3-4F85-4F49-B850-1A4B00BDF944}" />
+      </Update>
+      <Update Name="Latest">
+        <Variable Name="IdentifyingNumber" Value="{F88866D8-DFCF-4107-815A-A92499F9BEB4}" />
       </Update>
     </Role>
     <Role Name="MgmtSvc-Usage">
@@ -1066,8 +1145,11 @@
       <Update Name="UR9">
         <Variable Name="IdentifyingNumber" Value="{BB3CC617-26EF-4F2A-8730-E9C5DF5C2C59}" />
       </Update>
-      <Update Name="Latest">
+      <Update Name="UR9.1">
         <Variable Name="IdentifyingNumber" Value="{946B0B96-13AF-404E-98F0-D38BF3828E8E}" />
+      </Update>
+      <Update Name="Latest">
+        <Variable Name="IdentifyingNumber" Value="{1A266BA3-FCA0-4E2A-895E-0BA4EE162276}" />
       </Update>
     </Role>
     <Role Name="MgmtSvc-AdminAPI">
@@ -1101,8 +1183,11 @@
       <Update Name="UR9">
         <Variable Name="IdentifyingNumber" Value="{FB1F1D02-ABEC-43F1-9F23-D2983695C26F}" />
       </Update>
-      <Update Name="Latest">
+      <Update Name="UR9.1">
         <Variable Name="IdentifyingNumber" Value="{DAB5A87F-32D0-4E96-B7FD-47DBDC6EAEED}" />
+      </Update>
+      <Update Name="Latest">
+        <Variable Name="IdentifyingNumber" Value="{A3EC087B-7AB0-401B-9715-29AF5241B009}" />
       </Update>
     </Role>
     <Role Name="MgmtSvc-TenantAPI">
@@ -1136,8 +1221,11 @@
       <Update Name="UR9">
         <Variable Name="IdentifyingNumber" Value="{ECE94B96-F676-4511-B312-DB2C16EAC5AF}" />
       </Update>
-      <Update Name="Latest">
+      <Update Name="UR9.1">
         <Variable Name="IdentifyingNumber" Value="{CF41308C-9BC3-46C1-8B39-135D00E491E8}" />
+      </Update>
+      <Update Name="Latest">
+        <Variable Name="IdentifyingNumber" Value="{399AF120-8417-4B3E-84F7-B4AC1830CEED}" />
       </Update>
     </Role>
     <Role Name="MgmtSvc-TenantPublicAPI">
@@ -1171,8 +1259,11 @@
       <Update Name="UR9">
         <Variable Name="IdentifyingNumber" Value="{EAC9FCED-8E13-446C-AEBE-8B184FDB50C6}" />
       </Update>
-      <Update Name="Latest">
+      <Update Name="UR9.1">
         <Variable Name="IdentifyingNumber" Value="{7442368E-A20A-4B4A-9304-104B7191CD82}" />
+      </Update>
+      <Update Name="Latest">
+        <Variable Name="IdentifyingNumber" Value="{7324E497-E8EB-4E19-8748-6FB044FA3CBF}" />
       </Update>
     </Role>
     <Role Name="MgmtSvc-SQLServer">
@@ -1206,8 +1297,11 @@
       <Update Name="UR9">
         <Variable Name="IdentifyingNumber" Value="{C997D953-CDDF-4C2F-B6F5-468BF5AD820E}" />
       </Update>
-      <Update Name="Latest">
+      <Update Name="UR9.1">
         <Variable Name="IdentifyingNumber" Value="{FFE3B7AD-BED4-4F9C-98CC-D75E64B770EE}" />
+      </Update>
+      <Update Name="Latest">
+        <Variable Name="IdentifyingNumber" Value="{B797D493-EB9B-4D1B-BF0A-F83484E0793C}" />
       </Update>
     </Role>
     <Role Name="MgmtSvc-MySQL">
@@ -1241,8 +1335,11 @@
       <Update Name="UR9">
         <Variable Name="IdentifyingNumber" Value="{6E696279-D711-4F98-A207-6459CEDD28E9}" />
       </Update>
-      <Update Name="Latest">
+      <Update Name="UR9.1">
         <Variable Name="IdentifyingNumber" Value="{038DEB00-87C2-483D-B303-3732A6CE6280}" />
+      </Update>
+      <Update Name="Latest">
+        <Variable Name="IdentifyingNumber" Value="{87D5529D-DB5E-426A-9AEA-659966182D1C}" />
       </Update>
     </Role>
     <Role Name="MgmtSvc-AdminSite">
@@ -1276,8 +1373,11 @@
       <Update Name="UR9">
         <Variable Name="IdentifyingNumber" Value="{831D1A64-49B9-4AC1-9995-C38908C23F78}" />
       </Update>
-      <Update Name="Latest">
+      <Update Name="UR9.1">
         <Variable Name="IdentifyingNumber" Value="{8DFE1C24-EF33-4DE8-A8F2-192C7E1FECE0}" />
+      </Update>
+      <Update Name="Latest">
+        <Variable Name="IdentifyingNumber" Value="{FC7C120F-3DCA-4D35-A863-29536858C5DD}" />
       </Update>
     </Role>
     <Role Name="MgmtSvc-WindowsAuthSite">
@@ -1311,8 +1411,11 @@
       <Update Name="UR9">
         <Variable Name="IdentifyingNumber" Value="{49C26805-17B8-48C0-9AA1-D29ED61A74B9}" />
       </Update>
-      <Update Name="Latest">
+      <Update Name="UR9.1">
         <Variable Name="IdentifyingNumber" Value="{42A86301-91AA-4CF2-95AB-C305052ECEFD}" />
+      </Update>
+      <Update Name="Latest">
+        <Variable Name="IdentifyingNumber" Value="{64C80094-DF1A-4A1A-9455-A3BAB1A1EB84}" />
       </Update>
     </Role>
     <Role Name="MgmtSvc-TenantSite">
@@ -1346,8 +1449,11 @@
       <Update Name="UR9">
         <Variable Name="IdentifyingNumber" Value="{49F38DFF-6919-4DA7-B71A-EA842E38A804}" />
       </Update>
-      <Update Name="Latest">
+      <Update Name="UR9.1">
         <Variable Name="IdentifyingNumber" Value="{78E38778-C952-4B53-96D8-A65DB9683269}" />
+      </Update>
+      <Update Name="Latest">
+        <Variable Name="IdentifyingNumber" Value="{8393CF22-CB05-422E-BFA0-D67934C60CF7}" />
       </Update>
     </Role>
     <Role Name="MgmtSvc-AuthSite">
@@ -1381,40 +1487,11 @@
       <Update Name="UR9">
         <Variable Name="IdentifyingNumber" Value="{23D42041-8B5A-492F-ADB4-D67FFA05E8AB}" />
       </Update>
-      <Update Name="Latest">
+      <Update Name="UR9.1">
         <Variable Name="IdentifyingNumber" Value="{B2D82054-D973-4447-BDDF-AE7D11E86585}" />
       </Update>
-    </Role>
-    <Role Name="MgmtSvc-ConfigSite">
-      <Update Name="RTM">
-        <Variable Name="IdentifyingNumber" Value="{32C316B4-3E22-4E4F-BF4C-BF76D38459D4}" />
-      </Update>
-      <Update Name="UR1">
-        <Variable Name="IdentifyingNumber" Value="{4950C7DA-C2FC-4FC5-8E47-76B742E8E630}" />
-      </Update>
-      <Update Name="UR2">
-        <Variable Name="IdentifyingNumber" Value="{E78CDA83-404D-4C32-A09D-B58F2C1C7BF2}" />
-      </Update>
-      <Update Name="UR3">
-        <Variable Name="IdentifyingNumber" Value="{91D917FC-E486-4040-8764-A2AF83776142}" />
-      </Update>
-      <Update Name="UR4">
-        <Variable Name="IdentifyingNumber" Value="{72BA84F9-BAA5-4451-AFA5-89841CFDA170}" />
-      </Update>
-      <Update Name="UR5">
-        <Variable Name="IdentifyingNumber" Value="{04AF754F-FAA3-4D72-A05C-D9C3AB6D51D9}" />
-      </Update>
-      <Update Name="UR6">
-        <Variable Name="IdentifyingNumber" Value="{282F6FAA-E6F1-4910-8A64-F20453944ACA}" />
-      </Update>
-      <Update Name="UR7">
-        <Variable Name="IdentifyingNumber" Value="{FA421F0C-4E2C-4721-B190-0AED841503D3}" />
-      </Update>
-      <Update Name="UR8">
-        <Variable Name="IdentifyingNumber" Value="{E7D8BEEE-973E-4593-997A-3F2BBD7F7719}" />
-      </Update>
       <Update Name="Latest">
-        <Variable Name="IdentifyingNumber" Value="{3E3C603A-09F7-446B-ABF9-4674149FF838}" />
+        <Variable Name="IdentifyingNumber" Value="{D259DF58-1DAA-4EE2-ABDF-067A7E18F674}" />
       </Update>
     </Role>
   </Component>
