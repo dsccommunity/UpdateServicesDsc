@@ -3,8 +3,8 @@
   <Component Name="SCVMM" Version="Default">
     <Role Name="Agent">
       <Update Name="Latest">
-        <Variable Name="IdentifyingNumber" Value="{274B38B0-EE78-4EEA-A81D-1A3121889F97}" />
-        <Variable Name="Update" Value="Update Rollup 9" />
+        <Variable Name="IdentifyingNumber" Value="{9222D80A-7EB8-4668-AB36-88F6F4F2B3C6}" />
+        <Variable Name="Update" Value="Update Rollup 10" />
       </Update>
     </Role>
   </Component>
