@@ -206,6 +206,7 @@ function Set-TargetResource
             }
             catch
             {
+                throw
                 Write-Verbose "Failed to start WSUS synchronization"
             }
         }

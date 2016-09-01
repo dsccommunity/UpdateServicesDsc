@@ -23,9 +23,7 @@ function Get-WsusServer {
             $Products = [pscustomobject]@{
                 Title = 'Product'
             }
-            $Products | Add-Member -MemberType ScriptMethod -Name Add -Value {
-                return $true
-            }
+            $Products | Add-Member -MemberType ScriptMethod -Name Add -Value {}
             return $Products
         }
 
@@ -33,27 +31,17 @@ function Get-WsusServer {
             $ComputerTargetGroups = [pscustomobject]@{
                 Name = 'Computer Target Group'
             }
-            $ComputerTargetGroups | Add-Member -MemberType ScriptMethod -Name Add -Value {
-                return $true
-            }
+            $ComputerTargetGroups | Add-Member -MemberType ScriptMethod -Name Add -Value {}
             return $ComputerTargetGroups
         }
 
-        $ApprovalRule | Add-Member -MemberType ScriptMethod -Name Save -Value {
-            return $true
-        }
+        $ApprovalRule | Add-Member -MemberType ScriptMethod -Name Save -Value {}
 
-        $ApprovalRule | Add-Member -MemberType ScriptMethod -Name SetCategories -Value {
-            return $true
-        }
+        $ApprovalRule | Add-Member -MemberType ScriptMethod -Name SetCategories -Value {}
 
-        $ApprovalRule | Add-Member -MemberType ScriptMethod -Name SetComputerTargetGroups -Value {
-            return $true
-        }
+        $ApprovalRule | Add-Member -MemberType ScriptMethod -Name SetComputerTargetGroups -Value {}
 
-        $ApprovalRule | Add-Member -MemberType ScriptMethod -Name SetUpdateClassifications -Value {
-            return $true
-        }
+        $ApprovalRule | Add-Member -MemberType ScriptMethod -Name SetUpdateClassifications -Value {}
 
         return $ApprovalRule
     }
@@ -62,20 +50,16 @@ function Get-WsusServer {
 
     $WsusServer | Add-Member -MemberType ScriptMethod -Name CreateInstallApprovalRule -Value $ApprovalRule
 
-    $WsusServer | Add-Member -MemberType ScriptMethod -Name GetUpdateClassification -Value {
-            return $true
-    }
+    $WsusServer | Add-Member -MemberType ScriptMethod -Name GetUpdateClassification -Value {}
     
-    $WsusServer | Add-Member -MemberType ScriptMethod -Name GetComputerTargetGroups -Value {
-            return $true
-    }
+    $WsusServer | Add-Member -MemberType ScriptMethod -Name GetComputerTargetGroups -Value {}
 
-    $WsusServer | Add-Member -MemberType ScriptMethod -Name DeleteInstallApprovalRule -Value {
-            return $true
-    }
+    $WsusServer | Add-Member -MemberType ScriptMethod -Name DeleteInstallApprovalRule -Value {}
     
     $WsusServer | Add-Member -MemberType ScriptMethod -Name GetSubscription -Value {
-            return $true
+            $Subscription = [pscustomobject]@{}
+            $Subscription | Add-Member -MemberType ScriptMethod -Name StartSynchronization -Value {}
+            return $Subscription
     }
 
     return $WsusServer
