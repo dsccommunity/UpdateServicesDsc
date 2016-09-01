@@ -1,4 +1,4 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/<>/branch/master?svg=true)](https://ci.appveyor.com/project/PowerShell/xwsus/branch/master)
+[![Build status](https://ci.appveyor.com/api/projects/status/nja6h5ujumk4mep0/branch/master?svg=true)](https://ci.appveyor.com/project/mgreenegit/xwsus/branch/master)
 
 
 # xWSUS

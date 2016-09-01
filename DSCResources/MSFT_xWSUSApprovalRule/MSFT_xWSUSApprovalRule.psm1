@@ -34,33 +34,33 @@ function Get-TargetResource
 
     try
     {
-        if($WsusServer = Get-WsusServer)
+        $WsusServer = Get-WsusServer
+        $ApprovalRule = $WsusServer.GetInstallApprovalRules() | Where-Object {$_.Name -eq $Name}
+        
+        if($ApprovalRule -ne $null)
         {
-            if($ApprovalRule = $WsusServer.GetInstallApprovalRules() | Where-Object {$_.Name -eq $Name})
+            $Ensure = "Present"
+            if(!($Classifications = @($ApprovalRule.GetUpdateClassifications().ID.Guid)))
             {
-                $Ensure = "Present"
-                if(!($Classifications = @($ApprovalRule.GetUpdateClassifications().ID.Guid)))
-                {
-                    $Classifications = @("All Classifications")
-                }
-                if(!($Products = @($ApprovalRule.GetCategories().Title)))
-                {
-                    $Products = @("All Products")
-                }
-                if(!($ComputerGroups = @($ApprovalRule.GetComputerTargetGroups().Name)))
-                {
-                    $ComputerGroups = @("All Computers")
-                }
-                $Enabled = $ApprovalRule.Enabled
+                $Classifications = @("All Classifications")
             }
-            else
+            if(!($Products = @($ApprovalRule.GetCategories().Title)))
             {
-                $Ensure = "Absent"
-                $Classifications = $null
-                $Products = $null
-                $ComputerGroups = $null
-                $Enabled = $null
+                $Products = @("All Products")
             }
+            if(!($ComputerGroups = @($ApprovalRule.GetComputerTargetGroups().Name)))
+            {
+                $ComputerGroups = @("All Computers")
+            }
+            $Enabled = $ApprovalRule.Enabled
+        }
+        else
+        {
+            $Ensure = "Absent"
+            $Classifications = $null
+            $Products = $null
+            $ComputerGroups = $null
+            $Enabled = $null
         }
     }
     catch
@@ -187,7 +187,7 @@ function Set-TargetResource
     }
     catch
     {
-        Write-Verbose "Failed during creation of approval rule $Name"
+        throw Write-Verbose "Failed during creation of approval rule $Name"
     }
 
     if(!(Test-TargetResource @PSBoundParameters))
