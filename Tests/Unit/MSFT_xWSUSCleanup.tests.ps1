@@ -70,7 +70,7 @@ try
             
             Context 'server is configured.' {
 
-                Mock Get-ScheduledTask -mockwith {
+                Mock -CommandName Get-ScheduledTask -mockwith {
                     @{
                         State = 'Enabled'
                         Actions = @{
@@ -86,35 +86,15 @@ try
                 $resource = Get-TargetResource -Ensure "Present" -verbose
 
                 it 'Ensure' {
-                    $resource.Ensure | should be 'Present'
+                        $resource.Ensure | should be 'Present'
                 }
 
-                it 'DeclineSupersededUpdates' {
-                    $resource.DeclineSupersededUpdates | Should Be 'True'
-                }
+                $settingsList = 'DeclineSupersededUpdates','DeclineExpiredUpdates','CleanupObsoleteUpdates','CompressUpdates','CleanupObsoleteComputers','CleanupUnneededContentFiles','CleanupLocalPublishedContentFiles'
+                foreach ($setting in $settingsList) {
 
-                it 'DeclineExpiredUpdates' {
-                    $resource.DeclineExpiredUpdates | Should Be 'True'
-                }
-
-                it 'CleanupObsoleteUpdates' {
-                    $resource.CleanupObsoleteUpdates | Should Be 'True'
-                }
-
-                it 'CompressUpdates' {
-                    $resource.CompressUpdates | Should Be 'True'
-                }
-
-                it 'CleanupObsoleteComputers' {
-                    $resource.CleanupObsoleteComputers | Should Be 'True'
-                }
-
-                it 'CleanupUnneededContentFiles' {
-                    $resource.CleanupUnneededContentFiles | Should Be 'True'
-                }
-
-                it 'CleanupLocalPublishedContentFiles' {
-                    $resource.CleanupLocalPublishedContentFiles | Should Be 'True'
+                    it "$setting should be true" {
+                        $resource.$setting | Should Be 'True'
+                    }
                 }
 
                 it 'TimeOfDay' {
@@ -173,7 +153,16 @@ try
         #region Function Test-TargetResource
         Describe "$($Global:DSCResourceName)\Test-TargetResource" {
             
-            $DSCTestValues = $DSCPropertyValues
+            $DSCTestValues = @{
+                DeclineSupersededUpdates = $true
+                DeclineExpiredUpdates = $true
+                CleanupObsoleteUpdates = $true 
+                CompressUpdates = $true
+                CleanupObsoleteComputers = $true
+                CleanupUnneededContentFiles = $true
+                CleanupLocalPublishedContentFiles = $true
+                TimeOfDay = "04:00:00"
+            }
 
             Context 'server is in correct state (Ensure=Present)' {
 
@@ -271,97 +260,91 @@ try
             }
         }
         #endregion
-<#
+
         #region Function Set-TargetResource
         Describe "$($Global:DSCResourceName)\Set-TargetResource" {
             
-            $Collection = [pscustomobject]@{}
-            $Collection | Add-Member -MemberType ScriptMethod -Name Add -Value {}
+            $Arguments = 'foo"$DeclineSupersededUpdates = $True;$DeclineExpiredUpdates = $True;$CleanupObsoleteUpdates = $True;$CompressUpdates = $True;$CleanupObsoleteComputers = $True;$CleanupUnneededContentFiles = $True;$CleanupLocalPublishedContentFiles = $True'
+            $Execute = "$($env:SystemRoot)\System32\WindowsPowerShell\v1.0\powershell.exe"
+            $StartBoundary = '20160101T04:00:00'
 
-            context 'server is already in a correct state (resource is idempotent)' {
+            Mock -CommandName Unregister-ScheduledTask -MockWith {}
+            Mock -CommandName Register-ScheduledTask -MockWith {}
+            Mock -CommandName Test-TargetResource -MockWith {$true}
+            Mock -CommandName New-TerminatingError -MockWith {}
+
+            Context 'resource is idempotent (Ensure=Present)' {
+
+               Mock -CommandName Get-ScheduledTask -MockWith {$true}
                 
-                Mock New-Object -mockwith {$Collection}
-                Mock Get-WsusProduct -mockwith {}
-                Mock New-TerminatingError -mockwith {}
-                
-                it 'should not throw when running on a properly configured server' {
-                    {Set-targetResource @DSCPropertyValues -verbose} | should not throw
+               it 'should not throw when running on a properly configured server' {
+                    {Set-targetResource @DSCPropertyValues -Ensure Present -verbose} | should not throw
                 }
 
-                it "mocks were called" {
-                    Assert-MockCalled -CommandName New-Object -Times 1
-                    Assert-MockCalled -CommandName Get-WsusProduct -Times 1
-                }
-                it "mocks were not called" {
-                    Assert-MockCalled -CommandName New-TerminatingError -Times 0
-                }
-            }
-
-            context 'server is not in a correct state (resource takes action)' {
-                
-                Mock New-Object -mockwith {$Collection}
-                Mock Get-WsusProduct -mockwith {}
-                Mock New-TerminatingError -mockwith {}
-                Mock Test-TargetResource -mockwith {$true}
-
-                it 'should not throw when running on an incorrectly configured server' {
-                    {Set-targetResource -Name "Foo" -Classification "00000000-0000-0000-0000-0000testguid" -verbose} | should not throw
-                }
-
-                it "mocks were called" {
-                    Assert-MockCalled -CommandName New-Object -Times 1
+                it "mocks were called for commands that gather information" {
+                    Assert-MockCalled -CommandName Get-ScheduledTask -Times 1
+                    Assert-MockCalled -CommandName Unregister-ScheduledTask -Times 1
+                    Assert-MockCalled -CommandName Register-ScheduledTask -Times 1
                     Assert-MockCalled -CommandName Test-TargetResource -Times 1
-                    Assert-MockCalled -CommandName Get-WsusProduct -Times 1
                 }
-                it "mocks were not called" {
+
+                it "mocks were called that register a task to run WSUS cleanup" {
+                    Assert-MockCalled -CommandName Register-ScheduledTask -Times 1
+                }
+
+                it "mocks were not called that remove tasks or log errors" {
                     Assert-MockCalled -CommandName New-TerminatingError -Times 0
                 }
             }
 
-            context 'server should not be configured (Ensure=Absent)' {
-                
-                Mock New-Object -mockwith {$Collection}
-                Mock Get-WsusProduct -mockwith {}
-                Mock New-TerminatingError -mockwith {}
-                Mock Test-TargetResource -mockwith {$true}
+            Context 'resource processes Set tasks to register Cleanup task (Ensure=Present)' {
 
-                it 'should not throw when running on an incorrectly configured server' {
+               Mock -CommandName Get-ScheduledTask -MockWith {}
+                
+               it 'should not throw when running on a properly configured server' {
+                    {Set-targetResource @DSCPropertyValues -Ensure Present -verbose} | should not throw
+                }
+
+                it "mocks were called for commands that gather information" {
+                    Assert-MockCalled -CommandName Get-ScheduledTask -Times 1
+                    Assert-MockCalled -CommandName Register-ScheduledTask -Times 1
+                    Assert-MockCalled -CommandName Test-TargetResource -Times 1
+                }
+
+                it "mocks were called that register a task to run WSUS cleanup" {
+                    Assert-MockCalled -CommandName Register-ScheduledTask -Times 1
+                }
+
+                it "mocks were not called that remove tasks or log errors" {
+                    Assert-MockCalled -CommandName Unregister-ScheduledTask -Times 0
+                    Assert-MockCalled -CommandName New-TerminatingError -Times 0
+                }
+            }
+
+            Context 'resource processes Set tasks to remove Cleanup task (Ensure=Absent)' {
+
+                Mock -CommandName Get-ScheduledTask -MockWith {$true}
+                
+               it 'should not throw when running on a properly configured server' {
                     {Set-targetResource @DSCPropertyValues -Ensure Absent -verbose} | should not throw
                 }
 
-                it "mocks were called" {
-                    
+                it "mocks were called for commands that gather information" {
+                    Assert-MockCalled -CommandName Get-ScheduledTask -Times 1
                     Assert-MockCalled -CommandName Test-TargetResource -Times 1
                 }
-                it "mocks were not called" {
-                    Assert-MockCalled -CommandName New-Object -Times 0
-                    Assert-MockCalled -CommandName Get-WsusProduct -Times 0
+
+                it "mocks were called to remove Cleanup task" {
+                    Assert-MockCalled -CommandName Unregister-ScheduledTask -Times 1
+                }
+
+                it "mocks were not called that register tasks or log errors" {
+                    Assert-MockCalled -CommandName Register-ScheduledTask -Times 0
                     Assert-MockCalled -CommandName New-TerminatingError -Times 0
                 }
             }
-
-            context 'server is in correct state and synchronize is included' {
-                
-                Mock New-Object -mockwith {$Collection}
-                Mock Get-WsusProduct -mockwith {}
-                Mock New-TerminatingError -mockwith {}
-                
-                it 'should not throw when running on a properly configured server' {
-                    {Set-targetResource @DSCPropertyValues -Synchronize $true -verbose} | should not throw
-                }
-
-                it "mocks were called" {
-                    Assert-MockCalled -CommandName New-Object -Times 1
-                    Assert-MockCalled -CommandName Get-WsusProduct -Times 1
-                }
-                it "mocks were not called" {
-                    Assert-MockCalled -CommandName New-TerminatingError -Times 0
-                }
-            }
-
         }
         #endregion
-#>        
     }
 }
 
