@@ -114,11 +114,23 @@ try
         #region Function Test-TargetResource
         Describe "$($Global:DSCResourceName)\Test-TargetResource" {
 
+            $DSCTestValues = $DSCPropertyValues = @{
+                Name = $Global:WsusServer.Name
+                Classifications = "00000000-0000-0000-0000-0000testguid"
+                Products = "Product"
+                ComputerGroups = "Computer Target Group" 
+                Enabled = $true
+            }
+
             Context 'server is in correct state (Ensure=Present)' {
+
+                $DSCTestValues.Remove('Ensure')
+                $DSCTestValues.Add('Ensure','Present')
+
                 $script:result = $null
                     
                 it 'calling test should not throw' {
-                    {$script:result = Test-TargetResource @DSCPropertyValues -verbose} | should not throw
+                    {$script:result = Test-TargetResource @DSCTestValues -verbose} | should not throw
                 }
 
                 it "result should be true" {
@@ -126,11 +138,15 @@ try
                 }
             }
 
-            Context 'server should not be configured (Ensure=Absent)' {
+            Context 'server should not be configured (Ensure=Absent) but is' {
+                
+                $DSCTestValues.Remove('Ensure')
+                $DSCTestValues.Add('Ensure','Absent')
+
                 $script:result = $null
                     
                 it 'calling test should not throw' {
-                    {$script:result = Test-TargetResource -Name $Global:WsusServer.Name -Ensure Absent -verbose} | should not throw
+                    {$script:result = Test-TargetResource @DSCTestValues -verbose} | should not throw
                 }
 
                 it "result should be false" {
@@ -138,15 +154,31 @@ try
                 }
             }
 
-            Context 'server is not in correct state' {
-                $script:result = $null
-                    
-                it 'calling test should not throw' {
-                    {$script:result = Test-TargetResource -Name 'Foo' -verbose} | should not throw
-                }
+            Context "setting has drifted" {
 
-                it "result should be false" {
-                    $script:result | should be $false
+                $DSCTestValues.Remove('Ensure')
+                $DSCTestValues.Add('Ensure','Present')
+                    
+                $settingsList = 'Classifications','Products','ComputerGroups'
+                foreach ($setting in $settingsList) { 
+                
+                    $valueWithoutDrift = $DSCPropertyValues.$setting
+
+                    $DSCTestValues.Remove("$setting")
+                    $DSCTestValues.Add("$setting",'foo')
+
+                    $script:result = $null
+                        
+                    it 'calling test should not throw' {
+                        {$script:result = Test-TargetResource @DSCTestValues -verbose} | should not throw
+                    }
+
+                    it "result should be false when $setting has changed" {
+                        $script:result | should be $false
+                    }
+                    
+                    $DSCTestValues.Remove("$setting")
+                    $DSCTestValues.Add("$setting",$valueWithoutDrift)
                 }
             }
         }

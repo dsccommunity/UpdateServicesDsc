@@ -50,11 +50,14 @@ try
             }
         
         $DSCPropertyValues = @{
-            Name = $Global:WsusServer.Name
-            Classifications = "00000000-0000-0000-0000-0000testguid"
-            Products = "Product"
-            ComputerGroups = "Computer Target Group" 
-            Enabled = $true
+            DeclineSupersededUpdates = $true
+            DeclineExpiredUpdates = $true
+            CleanupObsoleteUpdates = $true 
+            CompressUpdates = $true
+            CleanupObsoleteComputers = $true
+            CleanupUnneededContentFiles = $true
+            CleanupLocalPublishedContentFiles = $true
+            TimeOfDay = "04:00:00"
         }
         #endregion
         
@@ -63,7 +66,7 @@ try
 
             $Arguments = 'foo"$DeclineSupersededUpdates = $True;$DeclineExpiredUpdates = $True;$CleanupObsoleteUpdates = $True;$CompressUpdates = $True;$CleanupObsoleteComputers = $True;$CleanupUnneededContentFiles = $True;$CleanupLocalPublishedContentFiles = $True'
             $Execute = "$($env:SystemRoot)\System32\WindowsPowerShell\v1.0\powershell.exe"
-            $StartBoundary = '20160101T080000'
+            $StartBoundary = '20160101T04:00:00'
             
             Context 'server is configured.' {
 
@@ -166,48 +169,109 @@ try
         }
         #endregion
 
-<#
+
         #region Function Test-TargetResource
         Describe "$($Global:DSCResourceName)\Test-TargetResource" {
+            
+            $DSCTestValues = $DSCPropertyValues
 
             Context 'server is in correct state (Ensure=Present)' {
+
+                $DSCTestValues.Remove('Ensure')
+                $DSCTestValues.Add('Ensure','Present')
+
+                Mock -CommandName Get-TargetResource -MockWith {$DSCTestValues} -Verifiable
+
                 $script:result = $null
                     
                 it 'calling test should not throw' {
-                    {$script:result = Test-TargetResource @DSCPropertyValues -verbose} | should not throw
+                    {$script:result = Test-TargetResource @DSCTestValues -verbose} | should not throw
                 }
 
                 it "result should be true" {
                     $script:result | should be $true
                 }
+                
+                it 'mocks were called' {
+                    Assert-VerifiableMocks
+                }
             }
-
+            
             Context 'server should not be configured (Ensure=Absent)' {
+                
+                $DSCTestValues.Remove('Ensure')
+                $DSCTestValues.Add('Ensure','Absent')
+
+                Mock -CommandName Get-TargetResource -MockWith {$DSCTestValues} -Verifiable
+                                    
                 $script:result = $null
                     
                 it 'calling test should not throw' {
-                    {$script:result = Test-TargetResource -Name $Global:WsusServer.Name -Ensure Absent -verbose} | should not throw
+                    {$script:result = Test-TargetResource @DSCTestValues -verbose} | should not throw
                 }
 
-                it "result should be false" {
-                    $script:result | should be $false
+                it "result should be true" {
+                    $script:result | should be $true
+                }
+
+                it 'mocks were called' {
+                    Assert-VerifiableMocks
                 }
             }
 
-            Context 'server is not in correct state' {
+            Context 'server should be configured correctly but is not' {
+                
+                $DSCTestValues.Remove('Ensure')
+
+                Mock -CommandName Get-TargetResource -MockWith {$DSCTestValues} -Verifiable
+                                    
                 $script:result = $null
                     
                 it 'calling test should not throw' {
-                    {$script:result = Test-TargetResource -Name 'Foo' -verbose} | should not throw
+                    {$script:result = Test-TargetResource @DSCTestValues -Ensure 'Present' -verbose} | should not throw
                 }
 
                 it "result should be false" {
                     $script:result | should be $false
+                }
+
+                it 'mocks were called' {
+                    Assert-VerifiableMocks
+                }
+            }
+
+            Context "setting has drifted" {
+                
+                $DSCTestValues.Remove('Ensure')
+                $DSCTestValues.Add('Ensure','Present')
+                $DriftValue = $DSCTestValues
+
+                $settingsList = 'DeclineSupersededUpdates','DeclineExpiredUpdates','CleanupObsoleteUpdates','CompressUpdates','CleanupObsoleteComputers','CleanupUnneededContentFiles','CleanupLocalPublishedContentFiles'
+                foreach ($setting in $settingsList) {
+                    
+                    $DriftValue.Remove("$setting")
+                    Mock -CommandName Get-TargetResource -MockWith {$DriftValue} -Verifiable
+                                        
+                    $script:result = $null
+                        
+                    it 'calling test should not throw' {
+                        {$script:result = Test-TargetResource @DSCTestValues -verbose} | should not throw
+                    }
+
+                    it "result should be false when $setting has changed" {
+                        $script:result | should be $false
+                    }
+
+                    it 'mocks were called' {
+                        Assert-VerifiableMocks
+                    }
+
+                    $DSCTestValues.Add("$setting",$true)
                 }
             }
         }
         #endregion
-
+<#
         #region Function Set-TargetResource
         Describe "$($Global:DSCResourceName)\Set-TargetResource" {
             
@@ -297,7 +361,7 @@ try
 
         }
         #endregion
-#>
+#>        
     }
 }
 
