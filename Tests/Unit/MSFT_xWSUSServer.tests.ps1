@@ -1,16 +1,18 @@
 <#
 .Synopsis
-   Unit tests for xWSUSCleanup
+   Unit tests for xWSUSServer
 .DESCRIPTION
-   Unit tests for xWSUSCleanup
+   Unit tests for xWSUSServer
 
 .NOTES
    Code in HEADER and FOOTER regions are standard and may be moved into DSCResource.Tools in
    Future and therefore should not be altered if possible.
 #>
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingConvertToSecureStringWithPlainText', '',Scope='Function',Target='DSCGetValues')]
+param()
 
 $Global:DSCModuleName      = 'xWSUS' # Example xNetworking
-$Global:DSCResourceName    = 'MSFT_xWSUSCleanup' # Example MSFT_xFirewall
+$Global:DSCResourceName    = 'MSFT_xWSUSServer' # Example MSFT_xFirewall
 
 #region HEADER
 [String] $moduleRoot = Split-Path -Parent (Split-Path -Parent (Split-Path -Parent $Script:MyInvocation.MyCommand.Path))
@@ -42,18 +44,83 @@ try
     # (non-exported) code of a Script Module.
     InModuleScope $Global:DSCResourceName {
 
-        $DSCSetValues = @{
-            DeclineSupersededUpdates = $true
-            DeclineExpiredUpdates = $true
-            CleanupObsoleteUpdates = $true 
-            CompressUpdates = $true
-            CleanupObsoleteComputers = $true
-            CleanupUnneededContentFiles = $true
-            CleanupLocalPublishedContentFiles = $true
-            TimeOfDay = "04:00:00"
+        #region Pester Test Initialization
+        Import-Module .\Tests\Helpers\ImitateWSUSModule.psm1 -force
+
+        $DSCGetValues = @{
+            SetupCredential = new-object -typename System.Management.Automation.PSCredential -argumentlist 'foo', $('bar' | ConvertTo-SecureString -AsPlainText -Force)
         }
 
-        $DSCTestValues = @{
+        $DSCSetValues = @{
+            SQLServer = 'SQLServer'
+            ContentDir = 'C:\WSUSContent\'
+            UpdateImprovementProgram = $true
+            UpstreamServerName = ''
+            UpstreamServerPort = $null
+            UpstreamServerSSL = $null
+            UpstreamServerReplica = $null
+            ProxyServerName = ''
+            ProxyServerPort = $null
+            ProxyServerCredentialUsername = $null
+            ProxyServerBasicAuthentication = $null
+            Languages = '*'
+            Products = '*'
+            Classifications = '*'
+            SynchronizeAutomatically = $true
+            SynchronizeAutomaticallyTimeOfDay = '04:00:00'
+            SynchronizationsPerDay = 24
+        }
+        #endregion
+        
+        #region Function Get-TargetResource expecting Ensure Present
+        Describe "$($Global:DSCResourceName)\Get-TargetResource" {
+
+            Mock -CommandName Get-ItemProperty -ParameterFilter {$Path -eq 'HKLM:\SOFTWARE\Microsoft\Update Services\Server\Setup' -and $Name -eq 'SQLServerName'} -MockWith {@{SQLServerName = 'SQLServer'}} -Verifiable
+            Mock -CommandName Get-ItemProperty -ParameterFilter {$Path -eq 'HKLM:\SOFTWARE\Microsoft\Update Services\Server\Setup' -and $Name -eq 'ContentDir'} -MockWith {@{ContentDir = 'C:\WSUSContent\'}} -Verifiable
+
+            Context 'server should be configured.' {
+
+                it 'calling Get should not throw' {
+                    {$Script:resource = Get-TargetResource @DSCGetValues -Ensure 'Present' -verbose} | should not throw
+                }
+                
+                it 'sets the value for Ensure' {
+                    $Script:resource.Ensure | should be 'Present'
+                }
+                
+                foreach ($setting in $DSCSetValues.Keys) {
+                    it "returns $setting in Get results" {
+                        $Script:resource.$setting | should be $DSCSetValues.$setting
+                    }
+                }
+
+                it 'mocks were called' {
+                    Assert-VerifiableMocks
+                }
+            }
+
+          Context 'server should not be configured.' {
+
+                it 'calling Get should not throw' {
+                    Mock -CommandName Get-WSUSServer -MockWith {}
+                    {$Script:resource = Get-TargetResource @DSCGetValues -Ensure 'Absent' -verbose} | should not throw
+                }
+                
+                it 'sets the value for Ensure' {
+                    $Script:resource.Ensure | should be 'Absent'
+                }
+
+                it 'mocks were called' {
+                    Assert-VerifiableMocks
+                }
+            }
+        }
+        #endregion
+<#
+        #region Function Test-TargetResource
+        Describe "$($Global:DSCResourceName)\Test-TargetResource" {
+            
+            $DSCTestValues = @{
                 DeclineSupersededUpdates = $true
                 DeclineExpiredUpdates = $true
                 CleanupObsoleteUpdates = $true 
@@ -63,105 +130,6 @@ try
                 CleanupLocalPublishedContentFiles = $true
                 TimeOfDay = "04:00:00"
             }
-        #endregion
-        
-        #region Function Get-TargetResource expecting Ensure Present
-        Describe "$($Global:DSCResourceName)\Get-TargetResource" {
-
-            $Arguments = 'foo"$DeclineSupersededUpdates = $True;$DeclineExpiredUpdates = $True;$CleanupObsoleteUpdates = $True;$CompressUpdates = $True;$CleanupObsoleteComputers = $True;$CleanupUnneededContentFiles = $True;$CleanupLocalPublishedContentFiles = $True'
-            $Execute = "$($env:SystemRoot)\System32\WindowsPowerShell\v1.0\powershell.exe"
-            $StartBoundary = '20160101T04:00:00'
-            
-            Context 'server is configured.' {
-
-                Mock -CommandName Get-ScheduledTask -mockwith {
-                    @{
-                        State = 'Enabled'
-                        Actions = @{
-                            Execute = $Execute
-                            Arguments = $Arguments
-                            }
-                        Triggers = @{
-                            StartBoundary = $StartBoundary
-                        }
-                    }
-                } -Verifiable
-
-                it 'calling Get should not throw' {
-                    {$Script:resource = Get-TargetResource -Ensure "Present" -verbose} | should not throw
-                }
-
-                it 'Ensure' {
-                        $Script:resource.Ensure | should be 'Present'
-                }
-
-                $settingsList = 'DeclineSupersededUpdates','DeclineExpiredUpdates','CleanupObsoleteUpdates','CompressUpdates','CleanupObsoleteComputers','CleanupUnneededContentFiles','CleanupLocalPublishedContentFiles'
-                foreach ($setting in $settingsList) {
-
-                    it "$setting should be true" {
-                        $Script:resource.$setting | Should Be 'True'
-                    }
-                }
-
-                it 'TimeOfDay' {
-                    $Script:resource.TimeOfDay | Should Be $StartBoundary.Split('T')[1]
-                }
-                
-                it 'mocks were called' {
-                    Assert-VerifiableMocks
-                }
-            }
-
-            Context 'server is not configured.' {
-
-                Mock Get-ScheduledTask -mockwith {} -Verifiable
-
-                it 'calling Get should not throw' {
-                    {$Script:resource = Get-TargetResource -Ensure 'Absent' -verbose} | should not throw
-                }
-
-                it 'Ensure' {
-                    $Script:resource.Ensure | should be 'Absent'
-                }
-
-                it 'mocks were called' {
-                    Assert-VerifiableMocks
-                }
-            }
-
-            Context 'server is configured in an unexpected way.' {
-
-                Mock Get-ScheduledTask -mockwith {
-                    @{
-                        State = 'Disabled'
-                        Actions = @{
-                            Execute = $Execute
-                            Arguments = $Arguments
-                            }
-                    Triggers = @{
-                            StartBoundary = $StartBoundary
-                        }
-                    }
-                } -Verifiable
-
-                it 'calling Get should not throw' {
-                    {$Script:resource = Get-TargetResource -Ensure 'Present' -verbose} | should not throw
-                }
-
-                it 'Ensure' {
-                    $Script:resource.Ensure | should be 'Absent'
-                }
-
-                it 'mocks were called' {
-                    Assert-VerifiableMocks
-                }
-            }
-        }
-        #endregion
-
-
-        #region Function Test-TargetResource
-        Describe "$($Global:DSCResourceName)\Test-TargetResource" {
 
             Context 'server is in correct state (Ensure=Present)' {
 
@@ -277,7 +245,7 @@ try
                Mock -CommandName Get-ScheduledTask -MockWith {$true}
                 
                it 'should not throw when running on a properly configured server' {
-                    {Set-targetResource @DSCSetValues -Ensure Present -verbose} | should not throw
+                    {Set-targetResource @DSCPropertyValues -Ensure Present -verbose} | should not throw
                 }
 
                 it "mocks were called for commands that gather information" {
@@ -301,7 +269,7 @@ try
                Mock -CommandName Get-ScheduledTask -MockWith {}
                 
                it 'should not throw when running on a properly configured server' {
-                    {Set-targetResource @DSCSetValues -Ensure Present -verbose} | should not throw
+                    {Set-targetResource @DSCPropertyValues -Ensure Present -verbose} | should not throw
                 }
 
                 it "mocks were called for commands that gather information" {
@@ -325,7 +293,7 @@ try
                 Mock -CommandName Get-ScheduledTask -MockWith {$true}
                 
                it 'should not throw when running on a properly configured server' {
-                    {Set-targetResource @DSCSetValues -Ensure Absent -verbose} | should not throw
+                    {Set-targetResource @DSCPropertyValues -Ensure Absent -verbose} | should not throw
                 }
 
                 it "mocks were called for commands that gather information" {
@@ -344,6 +312,7 @@ try
             }
         }
         #endregion
+#>        
     }
 }
 

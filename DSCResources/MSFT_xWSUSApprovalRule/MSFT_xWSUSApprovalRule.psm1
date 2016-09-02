@@ -35,32 +35,37 @@ function Get-TargetResource
     try
     {
         $WsusServer = Get-WsusServer
-        $ApprovalRule = $WsusServer.GetInstallApprovalRules() | Where-Object {$_.Name -eq $Name}
-        
-        if($ApprovalRule -ne $null)
-        {
-            $Ensure = "Present"
-            if(!($Classifications = @($ApprovalRule.GetUpdateClassifications().ID.Guid)))
+        $Ensure = "Absent"
+        $Classifications = $null
+        $Products = $null
+        $ComputerGroups = $null
+        $Enabled = $null
+
+        if ($WsusServer -ne $null) {
+            
+            $ApprovalRule = $WsusServer.GetInstallApprovalRules() | Where-Object {$_.Name -eq $Name}
+            
+            if($ApprovalRule -ne $null)
             {
-                $Classifications = @("All Classifications")
+                $Ensure = "Present"
+                
+                if(!($Classifications = @($ApprovalRule.GetUpdateClassifications().ID.Guid)))
+                {
+                    $Classifications = @("All Classifications")
+                }
+
+                if(!($Products = @($ApprovalRule.GetCategories().Title)))
+                {
+                    $Products = @("All Products")
+                }
+
+                if(!($ComputerGroups = @($ApprovalRule.GetComputerTargetGroups().Name)))
+                {
+                    $ComputerGroups = @("All Computers")
+                }
+
+                $Enabled = $ApprovalRule.Enabled
             }
-            if(!($Products = @($ApprovalRule.GetCategories().Title)))
-            {
-                $Products = @("All Products")
-            }
-            if(!($ComputerGroups = @($ApprovalRule.GetComputerTargetGroups().Name)))
-            {
-                $ComputerGroups = @("All Computers")
-            }
-            $Enabled = $ApprovalRule.Enabled
-        }
-        else
-        {
-            $Ensure = "Absent"
-            $Classifications = $null
-            $Products = $null
-            $ComputerGroups = $null
-            $Enabled = $null
         }
     }
     catch

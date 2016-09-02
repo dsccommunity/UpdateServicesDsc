@@ -60,52 +60,105 @@ try
         
         #region Function Get-TargetResource expecting Ensure Present
         Describe "$($Global:DSCResourceName)\Get-TargetResource" {
+
+            Mock -CommandName New-TerminatingError -MockWith {}
             
-            Context 'server is configured.' {
-                $resource = Get-TargetResource -Name $Global:WsusServer.Name -verbose
+            Context 'server should be configured.' {
+
+                it 'calling Get should not throw' {
+                    {$Script:resource = Get-TargetResource -Name $Global:WsusServer.Name -verbose} | should not throw
+                }
 
                 it "Ensure" {
-                    $resource.Ensure | should be 'Present'
+                    $Script:resource.Ensure | should be 'Present'
                 } 
 
                 it "Classifications" {
-                    $resource.Classifications | should be $DSCPropertyValues.Classifications
+                    $Script:resource.Classifications | should be $DSCPropertyValues.Classifications
                 }
 
                 it "Products" {
-                    $resource.Products | should be $DSCPropertyValues.Products
+                    $Script:resource.Products | should be $DSCPropertyValues.Products
                 }
 
                 it "Computer Groups" {
-                    $resource.ComputerGroups | should be $DSCPropertyValues.ComputerGroups
+                    $Script:resource.ComputerGroups | should be $DSCPropertyValues.ComputerGroups
                 }
 
                 it "Enabled" {
-                    $resource.Enabled | should be $DSCPropertyValues.Enabled
+                    $Script:resource.Enabled | should be $DSCPropertyValues.Enabled
+                }
+
+                it "mocks were not called" {
+                    Assert-MockCalled -CommandName New-TerminatingError -Times 0
+                }
+
+            }
+
+            Context 'server should not be configured.' {
+
+                it 'calling Get should not throw' {
+                    Mock -CommandName Get-WSUSServer -MockWith {} -Verifiable
+                    {$Script:resource = Get-TargetResource -Name $Global:WsusServer.Name -verbose} | should not throw
+                }
+
+                it "Ensure" {
+                    $Script:resource.Ensure | should be 'Absent'
+                } 
+
+                it "Classifications" {
+                    $Script:resource.Classifications | should BeNullOrEmpty
+                }
+
+                it "Products" {
+                    $Script:resource.Products | should BeNullOrEmpty
+                }
+
+                it "Computer Groups" {
+                    $Script:resource.ComputerGroups | should BeNullOrEmpty
+                }
+
+                it "Enabled" {
+                    $Script:resource.Enabled | should BeNullOrEmpty
+                }
+
+                it "mocks were called" {
+                    Assert-VerifiableMocks
+                }
+
+                it "mocks were not called" {
+                    Assert-MockCalled -CommandName New-TerminatingError -Times 0
                 }
             }
 
             Context 'server is not configured.' {
-                $resource = Get-TargetResource -Name 'Foo' -verbose
+
+                it 'calling Get should not throw' {
+                    {$Script:resource = Get-TargetResource -Name 'Foo' -verbose} | should not throw
+                }
 
                 it "Ensure" {
-                    $resource.Ensure | should be 'Absent'
+                    $Script:resource.Ensure | should be 'Absent'
                 } 
 
                 it "Classifications" {
-                    $resource.Classifications | should be $null
+                    $Script:resource.Classifications | should be $null
                 }
 
                 it "Products" {
-                    $resource.Products | should be $null
+                    $Script:resource.Products | should be $null
                 }
 
                 it "Computer Groups" {
-                    $resource.ComputerGroups | should be $null
+                    $Script:resource.ComputerGroups | should be $null
                 }
 
                 it "Enabled" {
-                    $resource.Enabled | should be $null
+                    $Script:resource.Enabled | should be $null
+                }
+
+                it "mocks were not called" {
+                    Assert-MockCalled -CommandName New-TerminatingError -Times 0
                 }
             }    
         }
