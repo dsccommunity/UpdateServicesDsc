@@ -49,12 +49,20 @@ try
             Name = 'ServerName'
             }
         
-        $DSCPropertyValues = @{
+        $DSCSetValues = @{
             Name = $Global:WsusServer.Name
             Classifications = "00000000-0000-0000-0000-0000testguid"
             Products = "Product"
             ComputerGroups = "Computer Target Group" 
             Enabled = $true
+        }
+
+        $DSCTestValues = @{
+                Name = $Global:WsusServer.Name
+                Classifications = "00000000-0000-0000-0000-0000testguid"
+                Products = "Product"
+                ComputerGroups = "Computer Target Group" 
+                Enabled = $true
         }
         #endregion
         
@@ -74,19 +82,19 @@ try
                 } 
 
                 it "Classifications" {
-                    $Script:resource.Classifications | should be $DSCPropertyValues.Classifications
+                    $Script:resource.Classifications | should be $DSCSetValues.Classifications
                 }
 
                 it "Products" {
-                    $Script:resource.Products | should be $DSCPropertyValues.Products
+                    $Script:resource.Products | should be $DSCSetValues.Products
                 }
 
                 it "Computer Groups" {
-                    $Script:resource.ComputerGroups | should be $DSCPropertyValues.ComputerGroups
+                    $Script:resource.ComputerGroups | should be $DSCSetValues.ComputerGroups
                 }
 
                 it "Enabled" {
-                    $Script:resource.Enabled | should be $DSCPropertyValues.Enabled
+                    $Script:resource.Enabled | should be $DSCSetValues.Enabled
                 }
 
                 it "mocks were not called" {
@@ -167,14 +175,6 @@ try
         #region Function Test-TargetResource
         Describe "$($Global:DSCResourceName)\Test-TargetResource" {
 
-            $DSCTestValues = $DSCPropertyValues = @{
-                Name = $Global:WsusServer.Name
-                Classifications = "00000000-0000-0000-0000-0000testguid"
-                Products = "Product"
-                ComputerGroups = "Computer Target Group" 
-                Enabled = $true
-            }
-
             Context 'server is in correct state (Ensure=Present)' {
 
                 $DSCTestValues.Remove('Ensure')
@@ -215,7 +215,7 @@ try
                 $settingsList = 'Classifications','Products','ComputerGroups'
                 foreach ($setting in $settingsList) { 
                 
-                    $valueWithoutDrift = $DSCPropertyValues.$setting
+                    $valueWithoutDrift = $DSCSetValues.$setting
 
                     $DSCTestValues.Remove("$setting")
                     $DSCTestValues.Add("$setting",'foo')
@@ -250,7 +250,7 @@ try
                 Mock New-TerminatingError -mockwith {}
                 
                 it 'should not throw when running on a properly configured server' {
-                    {Set-targetResource @DSCPropertyValues -verbose} | should not throw
+                    {Set-targetResource @DSCSetValues -verbose} | should not throw
                 }
 
                 it "mocks were called" {
@@ -291,7 +291,7 @@ try
                 Mock Test-TargetResource -mockwith {$true}
 
                 it 'should not throw when running on an incorrectly configured server' {
-                    {Set-targetResource @DSCPropertyValues -Ensure Absent -verbose} | should not throw
+                    {Set-targetResource @DSCSetValues -Ensure Absent -verbose} | should not throw
                 }
 
                 it "mocks were called" {
@@ -312,7 +312,7 @@ try
                 Mock New-TerminatingError -mockwith {}
                 
                 it 'should not throw when running on a properly configured server' {
-                    {Set-targetResource @DSCPropertyValues -Synchronize $true -verbose} | should not throw
+                    {Set-targetResource @DSCSetValues -Synchronize $true -verbose} | should not throw
                 }
 
                 it "mocks were called" {

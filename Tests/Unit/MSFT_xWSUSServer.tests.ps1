@@ -116,32 +116,18 @@ try
             }
         }
         #endregion
-<#
+
         #region Function Test-TargetResource
         Describe "$($Global:DSCResourceName)\Test-TargetResource" {
-            
-            $DSCTestValues = @{
-                DeclineSupersededUpdates = $true
-                DeclineExpiredUpdates = $true
-                CleanupObsoleteUpdates = $true 
-                CompressUpdates = $true
-                CleanupObsoleteComputers = $true
-                CleanupUnneededContentFiles = $true
-                CleanupLocalPublishedContentFiles = $true
-                TimeOfDay = "04:00:00"
-            }
 
             Context 'server is in correct state (Ensure=Present)' {
 
-                $DSCTestValues.Remove('Ensure')
-                $DSCTestValues.Add('Ensure','Present')
-
-                Mock -CommandName Get-TargetResource -MockWith {$DSCTestValues} -Verifiable
+                #Mock -CommandName Get-TargetResource -MockWith {$DSCTestValues} -Verifiable
 
                 $script:result = $null
                     
                 it 'calling test should not throw' {
-                    {$script:result = Test-TargetResource @DSCTestValues -verbose} | should not throw
+                    {$script:result = Test-TargetResource @DSCSetValues -Ensure 'Present' -verbose} | should not throw
                 }
 
                 it "result should be true" {
@@ -152,6 +138,8 @@ try
                     Assert-VerifiableMocks
                 }
             }
+
+            <#
             
             Context 'server should not be configured (Ensure=Absent)' {
                 
@@ -225,9 +213,13 @@ try
                     $DSCTestValues.Add("$setting",$true)
                 }
             }
+
+            #>
+
         }
         #endregion
 
+<#
         #region Function Set-TargetResource
         Describe "$($Global:DSCResourceName)\Set-TargetResource" {
             

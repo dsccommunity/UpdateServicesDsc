@@ -85,10 +85,10 @@ function Get-WsusServer {
         $Configuration = @{
             ProxyName = ''
             ProxyServerPort = $null
-            ProxyServerBasicAuthentication = $null
+            ProxyServerBasicAuthentication = $false
             UpstreamWsusServerName = ''
             UpstreamWsusServerPortNumber = $null
-            UpStreamServerSSL =  $null
+            UpStreamServerSSL =  $false
             MURollupOptin = $true
         }
         $Configuration | Add-Member -MemberType ScriptMethod -Name AllUpdateLanguagesEnabled -Value {}
