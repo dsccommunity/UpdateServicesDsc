@@ -232,13 +232,14 @@ try
                 
                 $DSCTestValues.Remove('Ensure')
                 $DSCTestValues.Add('Ensure','Present')
-                $DriftValue = $DSCTestValues
 
                 $settingsList = 'DeclineSupersededUpdates','DeclineExpiredUpdates','CleanupObsoleteUpdates','CompressUpdates','CleanupObsoleteComputers','CleanupUnneededContentFiles','CleanupLocalPublishedContentFiles'
                 foreach ($setting in $settingsList) {
                     
-                    $DriftValue.Remove("$setting")
-                    Mock -CommandName Get-TargetResource -MockWith {$DriftValue} -Verifiable
+                    Mock -CommandName Get-TargetResource -MockWith {
+                        $DSCTestValues.Remove("$setting")
+                        $DSCTestValues
+                    } -Verifiable
                                         
                     $script:result = $null
                         

@@ -33,7 +33,6 @@ $TestEnvironment = Initialize-TestEnvironment `
     -TestType Unit 
 #endregion
 
-
 # Begin Testing
 try
 {
@@ -45,13 +44,10 @@ try
     InModuleScope $Global:DSCResourceName {
 
         #region Pester Test Initialization
-        Import-Module .\Tests\Helpers\ImitateWSUSModule.psm1 -force
+        Import-Module $PSScriptRoot\..\..\Tests\Helpers\ImitateWSUSModule.psm1 -force
 
         $DSCGetValues = @{
             SetupCredential = new-object -typename System.Management.Automation.PSCredential -argumentlist 'foo', $('bar' | ConvertTo-SecureString -AsPlainText -Force)
-        }
-
-        $DSCSetValues = @{
             SQLServer = 'SQLServer'
             ContentDir = 'C:\WSUSContent\'
             UpdateImprovementProgram = $true
@@ -70,6 +66,25 @@ try
             SynchronizeAutomaticallyTimeOfDay = '04:00:00'
             SynchronizationsPerDay = 24
         }
+
+        $DSCTestValues = @{
+            SetupCredential = new-object -typename System.Management.Automation.PSCredential -argumentlist 'foo', $('bar' | ConvertTo-SecureString -AsPlainText -Force)
+            SQLServer = 'SQLServer'
+            ContentDir = 'C:\WSUSContent\'
+            UpdateImprovementProgram = $true
+            UpstreamServerName = 'UpstreamServer'
+            UpstreamServerPort = $false
+            UpstreamServerSSL = $false
+            UpstreamServerReplica = $false
+            ProxyServerName = 'ProxyServer'
+            ProxyServerPort = 8080
+            Languages = "*"
+            Products = @("Windows","Office")
+            Classifications = @('E6CF1350-C01B-414D-A61F-263D14D133B4','E0789628-CE08-4437-BE74-2495B842F43B','0FA1201D-4330-4FA8-8AE9-B877473B6441')
+            SynchronizeAutomatically = $true
+            SynchronizeAutomaticallyTimeOfDay = '04:00:00'
+            SynchronizationsPerDay = 24
+        }
         #endregion
         
         #region Function Get-TargetResource expecting Ensure Present
@@ -81,7 +96,7 @@ try
             Context 'server should be configured.' {
 
                 it 'calling Get should not throw' {
-                    {$Script:resource = Get-TargetResource @DSCGetValues -Ensure 'Present' -verbose} | should not throw
+                    {$Script:resource = Get-TargetResource -SetupCredential $DSCGetValues.SetupCredential -Ensure 'Present' -verbose} | should not throw
                 }
                 
                 it 'sets the value for Ensure' {
@@ -90,7 +105,7 @@ try
                 
                 foreach ($setting in $DSCSetValues.Keys) {
                     it "returns $setting in Get results" {
-                        $Script:resource.$setting | should be $DSCSetValues.$setting
+                        $Script:resource.$setting | should be $DSCGetReturnValues.$setting
                     }
                 }
 
@@ -103,7 +118,7 @@ try
 
                 it 'calling Get should not throw' {
                     Mock -CommandName Get-WSUSServer -MockWith {}
-                    {$Script:resource = Get-TargetResource @DSCGetValues -Ensure 'Absent' -verbose} | should not throw
+                    {$Script:resource = Get-TargetResource -SetupCredential $DSCGetValues.SetupCredential -Ensure 'Absent' -verbose} | should not throw
                 }
                 
                 it 'sets the value for Ensure' {
@@ -122,12 +137,15 @@ try
 
             Context 'server is in correct state (Ensure=Present)' {
 
-                #Mock -CommandName Get-TargetResource -MockWith {$DSCTestValues} -Verifiable
+                Mock -CommandName Get-TargetResource -MockWith {$DSCTestValues} -Verifiable
+
+                $DSCTestValues.Remove('Ensure')
+                $DSCTestValues.Add('Ensure','Present')
 
                 $script:result = $null
                     
                 it 'calling test should not throw' {
-                    {$script:result = Test-TargetResource @DSCSetValues -Ensure 'Present' -verbose} | should not throw
+                    {$script:result = Test-TargetResource @DSCTestValues -verbose} | should not throw
                 }
 
                 it "result should be true" {
@@ -138,8 +156,6 @@ try
                     Assert-VerifiableMocks
                 }
             }
-
-            <#
             
             Context 'server should not be configured (Ensure=Absent)' {
                 
@@ -188,17 +204,19 @@ try
                 
                 $DSCTestValues.Remove('Ensure')
                 $DSCTestValues.Add('Ensure','Present')
-                $DriftValue = $DSCTestValues
 
-                $settingsList = 'DeclineSupersededUpdates','DeclineExpiredUpdates','CleanupObsoleteUpdates','CompressUpdates','CleanupObsoleteComputers','CleanupUnneededContentFiles','CleanupLocalPublishedContentFiles'
+                # Settings not currently tested: ProxyServerUserName, ProxyServerCredential, ProxyServerBasicAuthentication, 'Languages', 'Products', 'Classifications', 'SynchronizeAutomatically'
+                $settingsList = 'UpdateImprovementProgram', 'UpstreamServerName', 'UpstreamServerPort', 'UpstreamServerSSL', 'UpstreamServerReplica', 'ProxyServerName', 'ProxyServerPort', 'SynchronizeAutomaticallyTimeOfDay', 'SynchronizationsPerDay'
                 foreach ($setting in $settingsList) {
                     
-                    $DriftValue.Remove("$setting")
-                    Mock -CommandName Get-TargetResource -MockWith {$DriftValue} -Verifiable
+                    Mock -CommandName Get-TargetResource -MockWith {
+                        $DSCTestValues.Remove("$setting")
+                        $DSCTestValues
+                    } -Verifiable
                                         
                     $script:result = $null
                         
-                    it 'calling test should not throw' {
+                    it "calling test with change to $setting should not throw" {
                         {$script:result = Test-TargetResource @DSCTestValues -verbose} | should not throw
                     }
 
@@ -214,97 +232,51 @@ try
                 }
             }
 
-            #>
-
         }
         #endregion
 
-<#
         #region Function Set-TargetResource
         Describe "$($Global:DSCResourceName)\Set-TargetResource" {
             
-            $Arguments = 'foo"$DeclineSupersededUpdates = $True;$DeclineExpiredUpdates = $True;$CleanupObsoleteUpdates = $True;$CompressUpdates = $True;$CleanupObsoleteComputers = $True;$CleanupUnneededContentFiles = $True;$CleanupLocalPublishedContentFiles = $True'
-            $Execute = "$($env:SystemRoot)\System32\WindowsPowerShell\v1.0\powershell.exe"
-            $StartBoundary = '20160101T04:00:00'
-
-            Mock -CommandName Unregister-ScheduledTask -MockWith {}
-            Mock -CommandName Register-ScheduledTask -MockWith {}
+            $DSCTestValues.Remove('Ensure')
+            
             Mock -CommandName Test-TargetResource -MockWith {$true}
             Mock -CommandName New-TerminatingError -MockWith {}
+            Mock SaveWsusConfiguration -MockWith {}
 
             Context 'resource is idempotent (Ensure=Present)' {
 
-               Mock -CommandName Get-ScheduledTask -MockWith {$true}
-                
-               it 'should not throw when running on a properly configured server' {
-                    {Set-targetResource @DSCPropertyValues -Ensure Present -verbose} | should not throw
+                it 'should not throw when running on a properly configured server' {
+                    {Set-targetResource @DSCTestValues -Ensure Present -verbose} | should not throw
                 }
 
-                it "mocks were called for commands that gather information" {
-                    Assert-MockCalled -CommandName Get-ScheduledTask -Times 1
-                    Assert-MockCalled -CommandName Unregister-ScheduledTask -Times 1
-                    Assert-MockCalled -CommandName Register-ScheduledTask -Times 1
+                it "mocks were called" {
                     Assert-MockCalled -CommandName Test-TargetResource -Times 1
+                    Assert-MockCalled -CommandName SaveWsusConfiguration -Times 1
                 }
 
-                it "mocks were called that register a task to run WSUS cleanup" {
-                    Assert-MockCalled -CommandName Register-ScheduledTask -Times 1
-                }
-
-                it "mocks were not called that remove tasks or log errors" {
+                it "mocks were not called that log errors" {
                     Assert-MockCalled -CommandName New-TerminatingError -Times 0
                 }
             }
+            
+            Context 'resource supports Ensure=Absent' {
 
-            Context 'resource processes Set tasks to register Cleanup task (Ensure=Present)' {
-
-               Mock -CommandName Get-ScheduledTask -MockWith {}
-                
-               it 'should not throw when running on a properly configured server' {
-                    {Set-targetResource @DSCPropertyValues -Ensure Present -verbose} | should not throw
+                it 'should not throw when running on a properly configured server' {
+                    {Set-targetResource @DSCTestValues -Ensure Absent -verbose} | should not throw
                 }
 
-                it "mocks were called for commands that gather information" {
-                    Assert-MockCalled -CommandName Get-ScheduledTask -Times 1
-                    Assert-MockCalled -CommandName Register-ScheduledTask -Times 1
+                it "mocks were called" {
                     Assert-MockCalled -CommandName Test-TargetResource -Times 1
+                    Assert-MockCalled -CommandName SaveWsusConfiguration -Times 1
                 }
 
-                it "mocks were called that register a task to run WSUS cleanup" {
-                    Assert-MockCalled -CommandName Register-ScheduledTask -Times 1
-                }
-
-                it "mocks were not called that remove tasks or log errors" {
-                    Assert-MockCalled -CommandName Unregister-ScheduledTask -Times 0
-                    Assert-MockCalled -CommandName New-TerminatingError -Times 0
-                }
-            }
-
-            Context 'resource processes Set tasks to remove Cleanup task (Ensure=Absent)' {
-
-                Mock -CommandName Get-ScheduledTask -MockWith {$true}
-                
-               it 'should not throw when running on a properly configured server' {
-                    {Set-targetResource @DSCPropertyValues -Ensure Absent -verbose} | should not throw
-                }
-
-                it "mocks were called for commands that gather information" {
-                    Assert-MockCalled -CommandName Get-ScheduledTask -Times 1
-                    Assert-MockCalled -CommandName Test-TargetResource -Times 1
-                }
-
-                it "mocks were called to remove Cleanup task" {
-                    Assert-MockCalled -CommandName Unregister-ScheduledTask -Times 1
-                }
-
-                it "mocks were not called that register tasks or log errors" {
-                    Assert-MockCalled -CommandName Register-ScheduledTask -Times 0
+                it "mocks were not called that log errors" {
                     Assert-MockCalled -CommandName New-TerminatingError -Times 0
                 }
             }
         }
-        #endregion
-#>        
+        #endregion     
     }
 }
 

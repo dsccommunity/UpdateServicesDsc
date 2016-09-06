@@ -43,7 +43,7 @@ try
     InModuleScope $Global:DSCResourceName {
 
         #region Pester Test Initialization
-        Import-Module .\Tests\Helpers\ImitateWSUSModule.psm1
+        Import-Module $PSScriptRoot\..\..\Tests\Helpers\ImitateWSUSModule.psm1
 
         $global:WsusServer = [pscustomobject] @{
             Name = 'ServerName'

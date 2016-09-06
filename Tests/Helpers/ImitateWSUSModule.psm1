@@ -90,8 +90,8 @@ function Get-WsusServer {
             UpstreamWsusServerPortNumber = $null
             UpStreamServerSSL =  $false
             MURollupOptin = $true
+            AllUpdateLanguagesEnabled = $true
         }
-        $Configuration | Add-Member -MemberType ScriptMethod -Name AllUpdateLanguagesEnabled -Value {}
         $Configuration | Add-Member -MemberType ScriptMethod -Name GetEnabledUpdateLanguages -Value {}
         return $Configuration        
     }
