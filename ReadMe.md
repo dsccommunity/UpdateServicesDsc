@@ -1,11 +1,11 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/nja6h5ujumk4mep0/branch/master?svg=true)](https://ci.appveyor.com/project/mgreenegit/xwsus/branch/master)
+[![Build status](https://ci.appveyor.com/api/projects/status/nja6h5ujumk4mep0/branch/master?svg=true)](https://ci.appveyor.com/project/mgreenegit/WSUS/branch/master)
 
 
-# xWSUS
+# WSUS
 
-The **xWSUS** module is a part of the Windows PowerShell Desired State Configuration (DSC) Resource Kit, which is a collection of DSC Resources.
+The **WSUS** module is a part of the Windows PowerShell Desired State Configuration (DSC) Resource Kit, which is a collection of DSC Resources.
 
-This module contains the **xWSUSApprovalRule, xWSUSCleanup, and xWSUSServer** resources.
+This module contains the **WSUSApprovalRule, WSUSCleanup, and WSUSServer** resources.
 
 **All of the resources in the DSC Resource Kit are provided AS IS, and are not supported through any Microsoft standard support program or service. The "x" in xStorage stands for experimental**, which means that these resources will be **fix forward** and monitored by the module owner(s).
 
@@ -22,16 +22,16 @@ For more information on the DSC Resource Kit, checkout [this blog post](http://g
 Installation
 ------------
 
-To install **xWSUS** module, on a machine with Windows Management Framework version 5 or newer from an elevated PowerShell session run:
+To install **WSUS** module, on a machine with Windows Management Framework version 5 or newer from an elevated PowerShell session run:
 
 ```PowerShell
-Install-Module xWSUS
+Install-Module WSUS
 ```
 
 To confirm installation
 
 ```PowerShell
-Get-DSCResource xWSUS
+Get-DSCResource WSUS
 ```
 
 Requirements
@@ -43,7 +43,7 @@ The recommended version of PowerShell is 5.0 or newer.
 Details
 -------
 
-**xWSUSApprovalRule** resource has following properties
+**WSUSApprovalRule** resource has following properties
 
 - **Ensure**: An enumerated value that describes if WSUS is configured.
 - **Name**: Name of the approval rule.
@@ -53,7 +53,7 @@ Details
 - **Enabled**: Whether the approval rule is enabled.
 - **Synchronize**: Synchronize after creating or updating the approval rule.
 
-**xWSUSCleanup** resource has following properties:
+**WSUSCleanup** resource has following properties:
 
 - **Ensure**: An enumerated value that describes if the WSUS cleanup task exists.
 - **DeclineSupersededUpdates**: Decline updates that have not been approved fo 30 days or more, are not currently needed by any clients, and are superseded by an approved update.
@@ -65,7 +65,7 @@ Details
 - **CleanupLocalPublishedContentFiles**: Cleanup local published content files.
 - **TimeOfDay** Time of day to start cleanup.
 
-**xWSUSServer** resource has following properties:
+**WSUSServer** resource has following properties:
 
 - **Ensure**: An enumerated value that describes if WSUS is configured.
 - **SetupCredential**: Credential to be used to perform the initial configuration.
@@ -114,7 +114,7 @@ For more information see the [Code of Conduct FAQ](https://opensource.microsoft.
 
 ### 1.0.0.0
 
-- Initial release of xWSUS module with coverage for the following areas:
+- Initial release of WSUS module with coverage for the following areas:
   - Managing WSUS rules for content synchronization.
   - Managing WSUS rules for content cleanup and compression.
   - Managing WSUS service configuration

@@ -1,8 +1,8 @@
 <#
 .Synopsis
-   Unit tests for xWSUSServer
+   Unit tests for WSUSServer
 .DESCRIPTION
-   Unit tests for xWSUSServer
+   Unit tests for WSUSServer
 
 .NOTES
    Code in HEADER and FOOTER regions are standard and may be moved into DSCResource.Tools in
@@ -11,8 +11,8 @@
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingConvertToSecureStringWithPlainText', '',Scope='Function',Target='DSCGetValues')]
 param()
 
-$Global:DSCModuleName      = 'xWSUS' # Example xNetworking
-$Global:DSCResourceName    = 'MSFT_xWSUSServer' # Example MSFT_xFirewall
+$Global:DSCModuleName      = 'WSUS' # Example xNetworking
+$Global:DSCResourceName    = 'MSFT_WSUSServer' # Example MSFT_xFirewall
 
 #region HEADER
 [String] $moduleRoot = Split-Path -Parent (Split-Path -Parent (Split-Path -Parent $Script:MyInvocation.MyCommand.Path))
