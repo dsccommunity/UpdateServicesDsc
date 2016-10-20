@@ -45,7 +45,7 @@ Details
 
 **WSUSApprovalRule** resource has following properties
 
-- **Ensure**: An enumerated value that describes if WSUS is configured.
+- **Ensure**: An enumerated value that describes if the ApprovalRule is available
 - **Name**: Name of the approval rule.
 - **Classifications**: Classifications in the approval rule.
 - **Products**: Products in the approval rule.

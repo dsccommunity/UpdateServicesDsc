@@ -39,7 +39,7 @@ Configuration WSUSDsc_Config
                 SynchronizeAutomatically = $true
                 SynchronizeAutomaticallyTimeOfDay = '15:30:00'
            }
-
+    <#
             WSUSApprovalRule 'DefinitionUpdates'
            {
                 DependsOn = '[WSUSServer]WSUS'
@@ -94,6 +94,7 @@ Configuration WSUSDsc_Config
                 CleanupObsoleteUpdates = $true
                 CleanupUnneededContentFiles = $true
             } 
+    #>
         }
 }
 
