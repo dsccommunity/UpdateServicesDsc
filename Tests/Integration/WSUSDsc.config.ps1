@@ -97,3 +97,15 @@ Configuration WSUSDsc_Config
             } 
         }
 }
+
+$ConfigData = @{
+    AllNodes = @(
+        @{
+            NodeName = "*"
+            PSDscAllowPlainTextPassword = $True
+        },
+        @{
+            NodeName = "localhost"
+        }
+    )
+}
