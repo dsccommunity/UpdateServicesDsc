@@ -11,6 +11,15 @@ install:
         Pop-Location
         Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.205 -Force
         Install-Module -Name Pester -Repository PSGallery -Force
+notifications:
+- provider: Slack
+  incoming_webhook: https://hooks.slack.com/services/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
+  auth_token:
+    secure: gvtZQgS6n9fthyTTaF4TLA==
+  channel: appveyor
+  on_build_success: true
+  on_build_failure: true
+  on_build_status_changed: false
 
 #---------------------------------#
 #      build configuration        #

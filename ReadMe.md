@@ -1,9 +1,9 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/nja6h5ujumk4mep0/branch/master?svg=true)](https://ci.appveyor.com/project/mgreenegit/WSUS/branch/master)
+[![Build status](https://ci.appveyor.com/api/projects/status/nja6h5ujumk4mep0/branch/master?svg=true)](https://ci.appveyor.com/project/mgreenegit/xwsus)
 
 
-# WSUS
+# WSUSDsc
 
-The **WSUS** module is a part of the Windows PowerShell Desired State Configuration (DSC) Resource Kit, which is a collection of DSC Resources.
+The **WSUSDsc** module is a part of the Windows PowerShell Desired State Configuration (DSC) Resource Kit, which is a collection of DSC Resources.
 
 This module contains the **WSUSApprovalRule, WSUSCleanup, and WSUSServer** resources.
 
@@ -22,16 +22,16 @@ For more information on the DSC Resource Kit, checkout [this blog post](http://g
 Installation
 ------------
 
-To install **WSUS** module, on a machine with Windows Management Framework version 5 or newer from an elevated PowerShell session run:
+To install **WSUSDsc** module, on a machine with Windows Management Framework version 5 or newer from an elevated PowerShell session run:
 
 ```PowerShell
-Install-Module WSUS
+Install-Module WSUSDsc
 ```
 
 To confirm installation
 
 ```PowerShell
-Get-DSCResource WSUS
+Get-DSCResource WSUSDsc
 ```
 
 Requirements
@@ -88,6 +88,7 @@ Details
 - **SynchronizeAutomaticallyTimeOfDay**: First synchronization.
 - **SynchronizationsPerDay**: Synchronizations per day.
 - **Synchronize**: Begin initial synchronization.
+- **RunRuleNow**: Run Approval Rule on existing content.
 
 Renaming Requirements
 ---------------------
@@ -112,12 +113,17 @@ For more information see the [Code of Conduct FAQ](https://opensource.microsoft.
 
 ## Versions
 
+### 1.0.x.0
+
+- High quality DSC module with the following updates:
+  - 
+
 ### 1.0.0.0
 
-- Initial release of WSUS module with coverage for the following areas:
-  - Managing WSUS rules for content synchronization.
-  - Managing WSUS rules for content cleanup and compression.
-  - Managing WSUS service configuration
+- Initial release of xWSUS module with coverage for the following areas:
+  - Managing xWSUS rules for content synchronization.
+  - Managing xWSUS rules for content cleanup and compression.
+  - Managing xWSUS service configuration
 
 ## Contributing
 Please check out common DSC Resources [contributing guidelines](https://github.com/PowerShell/DscResource.Kit/blob/master/CONTRIBUTING.md).
