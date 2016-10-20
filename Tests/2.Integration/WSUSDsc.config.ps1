@@ -38,7 +38,6 @@ Configuration WSUSDsc_Config
                 )
                 SynchronizeAutomatically = $true
                 SynchronizeAutomaticallyTimeOfDay = '15:30:00'
-                Synchronize = $true
            }
 
             WSUSApprovalRule 'DefinitionUpdates'
@@ -47,7 +46,7 @@ Configuration WSUSDsc_Config
                 Name = 'Definition Updates'
                 Classifications = 'E0789628-CE08-4437-BE74-2495B842F43B'
                 Enabled = $true
-                Synchronize = $true
+                RunRuleNow = $true
             }
 
            WSUSApprovalRule 'CriticalUpdates'
@@ -56,7 +55,7 @@ Configuration WSUSDsc_Config
                 Name = 'Critical Updates'
                 Classifications = 'E6CF1350-C01B-414D-A61F-263D14D133B4'
                 Enabled = $true
-                Synchronize = $true
+                RunRuleNow = $true
             }
            
            WSUSApprovalRule 'SecurityUpdates'
@@ -65,7 +64,7 @@ Configuration WSUSDsc_Config
                 Name = 'Security Updates'
                 Classifications = '0FA1201D-4330-4FA8-8AE9-B877473B6441'
                 Enabled = $true
-                Synchronize = $true
+                RunRuleNow = $true
             }
            
            WSUSApprovalRule 'ServicePacks'
@@ -74,7 +73,7 @@ Configuration WSUSDsc_Config
                 Name = 'Service Packs'
                 Classifications = '68C5B0A3-D1A6-4553-AE49-01D3A7827828'
                 Enabled = $true
-                Synchronize = $true
+                RunRuleNow = $true
             }
 
             WSUSApprovalRule 'UpdateRollUps'
@@ -83,7 +82,7 @@ Configuration WSUSDsc_Config
                 Name = 'Update RollUps'
                 Classifications = '28BC880E-0592-4CBF-8F95-C79B17911D5F'
                 Enabled = $true
-                Synchronize = $true
+                RunRuleNow = $true
             }
 
             WSUSCleanup 'WSUS'
@@ -102,7 +101,8 @@ $ConfigData = @{
     AllNodes = @(
         @{
             NodeName = "*"
-            PSDscAllowPlainTextPassword = $True
+            #For use with Azure Automation DSC
+            #PSDscAllowPlainTextPassword = $True
         },
         @{
             NodeName = "localhost"
