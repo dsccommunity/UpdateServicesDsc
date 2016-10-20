@@ -1,6 +1,6 @@
 Configuration WSUS_Config
 {
-    Import-DscResource -ModuleName WSUS
+    Import-DscResource -ModuleName WSUSDsc
 
     Node $AllNodes.NodeName
     { 
