@@ -110,11 +110,11 @@ function Get-TargetResource
         {
             $Languages = @("*")
         }
-        else
+        <#else
         {
             $Languages = $WsusConfiguration.GetEnabledUpdateLanguages()
-        }
-        #Write-Verbose "WSUSServer languages are $Languages"
+        }#>
+        Write-Verbose "WSUSServer languages are $Languages"
 
         Write-Verbose 'Getting WSUSServer classifications'
         $Classifications = @($WsusSubscription.GetUpdateClassifications().ID.Guid)
