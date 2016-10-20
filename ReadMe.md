@@ -1,4 +1,4 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/nja6h5ujumk4mep0/branch/master?svg=true)](https://ci.appveyor.com/project/mgreenegit/WSUSDsc)
+[![Build status](https://ci.appveyor.com/api/projects/status/qi42dq80t7pmfr5l?svg=true)](https://ci.appveyor.com/project/mgreenegit/WSUSDsc)
 
 
 # WSUSDsc
