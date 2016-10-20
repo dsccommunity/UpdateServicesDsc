@@ -68,6 +68,7 @@ function Get-TargetResource
         Write-Verbose 'Getting WSUSServer update improvement program'
         $UpdateImprovementProgram = $WsusConfiguration.MURollupOptin
         Write-Verbose "WSUSServer content update improvement program is $UpdateImprovementProgram"
+
         if(!$WsusConfiguration.SyncFromMicrosoftUpdate)
         {
             Write-Verbose 'Getting WSUSServer upstream server'
@@ -84,7 +85,7 @@ function Get-TargetResource
             $UpstreamServerSSL = $null
             $UpstreamServerReplica = $null
         }
-        
+   
         if($WsusConfiguration.UseProxy)
         {
             Write-Verbose 'Getting WSUSServer proxy server'
@@ -103,7 +104,7 @@ function Get-TargetResource
             $ProxyServerPort = $null
             $ProxyServerBasicAuthentication = $null
         }
-<#
+
         Write-Verbose 'Getting WSUSServer languages'
         if($WsusConfiguration.AllUpdateLanguagesEnabled)
         {
@@ -113,8 +114,8 @@ function Get-TargetResource
         {
             $Languages = $WsusConfiguration.GetEnabledUpdateLanguages()
         }
-        Write-Verbose "WSUSServer languages are $Languages"
-#>
+        #Write-Verbose "WSUSServer languages are $Languages"
+
         Write-Verbose 'Getting WSUSServer classifications'
         $Classifications = @($WsusSubscription.GetUpdateClassifications().ID.Guid)
         if((Compare-Object -ReferenceObject ($Classifications | Sort-Object -Unique) -DifferenceObject (($WsusServer.GetUpdateClassifications().ID.Guid) | Sort-Object -Unique) -SyncWindow 0) -eq $null)
