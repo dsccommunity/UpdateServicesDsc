@@ -37,8 +37,7 @@ Get-DSCResource WSUSDsc
 Requirements
 ------------
 
-This module requires a minimum version of PowerShell, v4.0 which ships in Windows 8.1 or Windows Server 2012R2.
-The recommended version of PowerShell is 5.0 or newer.
+This module requires a minimum version of PowerShell v5.0.
 
 Details
 -------
@@ -116,7 +115,11 @@ For more information see the [Code of Conduct FAQ](https://opensource.microsoft.
 ### 1.0.x.0
 
 - High quality DSC module with the following updates:
-  - 
+  - Rename to WSUSDsc
+  - Add Integration tests
+  - Fix typo in ReadMe
+  - Add RunRuleNow param to WSUSApprovalRule resource
+  - Fix error in WSUSServer resource causing Get- to fail
 
 ### 1.0.0.0
 

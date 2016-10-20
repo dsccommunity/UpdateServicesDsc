@@ -109,3 +109,6 @@ $ConfigData = @{
         }
     )
 }
+
+# Example command to compile in Azure Automation DSC
+# Start-AzureRmAutomationDscCompilationJob -ResourceGroupName <ResourceGroupName> -AutomationAccountName <AutomationAccountName> -ConfigurationName "WSUSDsc_Config" -ConfigurationData $ConfigData
