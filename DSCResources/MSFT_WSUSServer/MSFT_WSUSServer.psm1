@@ -64,6 +64,7 @@ function Get-TargetResource
         Write-Verbose 'Getting WSUSServer content directory'
         $ContentDir = (Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Update Services\Server\Setup' -Name 'ContentDir').ContentDir
         Write-Verbose "WSUSServer content directory is $ContentDir"
+        <#
         Write-Verbose 'Getting WSUSServer update improvement program'
         $UpdateImprovementProgram = $WsusConfiguration.MURollupOptin
         Write-Verbose "WSUSServer content update improvement program is $UpdateImprovementProgram"
@@ -111,7 +112,7 @@ function Get-TargetResource
             $Languages = $WsusConfiguration.GetEnabledUpdateLanguages()
         }
         Write-Verbose "WSUSServer languages are $Languages"
-        <#
+        
         Write-Verbose 'Getting WSUSServer classifications'
         $Classifications = @($WsusSubscription.GetUpdateClassifications().ID.Guid)
         if((Compare-Object -ReferenceObject ($Classifications | Sort-Object -Unique) -DifferenceObject (($WsusServer.GetUpdateClassifications().ID.Guid) | Sort-Object -Unique) -SyncWindow 0) -eq $null)
