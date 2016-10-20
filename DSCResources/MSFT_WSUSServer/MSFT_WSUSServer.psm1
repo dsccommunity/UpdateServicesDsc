@@ -592,7 +592,7 @@ function Test-TargetResource
 
     $result = $true
 
-    $Wsus = Get-TargetResource -Ensure $Ensure -SetupCredential $SetupCredential
+    $Wsus = Get-TargetResource -Ensure $Ensure
 
     # Test Ensure
     if($Wsus.Ensure -ne $Ensure)
