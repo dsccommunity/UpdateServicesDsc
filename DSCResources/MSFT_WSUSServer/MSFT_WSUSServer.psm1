@@ -30,10 +30,7 @@ function Get-TargetResource
         [parameter(Mandatory = $true)]
         [ValidateSet("Present","Absent")]
         [System.String]
-        $Ensure,
-
-        [System.Management.Automation.PSCredential]
-        $SetupCredential
+        $Ensure
     )
 
     Write-Verbose 'Getting WSUSServer'

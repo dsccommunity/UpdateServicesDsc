@@ -1,6 +1,6 @@
 @{
 # Version number of this module.
-ModuleVersion = '1.0.15.0'
+ModuleVersion = '1.0.28.0'
 
 # ID used to uniquely identify this module
 GUID = 'f830913b-782f-44e6-86ca-fd23b45d80c3'
@@ -12,7 +12,7 @@ Author = 'Microsoft Corporation'
 CompanyName = 'Microsoft Corporation'
 
 # Copyright statement for this module
-Copyright = '(c) 2014 Microsoft Corporation. All rights reserved.'
+Copyright = '(c) 2016 Microsoft Corporation. All rights reserved.'
 
 # Description of the functionality provided by this module
 Description = 'Module with DSC Resources for deployment and configuration of Windows Server Update Services.'
