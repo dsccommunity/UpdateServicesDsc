@@ -11,7 +11,7 @@
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingConvertToSecureStringWithPlainText', '',Scope='Function',Target='DSCGetValues')]
 param()
 
-$Global:DSCModuleName      = 'WSUS' # Example xNetworking
+$Global:DSCModuleName      = 'WSUSDsc' # Example xNetworking
 $Global:DSCResourceName    = 'MSFT_WSUSServer' # Example MSFT_xFirewall
 
 #region HEADER

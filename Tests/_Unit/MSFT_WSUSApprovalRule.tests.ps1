@@ -9,7 +9,7 @@
    Future and therefore should not be altered if possible.
 #>
 
-$Global:DSCModuleName      = 'WSUS' # Example xNetworking
+$Global:DSCModuleName      = 'WSUSDsc' # Example xNetworking
 $Global:DSCResourceName    = 'MSFT_WSUSApprovalRule' # Example MSFT_xFirewall
 
 #region HEADER
