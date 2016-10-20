@@ -8,4 +8,5 @@ class MSFT_WSUSApprovalRule : OMI_BaseResource
     [Write, Description("Computer groups the approval rule applies to.")] String ComputerGroups[];
     [Write, Description("Whether the approval rule is enabled.")] Boolean Enabled;
     [Write, Description("Synchronize after creating or updating the approval rule.")] Boolean Synchronize;
+    [Write, Description("Run the approval rule after it has been created.")] Boolean RunRuleNow;
 };

@@ -112,7 +112,10 @@ function Set-TargetResource
         $Enabled,
 
         [System.Boolean]
-        $Synchronize
+        $Synchronize,
+
+        [System.Boolean]
+        $RunRuleNow
     )
 
     try
@@ -173,6 +176,20 @@ function Set-TargetResource
                         }
                         $ApprovalRule.SetComputerTargetGroups($ComputerGroupCollection)
                         $ApprovalRule.Save()
+                        if($RunRuleNow)
+                        {
+                            Write-Verbose "Running Approval Rule"
+                                    
+                            try
+                            {
+                                $ApprovalRule.ApplyRule()
+                            }
+                            catch
+                            {
+                                throw
+                                Write-Verbose "Failed to run Approval Rule"
+                            }
+                        }
                     }
                     else
                     {
@@ -246,7 +263,10 @@ function Test-TargetResource
         $Enabled,
 
         [System.Boolean]
-        $Synchronize
+        $Synchronize,
+
+        [System.Boolean]
+        $RunRuleNow
     )
 
     $result = $true
