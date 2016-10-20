@@ -1,4 +1,4 @@
-Configuration WSUS_Config
+Configuration WSUSDsc_Config
 {
     Import-DscResource -ModuleName WSUSDsc
 
