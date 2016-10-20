@@ -1,4 +1,5 @@
 $script:DSCModuleName      = 'WSUSDsc'
+$script:DSCResourceName    = 'MSFT_WSUSServer'
 
 #region HEADER
 # Integration Test Template Version: 1.0.0
