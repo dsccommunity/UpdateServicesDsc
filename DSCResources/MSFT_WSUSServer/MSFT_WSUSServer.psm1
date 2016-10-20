@@ -84,6 +84,7 @@ function Get-TargetResource
             $UpstreamServerSSL = $null
             $UpstreamServerReplica = $null
         }
+        #>
         if($WsusConfiguration.UseProxy)
         {
             Write-Verbose 'Getting WSUSServer proxy server'
@@ -112,7 +113,7 @@ function Get-TargetResource
             $Languages = $WsusConfiguration.GetEnabledUpdateLanguages()
         }
         Write-Verbose "WSUSServer languages are $Languages"
-        #>
+
         Write-Verbose 'Getting WSUSServer classifications'
         $Classifications = @($WsusSubscription.GetUpdateClassifications().ID.Guid)
         if((Compare-Object -ReferenceObject ($Classifications | Sort-Object -Unique) -DifferenceObject (($WsusServer.GetUpdateClassifications().ID.Guid) | Sort-Object -Unique) -SyncWindow 0) -eq $null)
