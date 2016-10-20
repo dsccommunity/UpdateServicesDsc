@@ -47,7 +47,6 @@ try
         Import-Module $PSScriptRoot\..\..\Tests\Helpers\ImitateWSUSModule.psm1 -force
 
         $DSCGetValues = @{
-            SetupCredential = new-object -typename System.Management.Automation.PSCredential -argumentlist 'foo', $('bar' | ConvertTo-SecureString -AsPlainText -Force)
             SQLServer = 'SQLServer'
             ContentDir = 'C:\WSUSContent\'
             UpdateImprovementProgram = $true
@@ -96,7 +95,7 @@ try
             Context 'server should be configured.' {
 
                 it 'calling Get should not throw' {
-                    {$Script:resource = Get-TargetResource -SetupCredential $DSCGetValues.SetupCredential -Ensure 'Present' -verbose} | should not throw
+                    {$Script:resource = Get-TargetResource -Ensure 'Present' -verbose} | should not throw
                 }
                 
                 it 'sets the value for Ensure' {
@@ -118,7 +117,7 @@ try
 
                 it 'calling Get should not throw' {
                     Mock -CommandName Get-WSUSServer -MockWith {}
-                    {$Script:resource = Get-TargetResource -SetupCredential $DSCGetValues.SetupCredential -Ensure 'Absent' -verbose} | should not throw
+                    {$Script:resource = Get-TargetResource -Ensure 'Absent' -verbose} | should not throw
                 }
                 
                 it 'sets the value for Ensure' {
