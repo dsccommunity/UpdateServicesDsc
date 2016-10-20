@@ -15,6 +15,7 @@ Configuration WSUSDsc_Config
         {
             Ensure = 'Present'
             Name = 'UpdateServices-RSAT'
+            IncludeAllSubFeature =  $True
         }
 
         WSUSServer 'WSUS'
