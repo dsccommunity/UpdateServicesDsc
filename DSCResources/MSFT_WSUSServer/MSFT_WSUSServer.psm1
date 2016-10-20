@@ -32,7 +32,6 @@ function Get-TargetResource
         [System.String]
         $Ensure,
 
-        [parameter(Mandatory = $true)]
         [System.Management.Automation.PSCredential]
         $SetupCredential
     )
@@ -173,7 +172,6 @@ function Set-TargetResource
         [System.String]
         $Ensure,
 
-        [parameter(Mandatory = $true)]
         [System.Management.Automation.PSCredential]
         $SetupCredential,
 
@@ -265,9 +263,18 @@ function Set-TargetResource
 
         Write-Verbose "Arguments: $Arguments"
 
-        $Process = StartWin32Process -Path $Path -Arguments $Arguments -Credential $SetupCredential
-        Write-Verbose $Process
-        WaitForWin32ProcessEnd -Path $Path -Arguments $Arguments
+        if ($SetupCredential)
+        {
+            $Process = StartWin32Process -Path $Path -Arguments $Arguments -Credential $SetupCredential
+            Write-Verbose $Process
+            WaitForWin32ProcessEnd -Path $Path -Arguments $Arguments
+        }
+        else 
+        {
+            $Process = StartWin32Process -Path $Path -Arguments $Arguments
+            Write-Verbose $Process
+            WaitForWin32ProcessEnd -Path $Path -Arguments $Arguments        
+        }
     }
 
     # Get WSUS server
@@ -405,9 +412,18 @@ function Set-TargetResource
 
                 Write-Verbose "Arguments: $Arguments"
 
-                $Process = StartWin32Process -Path $Path -Arguments $Arguments -Credential $SetupCredential
-                Write-Verbose $Process
-                WaitForWin32ProcessEnd -Path $Path -Arguments $Arguments
+                if ($SetupCredential)
+                {
+                    $Process = StartWin32Process -Path $Path -Arguments $Arguments -Credential $SetupCredential
+                    Write-Verbose $Process
+                    WaitForWin32ProcessEnd -Path $Path -Arguments $Arguments
+                }
+                else 
+                {
+                    $Process = StartWin32Process -Path $Path -Arguments $Arguments
+                    Write-Verbose $Process
+                    WaitForWin32ProcessEnd -Path $Path -Arguments $Arguments        
+                }
 
                 $WsusConfiguration.OobeInitialized = $true
                 SaveWsusConfiguration
@@ -519,7 +535,6 @@ function Test-TargetResource
         [System.String]
         $Ensure,
 
-        [parameter(Mandatory = $true)]
         [System.Management.Automation.PSCredential]
         $SetupCredential,
 

@@ -2,7 +2,7 @@
 class MSFT_WSUSServer : OMI_BaseResource
 {
     [Key, Description("An enumerated value that describes if WSUS is configured.\nPresent {default}  \nAbsent   \n"), ValueMap{"Present","Absent"}, Values{"Present","Absent"}] String Ensure;
-    [Required, EmbeddedInstance("MSFT_Credential"), Description("Credential to be used to perform the initial configuration.")] String SetupCredential;
+    [Write, EmbeddedInstance("MSFT_Credential"), Description("Credential to be used to perform the initial configuration.")] String SetupCredential;
     [Write, Description("SQL Server for the WSUS database, omit for Windows Internal Database.")] String SQLServer;
     [Write, Description("Folder for WSUS update files.")] String ContentDir;
     [Write, Description("Join the Microsoft Update Improvement Program.")] Boolean UpdateImprovementProgram;

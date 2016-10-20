@@ -1,8 +1,8 @@
 <#
 .Synopsis
-   Unit tests for WSUSApprovalRule
+   Unit tests for WSUSApprovalRuleDsc
 .DESCRIPTION
-   Unit tests for WSUSApprovalRule
+   Unit tests for WSUSApprovalRuleDsc
 
 .NOTES
    Code in HEADER and FOOTER regions are standard and may be moved into DSCResource.Tools in
