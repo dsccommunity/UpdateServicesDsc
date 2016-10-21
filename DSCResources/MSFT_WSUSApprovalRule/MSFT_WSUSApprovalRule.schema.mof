@@ -1,0 +1,12 @@
+[ClassVersion("1.0.0.0"), FriendlyName("WSUSApprovalRule")]
+class MSFT_WSUSApprovalRule : OMI_BaseResource
+{
+    [Write, Description("An enumerated value that describes if WSUS is configured.\nPresent {default}  \nAbsent   \n"), ValueMap{"Present","Absent"}, Values{"Present","Absent"}] String Ensure;
+    [Key, Description("Name of the approval rule.")] String Name;
+    [Write, Description("Classifications in the approval rule.")] String Classifications[];
+    [Write, Description("Products in the approval rule.")] String Products[];
+    [Write, Description("Computer groups the approval rule applies to.")] String ComputerGroups[];
+    [Write, Description("Whether the approval rule is enabled.")] Boolean Enabled;
+    [Write, Description("Synchronize after creating or updating the approval rule.")] Boolean Synchronize;
+    [Write, Description("Run the approval rule after it has been created.")] Boolean RunRuleNow;
+};

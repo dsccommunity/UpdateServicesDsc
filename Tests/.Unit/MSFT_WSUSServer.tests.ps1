@@ -1,8 +1,8 @@
 <#
 .Synopsis
-   Unit tests for xWSUSServer
+   Unit tests for WSUSServer
 .DESCRIPTION
-   Unit tests for xWSUSServer
+   Unit tests for WSUSServer
 
 .NOTES
    Code in HEADER and FOOTER regions are standard and may be moved into DSCResource.Tools in
@@ -11,8 +11,8 @@
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingConvertToSecureStringWithPlainText', '',Scope='Function',Target='DSCGetValues')]
 param()
 
-$Global:DSCModuleName      = 'xWSUS' # Example xNetworking
-$Global:DSCResourceName    = 'MSFT_xWSUSServer' # Example MSFT_xFirewall
+$Global:DSCModuleName      = 'WSUSDsc' # Example xNetworking
+$Global:DSCResourceName    = 'MSFT_WSUSServer' # Example MSFT_xFirewall
 
 #region HEADER
 [String] $moduleRoot = Split-Path -Parent (Split-Path -Parent (Split-Path -Parent $Script:MyInvocation.MyCommand.Path))
@@ -47,7 +47,6 @@ try
         Import-Module $PSScriptRoot\..\..\Tests\Helpers\ImitateWSUSModule.psm1 -force
 
         $DSCGetValues = @{
-            SetupCredential = new-object -typename System.Management.Automation.PSCredential -argumentlist 'foo', $('bar' | ConvertTo-SecureString -AsPlainText -Force)
             SQLServer = 'SQLServer'
             ContentDir = 'C:\WSUSContent\'
             UpdateImprovementProgram = $true
@@ -96,7 +95,7 @@ try
             Context 'server should be configured.' {
 
                 it 'calling Get should not throw' {
-                    {$Script:resource = Get-TargetResource -SetupCredential $DSCGetValues.SetupCredential -Ensure 'Present' -verbose} | should not throw
+                    {$Script:resource = Get-TargetResource -Ensure 'Present' -verbose} | should not throw
                 }
                 
                 it 'sets the value for Ensure' {
@@ -118,7 +117,7 @@ try
 
                 it 'calling Get should not throw' {
                     Mock -CommandName Get-WSUSServer -MockWith {}
-                    {$Script:resource = Get-TargetResource -SetupCredential $DSCGetValues.SetupCredential -Ensure 'Absent' -verbose} | should not throw
+                    {$Script:resource = Get-TargetResource -Ensure 'Absent' -verbose} | should not throw
                 }
                 
                 it 'sets the value for Ensure' {

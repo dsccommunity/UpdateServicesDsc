@@ -1,16 +1,16 @@
 <#
 .Synopsis
-   Unit tests for xWSUSCleanup
+   Unit tests for WSUSCleanup
 .DESCRIPTION
-   Unit tests for xWSUSCleanup
+   Unit tests for WSUSCleanup
 
 .NOTES
    Code in HEADER and FOOTER regions are standard and may be moved into DSCResource.Tools in
    Future and therefore should not be altered if possible.
 #>
 
-$Global:DSCModuleName      = 'xWSUS' # Example xNetworking
-$Global:DSCResourceName    = 'MSFT_xWSUSCleanup' # Example MSFT_xFirewall
+$Global:DSCModuleName      = 'WSUSDsc' # Example xNetworking
+$Global:DSCResourceName    = 'MSFT_WSUSCleanup' # Example MSFT_xFirewall
 
 #region HEADER
 [String] $moduleRoot = Split-Path -Parent (Split-Path -Parent (Split-Path -Parent $Script:MyInvocation.MyCommand.Path))

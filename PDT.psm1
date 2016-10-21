@@ -1,4 +1,4 @@
-Import-LocalizedData LocalizedData -filename xPDT.strings.psd1
+Import-LocalizedData LocalizedData -filename PDT.strings.psd1
 
 function ThrowInvalidArgumentError
 {
@@ -570,8 +570,8 @@ function StartWin32Process
                 }
                 $TaskGuid = [guid]::NewGuid().ToString()
                 $Action = New-ScheduledTaskAction @ActionArguments
-                $null = Register-ScheduledTask -TaskName "xPDT $TaskGuid" -Action $Action -User $Credential.UserName -Password $Credential.GetNetworkCredential().Password -RunLevel Highest
-                $err = Start-ScheduledTask -TaskName "xPDT $TaskGuid"
+                $null = Register-ScheduledTask -TaskName "PDT $TaskGuid" -Action $Action -User $Credential.UserName -Password $Credential.GetNetworkCredential().Password -RunLevel Highest
+                $err = Start-ScheduledTask -TaskName "PDT $TaskGuid"
             }
             else
             {
@@ -669,7 +669,7 @@ function WaitForWin32ProcessEnd
     {
         Start-Sleep 1
     }
-    Get-ScheduledTask | Where-Object {($_.TaskName.StartsWith("xPDT")) -and ($_.Actions.Execute -eq $Path) -and ($_.Actions.Arguments -eq $Arguments)} | Where-Object {$_ -ne $null} | Unregister-ScheduledTask -Confirm:$false
+    Get-ScheduledTask | Where-Object {($_.TaskName.StartsWith("PDT")) -and ($_.Actions.Execute -eq $Path) -and ($_.Actions.Arguments -eq $Arguments)} | Where-Object {$_ -ne $null} | Unregister-ScheduledTask -Confirm:$false
 }
 
 function NetUse
@@ -704,7 +704,7 @@ function NetUse
     }
 }
 
-function GetxPDTVariable
+function GetPDTVariable
 {
     param
     (
@@ -728,8 +728,8 @@ function GetxPDTVariable
         $Update = "Latest"
     )
 
-    $xPDT = [XML](Get-Content "$PSScriptRoot\xPDT.xml")
-    $xPDT.SelectSingleNode("/xPDT/Component[@Name='$Component' and @Version='$Version']/Role[@Name='$Role']/Update[@Name='$Update']/Variable[@Name='$Name']").Value
+    $PDT = [XML](Get-Content "$PSScriptRoot\PDT.xml")
+    $PDT.SelectSingleNode("/PDT/Component[@Name='$Component' and @Version='$Version']/Role[@Name='$Role']/Update[@Name='$Update']/Variable[@Name='$Name']").Value
 }
 
-Export-ModuleMember ResolvePath,StartWin32Process,WaitForWin32ProcessEnd,NetUse,GetxPDTVariable
+Export-ModuleMember ResolvePath,StartWin32Process,WaitForWin32ProcessEnd,NetUse,GetPDTVariable
