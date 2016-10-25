@@ -19,7 +19,7 @@ $currentPath = Split-Path -Parent $MyInvocation.MyCommand.Path
 Write-Debug -Message "CurrentPath: $currentPath"
 
 # Load Common Code
-Import-Module $currentPath\..\..\WSUSHelper.psm1 -Verbose:$false -ErrorAction Stop
+Import-Module $currentPath\..\..\UpdateServicesHelper.psm1 -Verbose:$false -ErrorAction Stop
 
 function Get-TargetResource
 {
