@@ -112,7 +112,7 @@ For more information see the [Code of Conduct FAQ](https://opensource.microsoft.
 
 ## Versions
 
-### 1.0.46.0
+### 1.0.47.0
 
 - High quality DSC module with the following updates:
   - Rename to WSUSDsc

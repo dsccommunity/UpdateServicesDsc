@@ -21,7 +21,7 @@ Description = 'Module with DSC Resources for deployment and configuration of Win
 PowerShellVersion = '5.0'
 
 # Minimum version of the common language runtime (CLR) required by this module
-CLRVersion = '5.0'
+CLRVersion = '4.0'
 
 # Functions to export from this module
 FunctionsToExport = '*'
