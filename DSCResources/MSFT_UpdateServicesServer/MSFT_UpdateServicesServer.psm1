@@ -676,7 +676,8 @@ function Test-TargetResource
             }
         }
         # Test Languages
-        if((Compare-Object -ReferenceObject ([string[]]$Wsus.Languages | Sort-Object -Unique) -DifferenceObject ($Languages | Sort-Object -Unique) -SyncWindow 0) -ne $null)
+        [string[]]$WSUSLanguages = $Wsus.Languages
+        if((Compare-Object -ReferenceObject ($WSUSLanguages | Sort-Object -Unique) -DifferenceObject ($Languages | Sort-Object -Unique) -SyncWindow 0) -ne $null)
         {
             Write-Verbose "Languages test failed; `'$($Wsus.Languages)`' did not match `'$Languages`'; $($Wsus.Languages.gettype()) did not match $($Languages.gettype())"
             $result = $false
