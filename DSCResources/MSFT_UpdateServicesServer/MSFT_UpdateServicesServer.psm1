@@ -676,9 +676,9 @@ function Test-TargetResource
             }
         }
         # Test Languages
-        if((Compare-Object -ReferenceObject (($Wsus.Languages | Out-String).Replace(' ','') | Sort-Object -Unique) -DifferenceObject ($Languages | Sort-Object -Unique) -SyncWindow 0) -ne $null)
+        if((Compare-Object -ReferenceObject ($Wsus.Languages | Sort-Object -Unique) -DifferenceObject ($Languages | Sort-Object -Unique) -SyncWindow 0) -ne $null)
         {
-            Write-Verbose "Languages test failed; `'$($Wsus.Languages) `' did not match `'$Languages`')"
+            Write-Verbose "Languages test failed; `'$($Wsus.Languages)`' did not match `'$Languages`'); $($Wsus.Languages.gettype()) did not match $($Languages.gettype())"
             $result = $false
         }
         # Test Products
