@@ -1,8 +1,8 @@
 <#
 .Synopsis
-   Unit tests for WSUSServer
+   Unit tests for UpdateServicesServer
 .DESCRIPTION
-   Unit tests for WSUSServer
+   Unit tests for UpdateServicesServer
 
 .NOTES
    Code in HEADER and FOOTER regions are standard and may be moved into DSCResource.Tools in
@@ -11,8 +11,8 @@
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingConvertToSecureStringWithPlainText', '',Scope='Function',Target='DSCGetValues')]
 param()
 
-$Global:DSCModuleName      = 'WSUSDsc' # Example xNetworking
-$Global:DSCResourceName    = 'MSFT_WSUSServer' # Example MSFT_xFirewall
+$Global:DSCModuleName      = 'UpdateServicesDsc' # Example xNetworking
+$Global:DSCResourceName    = 'MSFT_UpdateServicesServer' # Example MSFT_xFirewall
 
 #region HEADER
 [String] $moduleRoot = Split-Path -Parent (Split-Path -Parent (Split-Path -Parent $Script:MyInvocation.MyCommand.Path))
@@ -44,7 +44,7 @@ try
     InModuleScope $Global:DSCResourceName {
 
         #region Pester Test Initialization
-        Import-Module $PSScriptRoot\..\..\Tests\Helpers\ImitateWSUSModule.psm1 -force
+        Import-Module $PSScriptRoot\..\..\Tests\Helpers\ImitateUpdateServicesModule.psm1 -force
 
         $DSCGetValues = @{
             SQLServer = 'SQLServer'

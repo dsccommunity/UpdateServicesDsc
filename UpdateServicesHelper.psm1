@@ -2,8 +2,8 @@
 $VerbosePreference = 'Continue' 
 
 # Load Localization Data 
-Import-LocalizedData LocalizedData -filename WSUS.strings.psd1 -ErrorAction SilentlyContinue
-Import-LocalizedData USLocalizedData -filename WSUS.strings.psd1 -UICulture en-US -ErrorAction SilentlyContinue
+Import-LocalizedData LocalizedData -filename UpdateServices.strings.psd1 -ErrorAction SilentlyContinue
+Import-LocalizedData USLocalizedData -filename UpdateServices.strings.psd1 -UICulture en-US -ErrorAction SilentlyContinue
 
 function New-TerminatingError 
 {
