@@ -676,6 +676,7 @@ function Test-TargetResource
             }
         }
         # Test Languages
+        Write-Verbose 'Beginning test for languages'
         if($Languages.count -le 1)
         {
             if($Wsus.Languages -ne $Languages[0])
