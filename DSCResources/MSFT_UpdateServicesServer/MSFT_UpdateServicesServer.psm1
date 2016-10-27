@@ -680,14 +680,14 @@ function Test-TargetResource
         {
             if($Wsus.Languages -ne $Languages[0])
             {
-                Write-Verbose "Languages test failed"
+                Write-Verbose "Languages test failed; debug: retrieved value was $($Wsus.Languages) of $($Wsus.Languages).gettype(), input value was $($Languages[0]) of $($Languages[0]).gettype()"
                 $result = $false
             }
         }
         else {
             if((Compare-Object -ReferenceObject ($Wsus.Languages | Sort-Object -Unique) -DifferenceObject ($Languages | Sort-Object -Unique) -SyncWindow 0) -ne $null)
             {
-                Write-Verbose "Languages test failed"
+                Write-Verbose "Languages test failed; debug: script attempted to compare objects, count was $($Languages.count)"
                 $result = $false
             }   
         }
