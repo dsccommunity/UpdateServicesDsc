@@ -676,11 +676,20 @@ function Test-TargetResource
             }
         }
         # Test Languages
-        if((Compare-Object -ReferenceObject ($Wsus.Languages | Sort-Object -Unique) -DifferenceObject ($Languages | Sort-Object -Unique) -SyncWindow 0) -ne $null)
+        if($Languages.count -le 1)
         {
-            $test = Compare-Object -ReferenceObject ($Wsus.Languages | Sort-Object -Unique) -DifferenceObject ($Languages | Sort-Object -Unique) -SyncWindow 0
-            Write-Verbose "Languages test failed; Value: $test"
-            $result = $false
+            if($Wsus.Languages -ne $Languages[0])
+            {
+                Write-Verbose "Languages test failed"
+                $result = $false
+            }
+        }
+        else {
+            if((Compare-Object -ReferenceObject ($Wsus.Languages | Sort-Object -Unique) -DifferenceObject ($Languages | Sort-Object -Unique) -SyncWindow 0) -ne $null)
+            {
+                Write-Verbose "Languages test failed"
+                $result = $false
+            }   
         }
         # Test Products
         if((Compare-Object -ReferenceObject ($Wsus.Products | Sort-Object -Unique) -DifferenceObject ($Products | Sort-Object -Unique) -SyncWindow 0) -ne $null)
