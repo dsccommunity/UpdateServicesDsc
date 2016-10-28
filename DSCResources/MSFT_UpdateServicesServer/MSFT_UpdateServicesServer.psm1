@@ -676,12 +676,11 @@ function Test-TargetResource
             }
         }
         # Test Languages
-        Write-Verbose 'Beginning test for languages'
-        if($Languages.count -le 1 -and $Wsus.Languages.count -le 1)
+        if($Wsus.Languages.count -le 1 -and $Languages.count -le 1 -and $Languages -ne '*')
         {
             if($Wsus.Languages -notmatch $Languages)
             {
-                Write-Verbose "Languages test failed; debug: retrieved value was $($Wsus.Languages.SubString(0,2)) of $($Wsus.Languages.SubString(0,2).gettype()) with count $($Wsus.Languages.SubString(0,2).count), input value was $($Languages[0]) of $($Languages[0].gettype()) with count  $($Languages.count)"
+                Write-Verbose "Languages test failed (evaluated as single string)"
                 $result = $false
             }
         }
