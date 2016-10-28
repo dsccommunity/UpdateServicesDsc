@@ -1,4 +1,4 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/qi42dq80t7pmfr5l?svg=true)](https://ci.appveyor.com/project/mgreenegit/UpdateServicesDsc)
+[![Build status](https://ci.appveyor.com/api/projects/status/wncsr23e1fqbv4nt?svg=true)](https://ci.appveyor.com/project/mgreenegit/UpdateServicesDsc)
 
 
 # UpdateServicesDsc
