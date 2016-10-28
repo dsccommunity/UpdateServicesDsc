@@ -1,5 +1,5 @@
-[ClassVersion("1.0.0.0"), FriendlyName("WSUSCleanup")]
-class MSFT_WSUSCleanup : OMI_BaseResource
+[ClassVersion("1.0.0.0"), FriendlyName("UpdateServicesCleanup")]
+class MSFT_UpdateServicesCleanup : OMI_BaseResource
 {
     [Key, Description("An enumerated value that describes if the WSUS cleanup task exists.\nPresent {default}  \nAbsent   \n"), ValueMap{"Present","Absent"}, Values{"Present","Absent"}] String Ensure;
     [Write, Description("Decline updates that have not been approved fo 30 days or more, are not currently needed by any clients, and are superseded by an approved update.")] Boolean DeclineSupersededUpdates;

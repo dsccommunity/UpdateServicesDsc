@@ -1,11 +1,11 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/qi42dq80t7pmfr5l?svg=true)](https://ci.appveyor.com/project/mgreenegit/WSUSDsc)
+[![Build status](https://ci.appveyor.com/api/projects/status/wncsr23e1fqbv4nt?svg=true)](https://ci.appveyor.com/project/mgreenegit/UpdateServicesDsc)
 
 
-# WSUSDsc
+# UpdateServicesDsc
 
-The **WSUSDsc** module is a part of the Windows PowerShell Desired State Configuration (DSC) Resource Kit, which is a collection of DSC Resources.
+The **UpdateServicesDsc** module is a part of the Windows PowerShell Desired State Configuration (DSC) Resource Kit, which is a collection of DSC Resources.
 
-This module contains the **WSUSApprovalRule, WSUSCleanup, and WSUSServer** resources.
+This module contains the **UpdateServicesApprovalRule, UpdateServicesCleanup, and UpdateServicesServer** resources.
 
 **All of the resources in the DSC Resource Kit are provided AS IS, and are not supported through any Microsoft standard support program or service. The "x" in xStorage stands for experimental**, which means that these resources will be **fix forward** and monitored by the module owner(s).
 
@@ -22,16 +22,16 @@ For more information on the DSC Resource Kit, checkout [this blog post](http://g
 Installation
 ------------
 
-To install **WSUSDsc** module, on a machine with Windows Management Framework version 5 or newer from an elevated PowerShell session run:
+To install **UpdateServicesDsc** module, on a machine with Windows Management Framework version 5 or newer from an elevated PowerShell session run:
 
 ```PowerShell
-Install-Module WSUSDsc
+Install-Module UpdateServicesDsc
 ```
 
 To confirm installation
 
 ```PowerShell
-Get-DSCResource WSUSDsc
+Get-DSCResource UpdateServicesDsc
 ```
 
 Requirements
@@ -42,7 +42,7 @@ This module requires a minimum version of PowerShell v5.0.
 Details
 -------
 
-**WSUSApprovalRule** resource has following properties
+**UpdateServicesApprovalRule** resource has following properties
 
 - **Ensure**: An enumerated value that describes if the ApprovalRule is available
 - **Name**: Name of the approval rule.
@@ -52,7 +52,7 @@ Details
 - **Enabled**: Whether the approval rule is enabled.
 - **Synchronize**: Synchronize after creating or updating the approval rule.
 
-**WSUSCleanup** resource has following properties:
+**UpdateServicesCleanup** resource has following properties:
 
 - **Ensure**: An enumerated value that describes if the WSUS cleanup task exists.
 - **DeclineSupersededUpdates**: Decline updates that have not been approved fo 30 days or more, are not currently needed by any clients, and are superseded by an approved update.
@@ -64,7 +64,7 @@ Details
 - **CleanupLocalPublishedContentFiles**: Cleanup local published content files.
 - **TimeOfDay** Time of day to start cleanup.
 
-**WSUSServer** resource has following properties:
+**UpdateServicesServer** resource has following properties:
 
 - **Ensure**: An enumerated value that describes if WSUS is configured.
 - **SetupCredential**: Credential to be used to perform the initial configuration.

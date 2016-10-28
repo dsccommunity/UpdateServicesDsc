@@ -19,7 +19,7 @@ $currentPath = Split-Path -Parent $MyInvocation.MyCommand.Path
 Write-Debug -Message "CurrentPath: $currentPath"
 
 # Load Common Code
-Import-Module $currentPath\..\..\WSUSHelper.psm1 -Verbose:$false -ErrorAction Stop
+Import-Module $currentPath\..\..\UpdateServicesHelper.psm1 -Verbose:$false -ErrorAction Stop
 
 function Get-TargetResource
 {
@@ -676,10 +676,20 @@ function Test-TargetResource
             }
         }
         # Test Languages
-        if((Compare-Object -ReferenceObject ($Wsus.Languages | Sort-Object -Unique) -DifferenceObject ($Languages | Sort-Object -Unique) -SyncWindow 0) -ne $null)
+        if($Wsus.Languages.count -le 1 -and $Languages.count -le 1 -and $Languages -ne '*')
         {
-            Write-Verbose "Languages test failed"
-            $result = $false
+            if($Wsus.Languages -notmatch $Languages)
+            {
+                Write-Verbose "Languages test failed (evaluated as single string)"
+                $result = $false
+            }
+        }
+        else {
+            if((Compare-Object -ReferenceObject ($Wsus.Languages | Sort-Object -Unique) -DifferenceObject ($Languages | Sort-Object -Unique) -SyncWindow 0) -ne $null)
+            {
+                Write-Verbose "Languages test failed"
+                $result = $false
+            }   
         }
         # Test Products
         if((Compare-Object -ReferenceObject ($Wsus.Products | Sort-Object -Unique) -DifferenceObject ($Products | Sort-Object -Unique) -SyncWindow 0) -ne $null)

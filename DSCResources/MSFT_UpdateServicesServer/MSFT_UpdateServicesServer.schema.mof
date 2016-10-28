@@ -1,5 +1,5 @@
-[ClassVersion("1.0.0.0"), FriendlyName("WSUSServer")]
-class MSFT_WSUSServer : OMI_BaseResource
+[ClassVersion("1.0.0.0"), FriendlyName("UpdateServicesServer")]
+class MSFT_UpdateServicesServer : OMI_BaseResource
 {
     [Key, Description("An enumerated value that describes if WSUS is configured.\nPresent {default}  \nAbsent   \n"), ValueMap{"Present","Absent"}, Values{"Present","Absent"}] String Ensure;
     [Write, EmbeddedInstance("MSFT_Credential"), Description("Credential to be used to perform the initial configuration.")] String SetupCredential;
