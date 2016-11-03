@@ -417,13 +417,13 @@ function Set-TargetResource
                 if ($SetupCredential)
                 {
                     $Process = Start-Win32Process -Path $Path -Arguments $Arguments -Credential $SetupCredential
-                    Write-Verbose $Process
+                    Write-Verbose [string]$Process
                     Wait-Win32ProcessEnd -Path $Path -Arguments $Arguments
                 }
                 else 
                 {
                     $Process = Start-Win32Process -Path $Path -Arguments $Arguments
-                    Write-Verbose $Process
+                    Write-Verbose [string]$Process
                     Wait-Win32ProcessEnd -Path $Path -Arguments $Arguments        
                 }
 
