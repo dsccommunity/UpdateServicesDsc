@@ -18,6 +18,38 @@ else
 
 <#
     .SYNOPSIS
+    Throws an error exception
+
+    .PARAMETER ErrorId
+    A specific identifier for the error record
+
+    .PARAMETER ErrorMessage
+    The message to include when writing the error
+#>
+function New-InvalidArgumentError
+{
+    [CmdletBinding()]
+    param
+    (
+        [parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [String]
+        $errorId,
+
+        [parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [String]
+        $errorMessage
+    )
+
+    $errorCategory=[System.Management.Automation.ErrorCategory]::InvalidArgument
+    $exception = New-Object System.ArgumentException $errorMessage;
+    $errorRecord = New-Object System.Management.Automation.ErrorRecord $exception, $errorId, $errorCategory, $null
+    throw $errorRecord
+}
+
+<#
+    .SYNOPSIS
     Resolves a path and verifies it exists.
 
     .PARAMETER Path
@@ -39,7 +71,7 @@ function Invoke-ResolvePath
     {
         if(!(Test-Path $Path -PathType Leaf))
         {
-            ThrowInvalidArgumentError "CannotFindRootedPath" ($LocalizedData.InvalidArgumentAndMessage -f ($LocalizedData.InvalidArgument -f "Path",$Path), $LocalizedData.FileNotFound)
+            New-InvalidArgumentError "CannotFindRootedPath" ($LocalizedData.InvalidArgumentAndMessage -f ($LocalizedData.InvalidArgument -f "Path",$Path), $LocalizedData.FileNotFound)
         }
         return $Path
     }
@@ -48,17 +80,17 @@ function Invoke-ResolvePath
         $Path = (Get-Item -Path $Path -ErrorAction SilentlyContinue).FullName
         if(!(Test-Path $Path -PathType Leaf))
         {
-            ThrowInvalidArgumentError "CannotFindRootedPath" ($LocalizedData.InvalidArgumentAndMessage -f ($LocalizedData.InvalidArgument -f "Path",$Path), $LocalizedData.FileNotFound)
+            New-InvalidArgumentError "CannotFindRootedPath" ($LocalizedData.InvalidArgumentAndMessage -f ($LocalizedData.InvalidArgument -f "Path",$Path), $LocalizedData.FileNotFound)
         }
         return $Path
     }
     if([string]::IsNullOrEmpty($env:Path))
     {
-        ThrowInvalidArgumentError "EmptyEnvironmentPath" ($LocalizedData.InvalidArgumentAndMessage -f ($LocalizedData.InvalidArgument -f "Path",$Path), $LocalizedData.FileNotFound)
+        New-InvalidArgumentError "EmptyEnvironmentPath" ($LocalizedData.InvalidArgumentAndMessage -f ($LocalizedData.InvalidArgument -f "Path",$Path), $LocalizedData.FileNotFound)
     }
     if((Split-Path $Path -Leaf) -ne $Path)
     {
-        ThrowInvalidArgumentError "NotAbsolutePathOrFileName" ($LocalizedData.InvalidArgumentAndMessage -f ($LocalizedData.InvalidArgument -f "Path",$Path), $LocalizedData.AbsolutePathOrFileName)
+        New-InvalidArgumentError "NotAbsolutePathOrFileName" ($LocalizedData.InvalidArgumentAndMessage -f ($LocalizedData.InvalidArgument -f "Path",$Path), $LocalizedData.AbsolutePathOrFileName)
     }
     foreach($rawSegment in $env:Path.Split(";"))
     {
@@ -79,7 +111,7 @@ function Invoke-ResolvePath
             return $candidate
         }
     }
-    ThrowInvalidArgumentError "CannotFindRelativePath" ($LocalizedData.InvalidArgumentAndMessage -f ($LocalizedData.InvalidArgument -f "Path",$Path), $LocalizedData.FileNotFound)
+    New-InvalidArgumentError "CannotFindRelativePath" ($LocalizedData.InvalidArgumentAndMessage -f ($LocalizedData.InvalidArgument -f "Path",$Path), $LocalizedData.FileNotFound)
 }
 
 <#
@@ -105,7 +137,7 @@ function Get-RootedPath
     }
     catch
     {
-        ThrowInvalidArgumentError "CannotGetIsPathRooted" ($LocalizedData.InvalidArgumentAndMessage -f ($LocalizedData.InvalidArgument -f "Path",$Path), $_.Exception.Message)
+        New-InvalidArgumentError "CannotGetIsPathRooted" ($LocalizedData.InvalidArgumentAndMessage -f ($LocalizedData.InvalidArgument -f "Path",$Path), $_.Exception.Message)
     }
 }
 
