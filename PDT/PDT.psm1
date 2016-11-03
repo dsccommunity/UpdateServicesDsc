@@ -771,4 +771,4 @@ function Wait-Win32ProcessEnd
     }
 } # end function Wait-Win32ProcessEnd
 
-Export-ModuleMember Start-Win32Process,Wait-Win32ProcessStart,Wait-Win32ProcessStop,Wait-Win32ProcessEnd
+Export-ModuleMember Invoke-ResolvePath,Start-Win32Process,Wait-Win32ProcessStart,Wait-Win32ProcessStop,Wait-Win32ProcessEnd
