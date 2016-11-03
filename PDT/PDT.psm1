@@ -725,7 +725,7 @@ function Wait-Win32ProcessStart
 
         [PSCredential] $Credential,
 
-        [Int] $Timeout = 5000
+        [Int] $Timeout = 60000
     )
 
     $start = [DateTime]::Now
@@ -769,7 +769,7 @@ function Wait-Win32ProcessStop
 
         [PSCredential] $Credential,
 
-        [Int] $Timeout = 30000
+        [Int] $Timeout = 60000
     )
 
     $start = [DateTime]::Now
