@@ -7,7 +7,7 @@ install:
   - ps: |
         Push-Location
         cd DscResource.Tests
-        Import-Module .\TestHelper.psm1 -force
+        Import-Module .\DscResource.Tests\TestHelper.psm1 -force
         Pop-Location
         Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.205 -Force
         Install-Module -Name Pester -Repository PSGallery -Force

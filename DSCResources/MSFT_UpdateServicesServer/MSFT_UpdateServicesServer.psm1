@@ -250,7 +250,7 @@ function Set-TargetResource
     {
         Write-Verbose "Running WSUS postinstall"
 
-        Import-Module $PSScriptRoot\..\..\PDT.psm1
+        Import-Module $PSScriptRoot\..\..\PDT\PDT.psm1
 
         $Path = "$($env:ProgramFiles)\Update Services\Tools\WsusUtil.exe"
         $Path = ResolvePath $Path
