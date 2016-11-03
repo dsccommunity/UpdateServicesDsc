@@ -16,10 +16,71 @@ else
 }
 #endregion
 
-# Import the common certificate functions
-Import-Module -Name ( Join-Path `
-    -Path (Split-Path -Path $PSScriptRoot -Parent) `
-    -ChildPath 'CertificateCommon\CertificateCommon.psm1' )
+<#
+    .SYNOPSIS
+    Resolves a path and verifies it exists.
+
+    .PARAMETER Path
+    Path to resolve
+#>
+function Invoke-ResolvePath
+{
+    [CmdletBinding()]
+    param
+    (
+        [parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [System.String]
+        $Path
+    )
+
+    $Path = [Environment]::ExpandEnvironmentVariables($Path)
+    if(IsRootedPath $Path)
+    {
+        if(!(Test-Path $Path -PathType Leaf))
+        {
+            ThrowInvalidArgumentError "CannotFindRootedPath" ($LocalizedData.InvalidArgumentAndMessage -f ($LocalizedData.InvalidArgument -f "Path",$Path), $LocalizedData.FileNotFound)
+        }
+        return $Path
+    }
+    else
+    {
+        $Path = (Get-Item -Path $Path -ErrorAction SilentlyContinue).FullName
+        if(!(Test-Path $Path -PathType Leaf))
+        {
+            ThrowInvalidArgumentError "CannotFindRootedPath" ($LocalizedData.InvalidArgumentAndMessage -f ($LocalizedData.InvalidArgument -f "Path",$Path), $LocalizedData.FileNotFound)
+        }
+        return $Path
+    }
+    if([string]::IsNullOrEmpty($env:Path))
+    {
+        ThrowInvalidArgumentError "EmptyEnvironmentPath" ($LocalizedData.InvalidArgumentAndMessage -f ($LocalizedData.InvalidArgument -f "Path",$Path), $LocalizedData.FileNotFound)
+    }
+    if((Split-Path $Path -Leaf) -ne $Path)
+    {
+        ThrowInvalidArgumentError "NotAbsolutePathOrFileName" ($LocalizedData.InvalidArgumentAndMessage -f ($LocalizedData.InvalidArgument -f "Path",$Path), $LocalizedData.AbsolutePathOrFileName)
+    }
+    foreach($rawSegment in $env:Path.Split(";"))
+    {
+        $segment = [Environment]::ExpandEnvironmentVariables($rawSegment)
+        $segmentRooted = $false
+        try
+        {
+            $segmentRooted=[IO.Path]::IsPathRooted($segment)
+        }
+        catch {}
+        if(!$segmentRooted)
+        {
+            continue
+        }
+        $candidate = join-path $segment $Path
+        if(Test-Path $candidate -PathType Leaf)
+        {
+            return $candidate
+        }
+    }
+    ThrowInvalidArgumentError "CannotFindRelativePath" ($LocalizedData.InvalidArgumentAndMessage -f ($LocalizedData.InvalidArgument -f "Path",$Path), $LocalizedData.FileNotFound)
+}
 
 <#
     .SYNOPSIS

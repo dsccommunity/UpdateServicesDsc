@@ -253,7 +253,7 @@ function Set-TargetResource
         Import-Module $PSScriptRoot\..\..\PDT\PDT.psm1
 
         $Path = "$($env:ProgramFiles)\Update Services\Tools\WsusUtil.exe"
-        $Path = ResolvePath $Path
+        $Path = Invoke-ResolvePath $Path
         Write-Verbose "Path: $Path"
 
         $Arguments = "postinstall "
@@ -267,13 +267,13 @@ function Set-TargetResource
 
         if ($SetupCredential)
         {
-            $Process = StartWin32Process -Path $Path -Arguments $Arguments -Credential $SetupCredential
+            $Process = Start-Win32Process -Path $Path -Arguments $Arguments -Credential $SetupCredential
             Write-Verbose $Process
             WaitForWin32ProcessEnd -Path $Path -Arguments $Arguments
         }
         else 
         {
-            $Process = StartWin32Process -Path $Path -Arguments $Arguments
+            $Process = Start-Win32Process -Path $Path -Arguments $Arguments
             Write-Verbose $Process
             WaitForWin32ProcessEnd -Path $Path -Arguments $Arguments        
         }
@@ -416,13 +416,13 @@ function Set-TargetResource
 
                 if ($SetupCredential)
                 {
-                    $Process = StartWin32Process -Path $Path -Arguments $Arguments -Credential $SetupCredential
+                    $Process = Start-Win32Process -Path $Path -Arguments $Arguments -Credential $SetupCredential
                     Write-Verbose $Process
                     WaitForWin32ProcessEnd -Path $Path -Arguments $Arguments
                 }
                 else 
                 {
-                    $Process = StartWin32Process -Path $Path -Arguments $Arguments
+                    $Process = Start-Win32Process -Path $Path -Arguments $Arguments
                     Write-Verbose $Process
                     WaitForWin32ProcessEnd -Path $Path -Arguments $Arguments        
                 }
