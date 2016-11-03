@@ -35,7 +35,7 @@ function Invoke-ResolvePath
     )
 
     $Path = [Environment]::ExpandEnvironmentVariables($Path)
-    if(IsRootedPath $Path)
+    if(Get-RootedPath $Path)
     {
         if(!(Test-Path $Path -PathType Leaf))
         {
@@ -80,6 +80,33 @@ function Invoke-ResolvePath
         }
     }
     ThrowInvalidArgumentError "CannotFindRelativePath" ($LocalizedData.InvalidArgumentAndMessage -f ($LocalizedData.InvalidArgument -f "Path",$Path), $LocalizedData.FileNotFound)
+}
+
+<#
+    .SYNOPSIS
+    Gets a value indicating whether the specified path string contains a root.
+
+    .PARAMETER Path
+    Path to verify
+#>
+function Get-RootedPath
+{
+    param
+    (
+        [parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [String]
+        $Path
+    )
+
+    try
+    {
+        return [IO.Path]::IsPathRooted($Path)
+    }
+    catch
+    {
+        ThrowInvalidArgumentError "CannotGetIsPathRooted" ($LocalizedData.InvalidArgumentAndMessage -f ($LocalizedData.InvalidArgument -f "Path",$Path), $_.Exception.Message)
+    }
 }
 
 <#
