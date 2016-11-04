@@ -836,6 +836,10 @@ function Test-TargetResource
     $result
 }
 
+<#
+    .SYNOPSIS
+    Saves the WSUS configuration
+#>
 function SaveWsusConfiguration
 {
     do
@@ -848,7 +852,7 @@ function SaveWsusConfiguration
         catch
         {
             $WsusConfigurationReady = $false
-            Start-Sleep 1
+            Start-Sleep -Seconds 1
         }
     }
     until($WsusConfigurationReady)    
