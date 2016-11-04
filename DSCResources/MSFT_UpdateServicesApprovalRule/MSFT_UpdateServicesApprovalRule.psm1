@@ -102,7 +102,7 @@ function Get-TargetResource
     .PARAMETER Classifications
     Classification for the rule or All Classifications
     .PARAMETER Products
-    THe name of the product for the rule or All Products
+    The name of the product for the rule or All Products
     .PARAMETER ComputerGroups
     The name of the computer group to apply the rule to or All Computers
     .PARAMETER Enabled
@@ -190,7 +190,7 @@ function Set-TargetResource
                         $ProductCollection = New-Object -TypeName Microsoft.UpdateServices.Administration.UpdateCategoryCollection
                         foreach($Product in $Products)
                         {
-                            if($WsusProduct = Get-WsusProduct | Where-Object -FilterScript {$_.Product.Title -eq $Product})
+                            if($WsusProduct = Get-WsusProduct | Where-Object {$_.Product.Title -eq $Product})
                             {
                                 $ProductCollection.Add($WsusServer.GetUpdateCategory($WsusProduct.Product.Id))
                             }
@@ -198,7 +198,7 @@ function Set-TargetResource
                         $ApprovalRule.SetCategories($ProductCollection)
                         $ApprovalRule.Save()
 
-                        $ComputerGroupCollection = New-Object -TypeName icrosoft.UpdateServices.Administration.ComputerTargetGroupCollection
+                        $ComputerGroupCollection = New-Object -TypeName Microsoft.UpdateServices.Administration.ComputerTargetGroupCollection
                         foreach($ComputerGroup in $ComputerGroups)
                         {
                             if($WsusComputerGroup = $WsusServer.GetComputerTargetGroups() | `
