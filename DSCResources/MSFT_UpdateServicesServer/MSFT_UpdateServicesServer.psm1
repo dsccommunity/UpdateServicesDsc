@@ -374,11 +374,11 @@ function Set-TargetResource
             Write-Verbose "Removing default products and classifications before initial sync"
             foreach($Product in ($WsusServer.GetSubscription().GetUpdateCategories().Title))
             {
-                Get-WsusProduct | Where-Object {$_.Product.Title -eq $Product} | Set-WsusProduct -Disable
+                Get-WsusProduct | Where-Object -FilterScript {$_.Product.Title -eq $Product} | Set-WsusProduct -Disable
             }
             foreach($Classification in ($WsusServer.GetSubscription().GetUpdateClassifications().ID.Guid))
             {
-                Get-WsusClassification | Where-Object {$_.Classification.ID -eq $Classification} | Set-WsusClassification -Disable
+                Get-WsusClassification | Where-Object -FilterScript {$_.Classification.ID -eq $Classification} | Set-WsusClassification -Disable
             }
 
             if($Synchronize)
@@ -452,7 +452,7 @@ function Set-TargetResource
             {
                 foreach($Product in $Products)
                 {
-                    if($WsusProduct = $AllWsusProducts | Where-Object {$_.Title -eq $Product})
+                    if($WsusProduct = $AllWsusProducts | Where-Object -FilterScript {$_.Title -eq $Product})
                     {
                         $null = $ProductCollection.Add($WsusServer.GetUpdateCategory($WsusProduct.Id))
                     }
@@ -475,7 +475,7 @@ function Set-TargetResource
             {
                 foreach($Classification in $Classifications)
                 {
-                    if($WsusClassification = $AllWsusClassifications | Where-Object {$_.ID.Guid -eq $Classification})
+                    if($WsusClassification = $AllWsusClassifications | Where-Object -FilterScript {$_.ID.Guid -eq $Classification})
                     {
                         $null = $ClassificationCollection.Add($WsusServer.GetUpdateClassification($WsusClassification.Id))
                     }

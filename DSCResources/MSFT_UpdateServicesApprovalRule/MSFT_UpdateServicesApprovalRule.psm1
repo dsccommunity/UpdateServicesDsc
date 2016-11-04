@@ -40,16 +40,16 @@ function Get-TargetResource
 
     try
     {
-        $WsusServer = Get-WsusServer
-        $Ensure = "Absent"
+        $WsusServer      = Get-WsusServer
+        $Ensure          = "Absent"
         $Classifications = $null
-        $Products = $null
-        $ComputerGroups = $null
-        $Enabled = $null
+        $Products        = $null
+        $ComputerGroups  = $null
+        $Enabled         = $null
 
         if ($null -ne $WsusServer) {
             
-            $ApprovalRule = $WsusServer.GetInstallApprovalRules() | Where-Object -FilterScript {$_.Name -eq $Name}
+            $ApprovalRule = $WsusServer.GetInstallApprovalRules() | Where-Object {$_.Name -eq $Name}
             
             if($null -ne $ApprovalRule)
             {
@@ -80,12 +80,12 @@ function Get-TargetResource
     }
 
     $returnValue = @{
-        Ensure = $Ensure
-        Name = $Name
+        Ensure          = $Ensure
+        Name            = $Name
         Classifications = $Classifications
-        Products = $Products
-        ComputerGroups = $ComputerGroups
-        Enabled = $Enabled
+        Products        = $Products
+        ComputerGroups  = $ComputerGroups
+        Enabled         = $Enabled
     }
 
     $returnValue
