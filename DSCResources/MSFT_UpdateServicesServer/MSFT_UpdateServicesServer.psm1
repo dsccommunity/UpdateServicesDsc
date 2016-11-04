@@ -176,6 +176,52 @@ function Get-TargetResource
     $returnValue
 }
 
+<#
+    .SYNOPSIS
+    Configures a WSUS server instance
+    .PARAMETER Ensure
+    Determines if the task should be created or removed.
+    Accepts 'Present'(default) or 'Absent'.
+    .PARAMETER SetupCredential
+    Credentisal to use when running setup.
+    Applicable when using SQL as data store.
+    .PARAMETER SQLServer
+    Optionally specify a SQL instance to store WSUS data
+    .PARAMETER ContentDir
+    Location to store WSUS content files
+    .PARAMETER UpdateImprovementProgram
+    Provide feedback to Microsoft to help imrpove WSUS
+    .PARAMETER UpstreamServerName
+    Name of another WSUS server to retrieve content from
+    .PARAMETER UpstreamServerPort
+    If getting content from another server, port for traffic
+    .PARAMETER UpstreamServerSSL
+    If getting content from another server, whether to encrypt the traffic
+    .PARAMETER UpstreamServerReplica
+    Boolean to specify whether to retrieve content from anotehr server
+    .PARAMETER ProxyServerName
+    Host name of proxy server
+    .PARAMETER ProxyServerPort
+    Port of proxy server
+    .PARAMETER ProxyServerCredential
+    Credential to use when authenticating to proxy server
+    .PARAMETER ProxyServerBasicAuthentication
+    Use basic auth for proxy
+    .PARAMETER Languages
+    Specify list of languages for content, or "*" for all
+    .PARAMETER Products
+    List of products to include when synchronizing, by default Windows and Office
+    .PARAMETER Classifications
+    List of content classifications to synchronize to the WSUS server
+    .PARAMETER SynchronizeAutomatically
+    Automatically synchronize the WSUS instance
+    .PARAMETER SynchronizeAutomaticallyTimeOfDay
+    Time of day to schedule an automatic synchronization
+    .PARAMETER SynchronizationsPerDay
+    Number of automatic synchronizations per day
+    .PARAMETER Synchronize
+    Run a synchronization immediately when running Set
+#>
 function Set-TargetResource
 {
     [CmdletBinding()]
@@ -386,11 +432,14 @@ function Set-TargetResource
             Write-Verbose -Message "Removing default products and classifications before initial sync"
             foreach($Product in ($WsusServer.GetSubscription().GetUpdateCategories().Title))
             {
-                Get-WsusProduct | Where-Object -FilterScript {$_.Product.Title -eq $Product} | Set-WsusProduct -Disable
+                Get-WsusProduct | Where-Object {$_.Product.Title -eq $Product} | `
+                    Set-WsusProduct -Disable
             }
-            foreach($Classification in ($WsusServer.GetSubscription().GetUpdateClassifications().ID.Guid))
+            foreach($Classification in `
+                ($WsusServer.GetSubscription().GetUpdateClassifications().ID.Guid))
             {
-                Get-WsusClassification | Where-Object -FilterScript {$_.Classification.ID -eq $Classification} | Set-WsusClassification -Disable
+                Get-WsusClassification | Where-Object {$_.Classification.ID -eq $Classification} | `
+                    Set-WsusClassification -Disable
             }
 
             if($Synchronize)
@@ -399,7 +448,7 @@ function Set-TargetResource
                 $WsusServer.GetSubscription().StartSynchronizationForCategoryOnly()
                 while($WsusServer.GetSubscription().GetSynchronizationStatus() -eq 'Running')
                 {
-                    Start-Sleep 1
+                    Start-Sleep -Seconds 1
                 }
 
                 if($WsusServer.GetSubscription().GetSynchronizationHistory()[0].Result -eq 'Succeeded')
@@ -449,7 +498,7 @@ function Set-TargetResource
         {
             $WsusSubscription = $WsusServer.GetSubscription()
 
-            #Products
+            # Products
             Write-Verbose -Message "Setting WSUS products"
             $ProductCollection = New-Object Microsoft.UpdateServices.Administration.UpdateCategoryCollection
             $AllWsusProducts = $WsusServer.GetUpdateCategories()
@@ -464,7 +513,7 @@ function Set-TargetResource
             {
                 foreach($Product in $Products)
                 {
-                    if($WsusProduct = $AllWsusProducts | Where-Object -FilterScript {$_.Title -eq $Product})
+                    if($WsusProduct = $AllWsusProducts | Where-Object {$_.Title -eq $Product})
                     {
                         $null = $ProductCollection.Add($WsusServer.GetUpdateCategory($WsusProduct.Id))
                     }
@@ -472,7 +521,7 @@ function Set-TargetResource
             }
             $WsusSubscription.SetUpdateCategories($ProductCollection)
 
-            #Classifications
+            # Classifications
             Write-Verbose -Message "Setting WSUS classifications"
             $ClassificationCollection = New-Object Microsoft.UpdateServices.Administration.UpdateClassificationCollection
             $AllWsusClassifications = $WsusServer.GetUpdateClassifications()
@@ -487,9 +536,11 @@ function Set-TargetResource
             {
                 foreach($Classification in $Classifications)
                 {
-                    if($WsusClassification = $AllWsusClassifications | Where-Object -FilterScript {$_.ID.Guid -eq $Classification})
+                    if($WsusClassification = $AllWsusClassifications | `
+                        Where-Object {$_.ID.Guid -eq $Classification})
                     {
-                        $null = $ClassificationCollection.Add($WsusServer.GetUpdateClassification($WsusClassification.Id))
+                        $null = $ClassificationCollection.Add($WsusServer.GetUpdateClassification(`
+                            $WsusClassification.Id))
                     }
                     else
                     {
@@ -517,7 +568,7 @@ function Set-TargetResource
                 $WsusServer.GetSubscription().StartSynchronization()
                 while($WsusServer.GetSubscription().GetSynchronizationStatus() -eq 'Running')
                 {
-                    Start-Sleep 1
+                    Start-Sleep -Seconds 1
                 }
                 if($WsusServer.GetSubscription().GetSynchronizationHistory()[0].Result -eq 'Succeeded')
                 {
@@ -537,7 +588,52 @@ function Set-TargetResource
     }
 }
 
-
+<#
+    .SYNOPSIS
+    Configures a WSUS server instance
+    .PARAMETER Ensure
+    Determines if the task should be created or removed.
+    Accepts 'Present'(default) or 'Absent'.
+    .PARAMETER SetupCredential
+    Credentisal to use when running setup.
+    Applicable when using SQL as data store.
+    .PARAMETER SQLServer
+    Optionally specify a SQL instance to store WSUS data
+    .PARAMETER ContentDir
+    Location to store WSUS content files
+    .PARAMETER UpdateImprovementProgram
+    Provide feedback to Microsoft to help imrpove WSUS
+    .PARAMETER UpstreamServerName
+    Name of another WSUS server to retrieve content from
+    .PARAMETER UpstreamServerPort
+    If getting content from another server, port for traffic
+    .PARAMETER UpstreamServerSSL
+    If getting content from another server, whether to encrypt the traffic
+    .PARAMETER UpstreamServerReplica
+    Boolean to specify whether to retrieve content from anotehr server
+    .PARAMETER ProxyServerName
+    Host name of proxy server
+    .PARAMETER ProxyServerPort
+    Port of proxy server
+    .PARAMETER ProxyServerCredential
+    Credential to use when authenticating to proxy server
+    .PARAMETER ProxyServerBasicAuthentication
+    Use basic auth for proxy
+    .PARAMETER Languages
+    Specify list of languages for content, or "*" for all
+    .PARAMETER Products
+    List of products to include when synchronizing, by default Windows and Office
+    .PARAMETER Classifications
+    List of content classifications to synchronize to the WSUS server
+    .PARAMETER SynchronizeAutomatically
+    Automatically synchronize the WSUS instance
+    .PARAMETER SynchronizeAutomaticallyTimeOfDay
+    Time of day to schedule an automatic synchronization
+    .PARAMETER SynchronizationsPerDay
+    Number of automatic synchronizations per day
+    .PARAMETER Synchronize
+    Run a synchronization immediately when running Set
+#>
 function Test-TargetResource
 {
     [CmdletBinding()]
@@ -665,7 +761,7 @@ function Test-TargetResource
             if($PSBoundParameters.ContainsKey('ProxyServerCredential'))
             {
                 if(
-                    ($Wsus.ProxyServerCredentialUserName -eq $null) -or
+                    ($null -eq $Wsus.ProxyServerCredentialUserName) -or
                     ($Wsus.ProxyServerCredentialUserName -ne $ProxyServerCredential.UserName)
                 )
                 {
@@ -680,7 +776,7 @@ function Test-TargetResource
             }
             else
             {
-                if($Wsus.ProxyServerCredentialUserName -ne $null)
+                if($null -ne $Wsus.ProxyServerCredentialUserName)
                 {
                     Write-Verbose -Message "ProxyServerCredential test failed - credential set"
                     $result = $false
@@ -697,20 +793,23 @@ function Test-TargetResource
             }
         }
         else {
-            if((Compare-Object -ReferenceObject ($Wsus.Languages | Sort-Object -Unique) -DifferenceObject ($Languages | Sort-Object -Unique) -SyncWindow 0) -ne $null)
+            if((Compare-Object -ReferenceObject ($Wsus.Languages | Sort-Object -Unique) `
+                -DifferenceObject ($Languages | Sort-Object -Unique) -SyncWindow 0) -ne $null)
             {
                 Write-Verbose -Message "Languages test failed"
                 $result = $false
             }   
         }
         # Test Products
-        if((Compare-Object -ReferenceObject ($Wsus.Products | Sort-Object -Unique) -DifferenceObject ($Products | Sort-Object -Unique) -SyncWindow 0) -ne $null)
+        if((Compare-Object -ReferenceObject ($Wsus.Products | Sort-Object -Unique) `
+            -DifferenceObject ($Products | Sort-Object -Unique) -SyncWindow 0) -ne $null)
         {
             Write-Verbose -Message "Products test failed"
             $result = $false
         }
         # Test Classifications
-        if((Compare-Object -ReferenceObject ($Wsus.Classifications | Sort-Object -Unique) -DifferenceObject ($Classifications | Sort-Object -Unique) -SyncWindow 0) -ne $null)
+        if((Compare-Object -ReferenceObject ($Wsus.Classifications | Sort-Object -Unique) `
+            -DifferenceObject ($Classifications | Sort-Object -Unique) -SyncWindow 0) -ne $null)
         {
             Write-Verbose -Message "Classifications test failed"
             $result = $false
@@ -736,7 +835,6 @@ function Test-TargetResource
 
     $result
 }
-
 
 function SaveWsusConfiguration
 {
