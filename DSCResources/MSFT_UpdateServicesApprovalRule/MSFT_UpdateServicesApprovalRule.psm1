@@ -49,7 +49,7 @@ function Get-TargetResource
 
         if ($null -ne $WsusServer) {
             
-            $ApprovalRule = $WsusServer.GetInstallApprovalRules() | Where-Object -Value {$_.Name -eq $Name}
+            $ApprovalRule = $WsusServer.GetInstallApprovalRules() | Where-Object -FilterScript {$_.Name -eq $Name}
             
             if($null -ne $ApprovalRule)
             {
@@ -190,7 +190,7 @@ function Set-TargetResource
                         $ProductCollection = New-Object -TypeName Microsoft.UpdateServices.Administration.UpdateCategoryCollection
                         foreach($Product in $Products)
                         {
-                            if($WsusProduct = Get-WsusProduct | Where-Object -Value {$_.Product.Title -eq $Product})
+                            if($WsusProduct = Get-WsusProduct | Where-Object -FilterScript {$_.Product.Title -eq $Product})
                             {
                                 $ProductCollection.Add($WsusServer.GetUpdateCategory($WsusProduct.Product.Id))
                             }

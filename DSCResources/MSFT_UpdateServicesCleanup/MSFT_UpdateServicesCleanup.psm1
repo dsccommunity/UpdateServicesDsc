@@ -6,6 +6,12 @@ Write-Debug -Message "CurrentPath: $currentPath"
 # Load Common Code
 Import-Module $currentPath\..\..\UpdateServicesHelper.psm1 -Verbose:$false -ErrorAction Stop
 
+<#
+    .SYNOPSIS
+    Returns the current CleanUp Task
+    .PARAMETER Ensure
+    Determinse if the task should be added or removed
+#>
 function Get-TargetResource
 {
     [CmdletBinding()]
@@ -33,7 +39,15 @@ function Get-TargetResource
                 if($Arguments.Count -ge 1)
                 {
                     $Arguments = $Arguments[1].Split(";")
-                    foreach($Var in @("DeclineSupersededUpdates","DeclineExpiredUpdates","CleanupObsoleteUpdates","CompressUpdates","CleanupObsoleteComputers","CleanupUnneededContentFiles","CleanupLocalPublishedContentFiles"))
+                    foreach($Var in @(
+                        "DeclineSupersededUpdates",
+                        "DeclineExpiredUpdates",
+                        "CleanupObsoleteUpdates",
+                        "CompressUpdates",
+                        "CleanupObsoleteComputers",
+                        "CleanupUnneededContentFiles",
+                        "CleanupLocalPublishedContentFiles"
+                        ))
                     {
                         Set-Variable -Name $Var -Value (Invoke-Expression((($Arguments | Where-Object {$_ -like "`$$Var = *"}) -split " = ")[1]))
                     }
