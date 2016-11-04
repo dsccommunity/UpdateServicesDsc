@@ -19,8 +19,14 @@ $currentPath = Split-Path -Parent $MyInvocation.MyCommand.Path
 Write-Debug -Message "CurrentPath: $currentPath"
 
 # Load Common Code
-Import-Module $currentPath\..\..\UpdateServicesHelper.psm1 -Verbose:$false -ErrorAction Stop
+Import-Module -Name $currentPath\..\..\UpdateServicesHelper.psm1 -Verbose:$false -ErrorAction Stop
 
+<#
+    .SYNOPSIS
+    Returns the current Approval Rules
+    .PARAMETER Name
+    If provided, returns details of a specific rule
+#>
 function Get-TargetResource
 {
     [CmdletBinding()]
@@ -41,11 +47,11 @@ function Get-TargetResource
         $ComputerGroups = $null
         $Enabled = $null
 
-        if ($WsusServer -ne $null) {
+        if ($null -ne $WsusServer) {
             
-            $ApprovalRule = $WsusServer.GetInstallApprovalRules() | Where-Object {$_.Name -eq $Name}
+            $ApprovalRule = $WsusServer.GetInstallApprovalRules() | Where-Object -Value {$_.Name -eq $Name}
             
-            if($ApprovalRule -ne $null)
+            if($null -ne $ApprovalRule)
             {
                 $Ensure = "Present"
                 
@@ -85,7 +91,30 @@ function Get-TargetResource
     $returnValue
 }
 
-
+<#
+    .SYNOPSIS
+    Sets approval rules
+    .PARAMETER Ensure
+    Determines if the rule should be created or removed.
+    Accepts 'Present'(default) or 'Absent'.
+    .PARAMETER Name
+    Name of the rule to create
+    .PARAMETER Classifications
+    Classification for the rule or All Classifications
+    .PARAMETER Products
+    THe name of the product for the rule or All Products
+    .PARAMETER ComputerGroups
+    The name of the computer group to apply the rule to or All Computers
+    .PARAMETER Enabled
+    Boolean to set rule enabled or disabled
+    .PARAMETER Synchronize
+    Boolean, when enabled the rule will synchronize with Windows Update
+    This applies because the rule will approve updates as they are sync'd
+    .PARAMETER RunRuleNow
+    Boolean that has the same effect as clicking "Run Rule Now" when Set occurs
+    The impact is updates already sync'd will also be approved
+    Otherwise, the rule is not applied to existing content
+#>
 function Set-TargetResource
 {
     [CmdletBinding()]
@@ -140,25 +169,28 @@ function Set-TargetResource
                         $ApprovalRule.Enabled = $Enabled
                         $ApprovalRule.Save()
 
-                        $ClassificationCollection = New-Object Microsoft.UpdateServices.Administration.UpdateClassificationCollection
+                        $ClassificationCollection = New-Object `
+                            -TypeName Microsoft.UpdateServices.Administration.UpdateClassificationCollection
                         foreach($Classification in $Classifications)
                         {
-                            if($WsusClassification = Get-WsusClassification | Where-Object {$_.Classification.ID.Guid -eq $Classification})
+                            if($WsusClassification = Get-WsusClassification | `
+                                Where-Object {$_.Classification.ID.Guid -eq $Classification})
                             {
-                                $ClassificationCollection.Add($WsusServer.GetUpdateClassification($WsusClassification.Classification.Id))
+                                $ClassificationCollection.Add($WsusServer.GetUpdateClassification(`
+                                    $WsusClassification.Classification.Id))
                             }
                             else
                             {
-                                Write-Verbose "Classification $Classification not found"
+                                Write-Verbose -Message "Classification $Classification not found"
                             }
                         }
                         $ApprovalRule.SetUpdateClassifications($ClassificationCollection)
                         $ApprovalRule.Save()
 
-                        $ProductCollection = New-Object Microsoft.UpdateServices.Administration.UpdateCategoryCollection
+                        $ProductCollection = New-Object -TypeName Microsoft.UpdateServices.Administration.UpdateCategoryCollection
                         foreach($Product in $Products)
                         {
-                            if($WsusProduct = Get-WsusProduct | Where-Object {$_.Product.Title -eq $Product})
+                            if($WsusProduct = Get-WsusProduct | Where-Object -Value {$_.Product.Title -eq $Product})
                             {
                                 $ProductCollection.Add($WsusServer.GetUpdateCategory($WsusProduct.Product.Id))
                             }
@@ -235,7 +267,30 @@ function Set-TargetResource
     }
 }
 
-
+<#
+    .SYNOPSIS
+    Tests approval rules
+    .PARAMETER Ensure
+    Determines if the rule should be created or removed.
+    Accepts 'Present'(default) or 'Absent'.
+    .PARAMETER Name
+    Name of the rule to create
+    .PARAMETER Classifications
+    Classification for the rule or All Classifications
+    .PARAMETER Products
+    THe name of the product for the rule or All Products
+    .PARAMETER ComputerGroups
+    The name of the computer group to apply the rule to or All Computers
+    .PARAMETER Enabled
+    Boolean to set rule enabled or disabled
+    .PARAMETER Synchronize
+    Boolean, when enabled the rule will synchronize with Windows Update
+    This applies because the rule will approve updates as they are sync'd
+    .PARAMETER RunRuleNow
+    Boolean that has the same effect as clicking "Run Rule Now" when Set occurs
+    The impact is updates already sync'd will also be approved
+    Otherwise, the rule is not applied to existing content
+#>
 function Test-TargetResource
 {
     [CmdletBinding()]
