@@ -40,8 +40,7 @@ try
 
     # The InModuleScope command allows you to perform white-box unit testing on the internal
     # (non-exported) code of a Script Module.
-    InModuleScope $Global:DSCResourceName
-    {
+    InModuleScope $Global:DSCResourceName {
         $DSCSetValues = 
         @{
             DeclineSupersededUpdates = $true
