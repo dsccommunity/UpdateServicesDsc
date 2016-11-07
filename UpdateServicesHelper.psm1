@@ -5,7 +5,23 @@ $VerbosePreference = 'Continue'
 Import-LocalizedData LocalizedData -filename UpdateServices.strings.psd1 -ErrorAction SilentlyContinue
 Import-LocalizedData USLocalizedData -filename UpdateServices.strings.psd1 -UICulture en-US -ErrorAction SilentlyContinue
 
-function New-TerminatingError 
+<#
+    .SYNOPSIS
+    Simplifies writing a terminating error
+
+    .PARAMETER ErrorType
+    A descriptive value that specifies the type of error
+
+    .PARAMETER FormatArgs
+    Optional arguments to specify formatting of the error
+    
+    .PARAMETER ErrorCategory
+    Optional value to set the error category
+    
+    .PARAMETER TargetObject
+    The object that was being processed when the error occurred
+#>
+function New-TerminatingError
 {
     [CmdletBinding()]
     [OutputType([System.Management.Automation.ErrorRecord])]

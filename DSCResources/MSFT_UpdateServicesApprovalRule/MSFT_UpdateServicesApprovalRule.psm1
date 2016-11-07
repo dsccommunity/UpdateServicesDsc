@@ -19,8 +19,14 @@ $currentPath = Split-Path -Parent $MyInvocation.MyCommand.Path
 Write-Debug -Message "CurrentPath: $currentPath"
 
 # Load Common Code
-Import-Module $currentPath\..\..\UpdateServicesHelper.psm1 -Verbose:$false -ErrorAction Stop
+Import-Module -Name $currentPath\..\..\UpdateServicesHelper.psm1 -Verbose:$false -ErrorAction Stop
 
+<#
+    .SYNOPSIS
+    Returns the current Approval Rules
+    .PARAMETER Name
+    If provided, returns details of a specific rule
+#>
 function Get-TargetResource
 {
     [CmdletBinding()]
@@ -34,18 +40,18 @@ function Get-TargetResource
 
     try
     {
-        $WsusServer = Get-WsusServer
-        $Ensure = "Absent"
+        $WsusServer      = Get-WsusServer
+        $Ensure          = "Absent"
         $Classifications = $null
-        $Products = $null
-        $ComputerGroups = $null
-        $Enabled = $null
+        $Products        = $null
+        $ComputerGroups  = $null
+        $Enabled         = $null
 
-        if ($WsusServer -ne $null) {
+        if ($null -ne $WsusServer) {
             
             $ApprovalRule = $WsusServer.GetInstallApprovalRules() | Where-Object {$_.Name -eq $Name}
             
-            if($ApprovalRule -ne $null)
+            if($null -ne $ApprovalRule)
             {
                 $Ensure = "Present"
                 
@@ -74,18 +80,41 @@ function Get-TargetResource
     }
 
     $returnValue = @{
-        Ensure = $Ensure
-        Name = $Name
+        Ensure          = $Ensure
+        Name            = $Name
         Classifications = $Classifications
-        Products = $Products
-        ComputerGroups = $ComputerGroups
-        Enabled = $Enabled
+        Products        = $Products
+        ComputerGroups  = $ComputerGroups
+        Enabled         = $Enabled
     }
 
     $returnValue
 }
 
-
+<#
+    .SYNOPSIS
+    Sets approval rules
+    .PARAMETER Ensure
+    Determines if the rule should be created or removed.
+    Accepts 'Present'(default) or 'Absent'.
+    .PARAMETER Name
+    Name of the rule to create
+    .PARAMETER Classifications
+    Classification for the rule or All Classifications
+    .PARAMETER Products
+    The name of the product for the rule or All Products
+    .PARAMETER ComputerGroups
+    The name of the computer group to apply the rule to or All Computers
+    .PARAMETER Enabled
+    Boolean to set rule enabled or disabled
+    .PARAMETER Synchronize
+    Boolean, when enabled the rule will synchronize with Windows Update
+    This applies because the rule will approve updates as they are sync'd
+    .PARAMETER RunRuleNow
+    Boolean that has the same effect as clicking "Run Rule Now" when Set occurs
+    The impact is updates already sync'd will also be approved
+    Otherwise, the rule is not applied to existing content
+#>
 function Set-TargetResource
 {
     [CmdletBinding()]
@@ -128,11 +157,11 @@ function Set-TargetResource
                 {
                     if($ApprovalRule = $WsusServer.GetInstallApprovalRules() | Where-Object {$_.Name -eq $Name})
                     {
-                        Write-Verbose "Using existing approval rule"
+                        Write-Verbose -Message "Using existing approval rule"
                     }
                     else
                     {
-                        Write-Verbose "Creating new approval rule"
+                        Write-Verbose -Message "Creating new approval rule"
                         $ApprovalRule = $WsusServer.CreateInstallApprovalRule($Name)
                     }
                     if($ApprovalRule)
@@ -140,22 +169,25 @@ function Set-TargetResource
                         $ApprovalRule.Enabled = $Enabled
                         $ApprovalRule.Save()
 
-                        $ClassificationCollection = New-Object Microsoft.UpdateServices.Administration.UpdateClassificationCollection
+                        $ClassificationCollection = New-Object `
+                            -TypeName Microsoft.UpdateServices.Administration.UpdateClassificationCollection
                         foreach($Classification in $Classifications)
                         {
-                            if($WsusClassification = Get-WsusClassification | Where-Object {$_.Classification.ID.Guid -eq $Classification})
+                            if($WsusClassification = Get-WsusClassification | `
+                                Where-Object {$_.Classification.ID.Guid -eq $Classification})
                             {
-                                $ClassificationCollection.Add($WsusServer.GetUpdateClassification($WsusClassification.Classification.Id))
+                                $ClassificationCollection.Add($WsusServer.GetUpdateClassification(`
+                                    $WsusClassification.Classification.Id))
                             }
                             else
                             {
-                                Write-Verbose "Classification $Classification not found"
+                                Write-Verbose -Message "Classification $Classification not found"
                             }
                         }
                         $ApprovalRule.SetUpdateClassifications($ClassificationCollection)
                         $ApprovalRule.Save()
 
-                        $ProductCollection = New-Object Microsoft.UpdateServices.Administration.UpdateCategoryCollection
+                        $ProductCollection = New-Object -TypeName Microsoft.UpdateServices.Administration.UpdateCategoryCollection
                         foreach($Product in $Products)
                         {
                             if($WsusProduct = Get-WsusProduct | Where-Object {$_.Product.Title -eq $Product})
@@ -166,10 +198,11 @@ function Set-TargetResource
                         $ApprovalRule.SetCategories($ProductCollection)
                         $ApprovalRule.Save()
 
-                        $ComputerGroupCollection = New-Object Microsoft.UpdateServices.Administration.ComputerTargetGroupCollection
+                        $ComputerGroupCollection = New-Object -TypeName Microsoft.UpdateServices.Administration.ComputerTargetGroupCollection
                         foreach($ComputerGroup in $ComputerGroups)
                         {
-                            if($WsusComputerGroup = $WsusServer.GetComputerTargetGroups() | Where-Object {$_.Name -eq $ComputerGroup})
+                            if($WsusComputerGroup = $WsusServer.GetComputerTargetGroups() | `
+                                Where-Object {$_.Name -eq $ComputerGroup})
                             {
                                 $ComputerGroupCollection.Add($WsusComputerGroup)
                             }
@@ -178,7 +211,7 @@ function Set-TargetResource
                         $ApprovalRule.Save()
                         if($RunRuleNow)
                         {
-                            Write-Verbose "Running Approval Rule"
+                            Write-Verbose -Message "Running Approval Rule"
                                     
                             try
                             {
@@ -187,7 +220,7 @@ function Set-TargetResource
                             catch
                             {
                                 throw
-                                Write-Verbose "Failed to run Approval Rule"
+                                Write-Verbose -Message "Failed to run Approval Rule"
                             }
                         }
                     }
@@ -204,12 +237,13 @@ function Set-TargetResource
         }
         else
         {
-            Write-Verbose "Get-WsusServer failed"
+            Write-Verbose -Message "Get-WsusServer failed"
         }
     }
     catch
     {
-        throw Write-Verbose "Failed during creation of approval rule $Name"
+        Write-Verbose -Message "Failed during creation of approval rule $Name"
+        throw
     }
 
     if(!(Test-TargetResource @PSBoundParameters))
@@ -220,7 +254,7 @@ function Set-TargetResource
     {
         if($Synchronize)
         {
-            Write-Verbose "Synchronizing WSUS"
+            Write-Verbose -Message "Synchronizing WSUS"
                     
             try
             {
@@ -228,14 +262,37 @@ function Set-TargetResource
             }
             catch
             {
+                Write-Verbose -Message "Failed to start WSUS synchronization"
                 throw
-                Write-Verbose "Failed to start WSUS synchronization"
             }
         }
     }
 }
 
-
+<#
+    .SYNOPSIS
+    Tests approval rules
+    .PARAMETER Ensure
+    Determines if the rule should be created or removed.
+    Accepts 'Present'(default) or 'Absent'.
+    .PARAMETER Name
+    Name of the rule to create
+    .PARAMETER Classifications
+    Classification for the rule or All Classifications
+    .PARAMETER Products
+    THe name of the product for the rule or All Products
+    .PARAMETER ComputerGroups
+    The name of the computer group to apply the rule to or All Computers
+    .PARAMETER Enabled
+    Boolean to set rule enabled or disabled
+    .PARAMETER Synchronize
+    Boolean, when enabled the rule will synchronize with Windows Update
+    This applies because the rule will approve updates as they are sync'd
+    .PARAMETER RunRuleNow
+    Boolean that has the same effect as clicking "Run Rule Now" when Set occurs
+    The impact is updates already sync'd will also be approved
+    Otherwise, the rule is not applied to existing content
+#>
 function Test-TargetResource
 {
     [CmdletBinding()]
@@ -275,35 +332,37 @@ function Test-TargetResource
 
     if($ApprovalRule.Ensure -ne $Ensure)
     {
-        Write-Verbose "Ensure test failed"
+        Write-Verbose -Message "Ensure test failed"
         $result = $false
     }
     if($result -and ($ApprovalRule.Ensure -eq "Present"))
     {
-        if((Compare-Object -ReferenceObject ($ApprovalRule.Classifications | Sort-Object -Unique) -DifferenceObject ($Classifications | Sort-Object -Unique) -SyncWindow 0) -ne $null)
+        if($null -ne (Compare-Object -ReferenceObject ($ApprovalRule.Classifications | Sort-Object -Unique) `
+            -DifferenceObject ($Classifications | Sort-Object -Unique) -SyncWindow 0))
         {
-            Write-Verbose "Classifications test failed"
+            Write-Verbose -Message "Classifications test failed"
             $result = $false
         }
-        if((Compare-Object -ReferenceObject ($ApprovalRule.Products | Sort-Object -Unique) -DifferenceObject ($Products | Sort-Object -Unique) -SyncWindow 0) -ne $null)
+        if($null -ne (Compare-Object -ReferenceObject ($ApprovalRule.Products | Sort-Object -Unique) `
+            -DifferenceObject ($Products | Sort-Object -Unique) -SyncWindow 0))
         {
-            Write-Verbose "Products test failed"
+            Write-Verbose -Message "Products test failed"
             $result = $false
         }
-        if((Compare-Object -ReferenceObject ($ApprovalRule.ComputerGroups | Sort-Object -Unique) -DifferenceObject ($ComputerGroups | Sort-Object -Unique) -SyncWindow 0) -ne $null)
+        if($null -ne (Compare-Object -ReferenceObject ($ApprovalRule.ComputerGroups | Sort-Object -Unique) `
+            -DifferenceObject ($ComputerGroups | Sort-Object -Unique) -SyncWindow 0))
         {
-            Write-Verbose "ComputerGroups test failed"
+            Write-Verbose -Message "ComputerGroups test failed"
             $result = $false
         }
         if($ApprovalRule.Enabled -ne $Enabled)
         {
-            Write-Verbose "Enabled test failed"
+            Write-Verbose -Message "Enabled test failed"
             $result = $false
         }
     }
     
     $result
 }
-
 
 Export-ModuleMember -Function *-TargetResource

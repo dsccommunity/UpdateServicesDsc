@@ -5,10 +5,7 @@ version: 1.0.{build}.0
 install:
   - git clone https://github.com/PowerShell/DscResource.Tests
   - ps: |
-        Push-Location
-        cd DscResource.Tests
-        Import-Module .\TestHelper.psm1 -force
-        Pop-Location
+        Import-Module .\DscResource.Tests\TestHelper.psm1 -force
         Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.205 -Force
         Install-Module -Name Pester -Repository PSGallery -Force
 
