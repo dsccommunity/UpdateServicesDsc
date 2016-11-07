@@ -67,8 +67,7 @@ try
         #endregion
         
         #region Function Get-TargetResource expecting Ensure Present
-        Describe "$($Global:DSCResourceName)\Get-TargetResource" 
-        {
+        Describe "$($Global:DSCResourceName)\Get-TargetResource" {
 
             Mock -CommandName New-TerminatingError -MockWith {}
             
@@ -199,8 +198,7 @@ try
         #endregion
 
         #region Function Test-TargetResource
-        Describe "$($Global:DSCResourceName)\Test-TargetResource" 
-        {
+        Describe "$($Global:DSCResourceName)\Test-TargetResource" {
             Context 'server is in correct state (Ensure=Present)' 
             {
                 $DSCTestValues.Remove('Ensure')
@@ -266,8 +264,7 @@ try
         #endregion
 
         #region Function Set-TargetResource
-        Describe "$($Global:DSCResourceName)\Set-TargetResource" 
-        {    
+        Describe "$($Global:DSCResourceName)\Set-TargetResource" {    
             $Collection = [pscustomobject]@{}
             $Collection | Add-Member -MemberType ScriptMethod -Name Add -Value {}
 

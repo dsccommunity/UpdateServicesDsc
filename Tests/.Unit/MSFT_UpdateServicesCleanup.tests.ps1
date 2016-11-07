@@ -67,8 +67,7 @@ try
         #endregion
         
         #region Function Get-TargetResource expecting Ensure Present
-        Describe "$($Global:DSCResourceName)\Get-TargetResource"
-        {
+        Describe "$($Global:DSCResourceName)\Get-TargetResource" {
             $Arguments = 'foo"$DeclineSupersededUpdates = $True;$DeclineExpiredUpdates = $True;$CleanupObsoleteUpdates = $True;$CompressUpdates = $True;$CleanupObsoleteComputers = $True;$CleanupUnneededContentFiles = $True;$CleanupLocalPublishedContentFiles = $True'
             $Execute = "$($env:SystemRoot)\System32\WindowsPowerShell\v1.0\powershell.exe"
             $StartBoundary = '20160101T04:00:00'
@@ -180,8 +179,7 @@ try
 
 
         #region Function Test-TargetResource
-        Describe "$($Global:DSCResourceName)\Test-TargetResource"
-        {
+        Describe "$($Global:DSCResourceName)\Test-TargetResource" {
             Context 'server is in correct state (Ensure=Present)'
             {
                 $DSCTestValues.Remove('Ensure')
@@ -289,8 +287,7 @@ try
         #endregion
 
         #region Function Set-TargetResource
-        Describe "$($Global:DSCResourceName)\Set-TargetResource"
-        {    
+        Describe "$($Global:DSCResourceName)\Set-TargetResource" {    
             $Arguments = 'foo"$DeclineSupersededUpdates = $True;$DeclineExpiredUpdates = $True;$CleanupObsoleteUpdates = $True;$CompressUpdates = $True;$CleanupObsoleteComputers = $True;$CleanupUnneededContentFiles = $True;$CleanupLocalPublishedContentFiles = $True'
             $Execute = "$($env:SystemRoot)\System32\WindowsPowerShell\v1.0\powershell.exe"
             $StartBoundary = '20160101T04:00:00'
