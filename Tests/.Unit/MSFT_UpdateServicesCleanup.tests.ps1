@@ -73,8 +73,7 @@ try
             $StartBoundary = '20160101T04:00:00'
             
             Context 'server is configured.' {
-                Mock -CommandName Get-ScheduledTask -mockwith
-                {
+                Mock -CommandName Get-ScheduledTask -mockwith {
                     @{
                         State = 'Enabled'
                         Actions =
@@ -132,8 +131,7 @@ try
 
             Context 'server is configured in an unexpected way.' {
 
-                Mock Get-ScheduledTask -mockwith
-                {
+                Mock Get-ScheduledTask -mockwith {
                     @{
                         State = 'Disabled'
                         Actions =
@@ -230,8 +228,7 @@ try
                 $settingsList = 'DeclineSupersededUpdates','DeclineExpiredUpdates','CleanupObsoleteUpdates','CompressUpdates','CleanupObsoleteComputers','CleanupUnneededContentFiles','CleanupLocalPublishedContentFiles'
                 foreach ($setting in $settingsList)
                 {    
-                    Mock -CommandName Get-TargetResource -MockWith
-                    {
+                    Mock -CommandName Get-TargetResource -MockWith {
                         $DSCTestValues.Remove("$setting")
                         $DSCTestValues
                     } -Verifiable
