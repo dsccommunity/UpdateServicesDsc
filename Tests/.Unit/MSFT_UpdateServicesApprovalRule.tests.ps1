@@ -73,38 +73,31 @@ try
             
             Context 'server should be configured.' {
 
-                it 'calling Get should not throw' 
-                {
+                it 'calling Get should not throw' {
                     {$Script:resource = Get-TargetResource -Name $Global:WsusServer.Name -verbose} | should not throw
                 }
 
-                it "Ensure" 
-                {
+                it "Ensure" {
                     $Script:resource.Ensure | should be 'Present'
                 } 
 
-                it "Classifications" 
-                {
+                it "Classifications" {
                     $Script:resource.Classifications | should be $DSCSetValues.Classifications
                 }
 
-                it "Products" 
-                {
+                it "Products" {
                     $Script:resource.Products | should be $DSCSetValues.Products
                 }
 
-                it "Computer Groups" 
-                {
+                it "Computer Groups" {
                     $Script:resource.ComputerGroups | should be $DSCSetValues.ComputerGroups
                 }
 
-                it "Enabled" 
-                {
+                it "Enabled" {
                     $Script:resource.Enabled | should be $DSCSetValues.Enabled
                 }
 
-                it "mocks were not called" 
-                {
+                it "mocks were not called" {
                     Assert-MockCalled -CommandName New-TerminatingError -Times 0
                 }
 
@@ -112,82 +105,67 @@ try
 
             Context 'server should not be configured.' {
 
-                it 'calling Get should not throw' 
-                {
+                it 'calling Get should not throw' {
                     Mock -CommandName Get-WSUSServer -MockWith {} -Verifiable
                     {$Script:resource = Get-TargetResource -Name $Global:WsusServer.Name -verbose} | should not throw
                 }
 
-                it "Ensure" 
-                {
+                it "Ensure" {
                     $Script:resource.Ensure | should be 'Absent'
                 } 
 
-                it "Classifications" 
-                {
+                it "Classifications" {
                     $Script:resource.Classifications | should BeNullOrEmpty
                 }
 
-                it "Products" 
-                {
+                it "Products" {
                     $Script:resource.Products | should BeNullOrEmpty
                 }
 
-                it "Computer Groups" 
-                {
+                it "Computer Groups" {
                     $Script:resource.ComputerGroups | should BeNullOrEmpty
                 }
 
-                it "Enabled" 
-                {
+                it "Enabled" {
                     $Script:resource.Enabled | should BeNullOrEmpty
                 }
 
-                it "mocks were called" 
-                {
+                it "mocks were called" {
                     Assert-VerifiableMocks
                 }
 
-                it "mocks were not called" 
-                {
+                it "mocks were not called" {
                     Assert-MockCalled -CommandName New-TerminatingError -Times 0
                 }
             }
 
             Context 'server is not configured.' {
 
-                it 'calling Get should not throw' 
-                {
+                it 'calling Get should not throw' {
                     {$Script:resource = Get-TargetResource -Name 'Foo' -verbose} | should not throw
                 }
 
-                it "Ensure" 
-                {
+                it "Ensure" {
                     $Script:resource.Ensure | should be 'Absent'
                 } 
 
-                it "Classifications" 
-                {
+                it "Classifications" {
                     $Script:resource.Classifications | should be $null
                 }
 
-                it "Products" 
-                {
+                it "Products" {
                     $Script:resource.Products | should be $null
                 }
 
-                it "Computer Groups" 
-                {
+                it "Computer Groups" {
                     $Script:resource.ComputerGroups | should be $null
                 }
 
-                it "Enabled" 
-                {
+                it "Enabled" {
                     $Script:resource.Enabled | should be $null
                 }
 
-                it "mocks were not called" 
-                {
+                it "mocks were not called" {
                     Assert-MockCalled -CommandName New-TerminatingError -Times 0
                 }
             }    
@@ -201,13 +179,11 @@ try
                 $DSCTestValues.Add('Ensure','Present')
                 $script:result = $null
                     
-                it 'calling test should not throw' 
-                {
+                it 'calling test should not throw' {
                     {$script:result = Test-TargetResource @DSCTestValues -verbose} | should not throw
                 }
 
-                it "result should be true" 
-                {
+                it "result should be true" {
                     $script:result | should be $true
                 }
             }
@@ -218,13 +194,11 @@ try
                 $DSCTestValues.Add('Ensure','Absent')
                 $script:result = $null
                     
-                it 'calling test should not throw' 
-                {
+                it 'calling test should not throw' {
                     {$script:result = Test-TargetResource @DSCTestValues -verbose} | should not throw
                 }
 
-                it "result should be false" 
-                {
+                it "result should be false" {
                     $script:result | should be $false
                 }
             }
@@ -240,13 +214,11 @@ try
                     $DSCTestValues.Add("$setting",'foo')
                     $script:result = $null
                         
-                    it 'calling test should not throw' 
-                    {
+                    it 'calling test should not throw' {
                         {$script:result = Test-TargetResource @DSCTestValues -verbose} | should not throw
                     }
 
-                    it "result should be false when $setting has changed" 
-                    {
+                    it "result should be false when $setting has changed" {
                         $script:result | should be $false
                     }
                     
@@ -267,19 +239,16 @@ try
                 Mock Get-WsusProduct -mockwith {}
                 Mock New-TerminatingError -mockwith {}
                 
-                it 'should not throw when running on a properly configured server' 
-                {
+                it 'should not throw when running on a properly configured server' {
                     {Set-targetResource @DSCSetValues -verbose} | should not throw
                 }
 
-                it "mocks were called" 
-                {
+                it "mocks were called" {
                     Assert-MockCalled -CommandName New-Object -Times 1
                     Assert-MockCalled -CommandName Get-WsusProduct -Times 1
                 }
                 
-                it "mocks were not called" 
-                {
+                it "mocks were not called" {
                     Assert-MockCalled -CommandName New-TerminatingError -Times 0
                 }
             }
@@ -291,20 +260,17 @@ try
                 Mock New-TerminatingError -mockwith {}
                 Mock Test-TargetResource -mockwith {$true}
 
-                it 'should not throw when running on an incorrectly configured server' 
-                {
+                it 'should not throw when running on an incorrectly configured server' {
                     {Set-targetResource -Name "Foo" -Classification "00000000-0000-0000-0000-0000testguid" -verbose} | should not throw
                 }
 
-                it "mocks were called" 
-                {
+                it "mocks were called" {
                     Assert-MockCalled -CommandName New-Object -Times 1
                     Assert-MockCalled -CommandName Test-TargetResource -Times 1
                     Assert-MockCalled -CommandName Get-WsusProduct -Times 1
                 }
 
-                it "mocks were not called" 
-                {
+                it "mocks were not called" {
                     Assert-MockCalled -CommandName New-TerminatingError -Times 0
                 }
             }
@@ -315,19 +281,15 @@ try
                 Mock New-TerminatingError -mockwith {}
                 Mock Test-TargetResource -mockwith {$true}
 
-                it 'should not throw when running on an incorrectly configured server' 
-                {
+                it 'should not throw when running on an incorrectly configured server' {
                     {Set-targetResource @DSCSetValues -Ensure Absent -verbose} | should not throw
                 }
 
-                it "mocks were called" 
-                {
-                    
+                it "mocks were called" {
                     Assert-MockCalled -CommandName Test-TargetResource -Times 1
                 }
                 
-                it "mocks were not called" 
-                {
+                it "mocks were not called" {
                     Assert-MockCalled -CommandName New-Object -Times 0
                     Assert-MockCalled -CommandName Get-WsusProduct -Times 0
                     Assert-MockCalled -CommandName New-TerminatingError -Times 0
@@ -335,24 +297,20 @@ try
             }
 
             Context 'server is in correct state and synchronize is included' {
-                
                 Mock New-Object -mockwith {$Collection}
                 Mock Get-WsusProduct -mockwith {}
                 Mock New-TerminatingError -mockwith {}
                 
-                it 'should not throw when running on a properly configured server' 
-                {
+                it 'should not throw when running on a properly configured server' {
                     {Set-targetResource @DSCSetValues -Synchronize $true -verbose} | should not throw
                 }
 
-                it "mocks were called" 
-                {
+                it "mocks were called" {
                     Assert-MockCalled -CommandName New-Object -Times 1
                     Assert-MockCalled -CommandName Get-WsusProduct -Times 1
                 }
                 
-                it "mocks were not called" 
-                {
+                it "mocks were not called" {
                     Assert-MockCalled -CommandName New-TerminatingError -Times 0
                 }
             }
@@ -366,5 +324,4 @@ finally
     #region FOOTER
     Restore-TestEnvironment -TestEnvironment $TestEnvironment
     #endregion
-
 }
