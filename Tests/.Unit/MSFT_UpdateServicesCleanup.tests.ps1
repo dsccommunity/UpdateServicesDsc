@@ -72,8 +72,7 @@ try
             $Execute = "$($env:SystemRoot)\System32\WindowsPowerShell\v1.0\powershell.exe"
             $StartBoundary = '20160101T04:00:00'
             
-            Context 'server is configured.'
-            {
+            Context 'server is configured.' {
                 Mock -CommandName Get-ScheduledTask -mockwith
                 {
                     @{
@@ -120,8 +119,7 @@ try
                 }
             }
 
-            Context 'server is not configured.'
-            {
+            Context 'server is not configured.' {
                 Mock Get-ScheduledTask -mockwith {} -Verifiable
 
                 it 'calling Get should not throw'
@@ -140,8 +138,7 @@ try
                 }
             }
 
-            Context 'server is configured in an unexpected way.'
-            {
+            Context 'server is configured in an unexpected way.' {
 
                 Mock Get-ScheduledTask -mockwith
                 {
@@ -180,8 +177,7 @@ try
 
         #region Function Test-TargetResource
         Describe "$($Global:DSCResourceName)\Test-TargetResource" {
-            Context 'server is in correct state (Ensure=Present)'
-            {
+            Context 'server is in correct state (Ensure=Present)' {
                 $DSCTestValues.Remove('Ensure')
                 $DSCTestValues.Add('Ensure','Present')
                 Mock -CommandName Get-TargetResource -MockWith {$DSCTestValues} -Verifiable
@@ -203,8 +199,7 @@ try
                 }
             }
             
-            Context 'server should not be configured (Ensure=Absent)'
-            {
+            Context 'server should not be configured (Ensure=Absent)' {
                 
                 $DSCTestValues.Remove('Ensure')
                 $DSCTestValues.Add('Ensure','Absent')
@@ -227,8 +222,7 @@ try
                 }
             }
 
-            Context 'server should be configured correctly but is not'
-            {
+            Context 'server should be configured correctly but is not' {
                 
                 $DSCTestValues.Remove('Ensure')
                 Mock -CommandName Get-TargetResource -MockWith {$DSCTestValues} -Verifiable
@@ -250,8 +244,7 @@ try
                 }
             }
 
-            Context "setting has drifted"
-            {
+            Context "setting has drifted" {
                 $DSCTestValues.Remove('Ensure')
                 $DSCTestValues.Add('Ensure','Present')
                 $settingsList = 'DeclineSupersededUpdates','DeclineExpiredUpdates','CleanupObsoleteUpdates','CompressUpdates','CleanupObsoleteComputers','CleanupUnneededContentFiles','CleanupLocalPublishedContentFiles'
@@ -296,8 +289,7 @@ try
             Mock -CommandName Test-TargetResource -MockWith {$true}
             Mock -CommandName New-TerminatingError -MockWith {}
 
-            Context 'resource is idempotent (Ensure=Present)'
-            {
+            Context 'resource is idempotent (Ensure=Present)' {
                Mock -CommandName Get-ScheduledTask -MockWith {$true}
                 
                it 'should not throw when running on a properly configured server'
@@ -324,8 +316,7 @@ try
                 }
             }
 
-            Context 'resource processes Set tasks to register Cleanup task (Ensure=Present)'
-            {
+            Context 'resource processes Set tasks to register Cleanup task (Ensure=Present)' {
                Mock -CommandName Get-ScheduledTask -MockWith {}
                 
                it 'should not throw when running on a properly configured server'
@@ -352,8 +343,7 @@ try
                 }
             }
 
-            Context 'resource processes Set tasks to remove Cleanup task (Ensure=Absent)'
-            {
+            Context 'resource processes Set tasks to remove Cleanup task (Ensure=Absent)' {
                 Mock -CommandName Get-ScheduledTask -MockWith {$true}
                 
                it 'should not throw when running on a properly configured server'

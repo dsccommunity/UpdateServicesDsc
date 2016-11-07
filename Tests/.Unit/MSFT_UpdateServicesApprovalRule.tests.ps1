@@ -71,8 +71,7 @@ try
 
             Mock -CommandName New-TerminatingError -MockWith {}
             
-            Context 'server should be configured.' 
-            {
+            Context 'server should be configured.' {
 
                 it 'calling Get should not throw' 
                 {
@@ -111,8 +110,7 @@ try
 
             }
 
-            Context 'server should not be configured.' 
-            {
+            Context 'server should not be configured.' {
 
                 it 'calling Get should not throw' 
                 {
@@ -156,8 +154,7 @@ try
                 }
             }
 
-            Context 'server is not configured.' 
-            {
+            Context 'server is not configured.' {
 
                 it 'calling Get should not throw' 
                 {
@@ -199,8 +196,7 @@ try
 
         #region Function Test-TargetResource
         Describe "$($Global:DSCResourceName)\Test-TargetResource" {
-            Context 'server is in correct state (Ensure=Present)' 
-            {
+            Context 'server is in correct state (Ensure=Present)' {
                 $DSCTestValues.Remove('Ensure')
                 $DSCTestValues.Add('Ensure','Present')
                 $script:result = $null
@@ -216,8 +212,7 @@ try
                 }
             }
 
-            Context 'server should not be configured (Ensure=Absent) but is' 
-            {
+            Context 'server should not be configured (Ensure=Absent) but is' {
                 
                 $DSCTestValues.Remove('Ensure')
                 $DSCTestValues.Add('Ensure','Absent')
@@ -234,8 +229,7 @@ try
                 }
             }
 
-            Context "setting has drifted" 
-            {
+            Context "setting has drifted" {
                 $DSCTestValues.Remove('Ensure')
                 $DSCTestValues.Add('Ensure','Present')       
                 $settingsList = 'Classifications','Products','ComputerGroups'
@@ -268,8 +262,7 @@ try
             $Collection = [pscustomobject]@{}
             $Collection | Add-Member -MemberType ScriptMethod -Name Add -Value {}
 
-            context 'server is already in a correct state (resource is idempotent)' 
-            {    
+            Context 'server is already in a correct state (resource is idempotent)' {    
                 Mock New-Object -mockwith {$Collection}
                 Mock Get-WsusProduct -mockwith {}
                 Mock New-TerminatingError -mockwith {}
@@ -291,8 +284,7 @@ try
                 }
             }
 
-            context 'server is not in a correct state (resource takes action)' 
-            {
+            Context 'server is not in a correct state (resource takes action)' {
                 
                 Mock New-Object -mockwith {$Collection}
                 Mock Get-WsusProduct -mockwith {}
@@ -317,8 +309,7 @@ try
                 }
             }
 
-            context 'server should not be configured (Ensure=Absent)' 
-            {    
+            Context 'server should not be configured (Ensure=Absent)' {    
                 Mock New-Object -mockwith {$Collection}
                 Mock Get-WsusProduct -mockwith {}
                 Mock New-TerminatingError -mockwith {}
@@ -343,8 +334,7 @@ try
                 }
             }
 
-            context 'server is in correct state and synchronize is included' 
-            {
+            Context 'server is in correct state and synchronize is included' {
                 
                 Mock New-Object -mockwith {$Collection}
                 Mock Get-WsusProduct -mockwith {}
