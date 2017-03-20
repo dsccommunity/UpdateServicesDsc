@@ -128,9 +128,9 @@ function Get-TargetResource
         Write-Verbose -Message "WSUSServer languages are $Languages"
 
         Write-Verbose -Message 'Getting WSUSServer classifications'
-        $Classifications = @($WsusSubscription.GetUpdateClassifications().ID.Guid)
+        $Classifications = @($WsusSubscription.GetUpdateClassifications().Title)
         if($null -eq (Compare-Object -ReferenceObject ($Classifications | Sort-Object -Unique) -DifferenceObject `
-            (($WsusServer.GetUpdateClassifications().ID.Guid) | Sort-Object -Unique) -SyncWindow 0))
+            (($WsusServer.GetUpdateClassifications().Title) | Sort-Object -Unique) -SyncWindow 0))
         {
             $Classifications = @("*")
         }
@@ -520,6 +520,7 @@ function Set-TargetResource
                 }
             }
             $WsusSubscription.SetUpdateCategories($ProductCollection)
+            $WsusSubscription.Save()
 
             # Classifications
             Write-Verbose -Message "Setting WSUS classifications"
@@ -536,8 +537,10 @@ function Set-TargetResource
             {
                 foreach($Classification in $Classifications)
                 {
-                    if($WsusClassification = $AllWsusClassifications | `
-                        Where-Object {$_.ID.Guid -eq $Classification})
+                    $WsusClassification = $AllWsusClassifications |
+                        Where-Object {$_.Title -eq $Classification}
+                    
+                    if ($WsusClassification)
                     {
                         $null = $ClassificationCollection.Add($WsusServer.GetUpdateClassification(`
                             $WsusClassification.Id))
@@ -549,10 +552,19 @@ function Set-TargetResource
                 }
             }
             $WsusSubscription.SetUpdateClassifications($ClassificationCollection)
+            $WsusSubscription.Save()
 
             #Synchronization Schedule
             Write-Verbose -Message "Setting WSUS synchronization schedule"
-            $WsusSubscription.SynchronizeAutomatically = $SynchronizeAutomatically
+            if ($SynchronizeAutomatically)
+            {
+                $WsusSubscription.SynchronizeAutomatically = $true
+            }
+            else
+            {
+                $WsusSubscription.SynchronizeAutomatically = $false
+            }
+        
             if($PSBoundParameters.ContainsKey('SynchronizeAutomaticallyTimeOfDay'))
             {
                 $WsusSubscription.SynchronizeAutomaticallyTimeOfDay = $SynchronizeAutomaticallyTimeOfDay
