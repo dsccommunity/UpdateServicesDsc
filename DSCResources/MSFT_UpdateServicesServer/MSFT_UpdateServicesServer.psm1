@@ -128,18 +128,26 @@ function Get-TargetResource
         Write-Verbose -Message "WSUSServer languages are $Languages"
 
         Write-Verbose -Message 'Getting WSUSServer classifications'
-        $Classifications = @($WsusSubscription.GetUpdateClassifications().ID.Guid)
-        if($null -eq (Compare-Object -ReferenceObject ($Classifications | Sort-Object -Unique) -DifferenceObject `
-            (($WsusServer.GetUpdateClassifications().ID.Guid) | Sort-Object -Unique) -SyncWindow 0))
-        {
+        if ($Classifications = @($WsusSubscription.GetUpdateClassifications().ID.Guid)) {
+            if($null -eq (Compare-Object -ReferenceObject ($Classifications | Sort-Object -Unique) -DifferenceObject `
+                (($WsusServer.GetUpdateClassifications().ID.Guid) | Sort-Object -Unique) -SyncWindow 0))
+            {
+                $Classifications = @("*")
+            }
+        }
+        else {
             $Classifications = @("*")
         }
         Write-Verbose -Message "WSUSServer classifications are $Classifications"
         Write-Verbose -Message 'Getting WSUSServer products'
-        $Products = @($WsusSubscription.GetUpdateCategories().Title)
-        if($null -eq (Compare-Object -ReferenceObject ($Products | Sort-Object -Unique) -DifferenceObject `
-            (($WsusServer.GetUpdateCategories().Title) | Sort-Object -Unique) -SyncWindow 0))
-        {
+        if ($Products = @($WsusSubscription.GetUpdateCategories().Title)) {
+            if($null -eq (Compare-Object -ReferenceObject ($Products | Sort-Object -Unique) -DifferenceObject `
+                (($WsusServer.GetUpdateCategories().Title) | Sort-Object -Unique) -SyncWindow 0))
+            {
+                $Products = @("*")
+            }
+        }
+        else {
             $Products = @("*")
         }
         Write-Verbose -Message "WSUSServer products are $Products"
