@@ -240,60 +240,79 @@ function Set-TargetResource
         [System.String]
         $Ensure,
 
+        [parameter()]
         [System.Management.Automation.PSCredential]
         $SetupCredential,
 
+        [parameter()]
         [System.String]
         $SQLServer,
 
+        [parameter()]
         [System.String]
         $ContentDir = "%SystemDrive%\WSUS",
 
+        [parameter()]
         [System.Boolean]
         $UpdateImprovementProgram,
 
+        [parameter()]
         [System.String]
         $UpstreamServerName,
 
+        [parameter()]
         [System.UInt16]
         $UpstreamServerPort = 8530,
 
+        [parameter()]
         [System.Boolean]
         $UpstreamServerSSL,
 
+        [parameter()]
         [System.Boolean]
         $UpstreamServerReplica,
 
+        [parameter()]
         [System.String]
         $ProxyServerName,
 
+        [parameter()]
         [System.UInt16]
         $ProxyServerPort = 80,
 
+        [parameter()]
         [System.Management.Automation.PSCredential]
         $ProxyServerCredential,
 
+        [parameter()]
         [System.Boolean]
         $ProxyServerBasicAuthentication,
 
+        [parameter()]
         [System.String[]]
         $Languages = "*",
 
+        [parameter()]
         [System.String[]]
         $Products = @("Windows","Office"),
 
+        [parameter()]
         [System.String[]]
         $Classifications = @('E6CF1350-C01B-414D-A61F-263D14D133B4','E0789628-CE08-4437-BE74-2495B842F43B','0FA1201D-4330-4FA8-8AE9-B877473B6441'),
 
+        [parameter()]
         [System.Boolean]
         $SynchronizeAutomatically,
 
+        [parameter()]
         [System.String]
         $SynchronizeAutomaticallyTimeOfDay,
 
+        [parameter()]
         [System.UInt16]
         $SynchronizationsPerDay = 1,
 
+        [parameter()]
         [System.Boolean]
         $Synchronize
     )
@@ -653,60 +672,79 @@ function Test-TargetResource
         [System.String]
         $Ensure,
 
+        [parameter()]
         [System.Management.Automation.PSCredential]
         $SetupCredential,
 
+        [parameter()]
         [System.String]
         $SQLServer,
 
+        [parameter()]
         [System.String]
         $ContentDir,
 
+        [parameter()]
         [System.Boolean]
         $UpdateImprovementProgram,
 
+        [parameter()]
         [System.String]
         $UpstreamServerName,
 
+        [parameter()]
         [System.UInt16]
         $UpstreamServerPort = 8530,
 
+        [parameter()]
         [System.Boolean]
         $UpstreamServerSSL,
 
+        [parameter()]
         [System.Boolean]
         $UpstreamServerReplica,
 
+        [parameter()]
         [System.String]
         $ProxyServerName,
 
+        [parameter()]
         [System.UInt16]
         $ProxyServerPort = 80,
 
+        [parameter()]
         [System.Management.Automation.PSCredential]
         $ProxyServerCredential,
 
+        [parameter()]
         [System.Boolean]
         $ProxyServerBasicAuthentication,
 
+        [parameter()]
         [System.String[]]
         $Languages = "*",
 
+        [parameter()]
         [System.String[]]
         $Products = @("Windows","Office"),
 
+        [parameter()]
         [System.String[]]
         $Classifications = @('E6CF1350-C01B-414D-A61F-263D14D133B4','E0789628-CE08-4437-BE74-2495B842F43B','0FA1201D-4330-4FA8-8AE9-B877473B6441'),
 
+        [parameter()]
         [System.Boolean]
         $SynchronizeAutomatically,
 
+        [parameter()]
         [System.String]
         $SynchronizeAutomaticallyTimeOfDay,
 
+        [parameter()]
         [System.UInt16]
         $SynchronizationsPerDay = 1,
 
+        [parameter()]
         [System.Boolean]
         $Synchronize
     )
