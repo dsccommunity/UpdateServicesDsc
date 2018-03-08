@@ -1,6 +1,7 @@
 Configuration UpdateServicesDsc_Config
 {
     Import-DscResource -ModuleName UpdateServicesDsc
+    Import-DscResource -ModuleName PSDesiredStateConfiguration
 
     Node $AllNodes.NodeName
     { 

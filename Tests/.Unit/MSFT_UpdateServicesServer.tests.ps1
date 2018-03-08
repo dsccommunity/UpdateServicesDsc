@@ -109,7 +109,7 @@ try
                 }
 
                 it 'mocks were called' {
-                    Assert-VerifiableMocks
+                    Assert-VerifiableMock
                 }
             }
 
@@ -125,7 +125,7 @@ try
                 }
 
                 it 'mocks were called' {
-                    Assert-VerifiableMocks
+                    Assert-VerifiableMock
                 }
             }
         }
@@ -152,7 +152,7 @@ try
                 }
                 
                 it 'mocks were called' {
-                    Assert-VerifiableMocks
+                    Assert-VerifiableMock
                 }
             }
             
@@ -174,7 +174,7 @@ try
                 }
 
                 it 'mocks were called' {
-                    Assert-VerifiableMocks
+                    Assert-VerifiableMock
                 }
             }
 
@@ -195,7 +195,7 @@ try
                 }
 
                 it 'mocks were called' {
-                    Assert-VerifiableMocks
+                    Assert-VerifiableMock
                 }
             }
 
@@ -224,7 +224,7 @@ try
                     }
 
                     it 'mocks were called' {
-                        Assert-VerifiableMocks
+                        Assert-VerifiableMock
                     }
 
                     $DSCTestValues.Add("$setting",$true)

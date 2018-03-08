@@ -131,7 +131,7 @@ try
                 }
 
                 it "mocks were called" {
-                    Assert-VerifiableMocks
+                    Assert-VerifiableMock
                 }
 
                 it "mocks were not called" {

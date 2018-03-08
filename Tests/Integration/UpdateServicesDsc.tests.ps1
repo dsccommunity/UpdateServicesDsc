@@ -26,7 +26,7 @@ Describe "$($script:DSCResourceName)_Integration" {
     It 'Should compile without throwing' {
         {
             & "$($script:DSCModuleName)_Config" -OutputPath $TestEnvironment.WorkingFolder -ConfigurationData $configdata
-            Start-DscConfiguration -Path $TestEnvironment.WorkingFolder -ComputerName localhost -Wait -Verbose -Force
+            Start-DscConfiguration -Path $TestEnvironment.WorkingFolder -Wait -Verbose -Force
         } | Should not throw
     }
 
