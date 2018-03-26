@@ -22,4 +22,5 @@ class MSFT_UpdateServicesServer : OMI_BaseResource
     [Write, Description("First synchronization.")] String SynchronizeAutomaticallyTimeOfDay;
     [Write, Description("Synchronizations per day.")] UInt16 SynchronizationsPerDay;
     [Write, Description("Begin initial synchronization.")] Boolean Synchronize;
+    [write, Description("An enumerated value that describes if how the Target Groups are populated.\nClient {default}  \nServer   \n"), ValueMap{"Client","Server"}, Values{"Client","Server"}] String ClientTargetingMode;
 };
