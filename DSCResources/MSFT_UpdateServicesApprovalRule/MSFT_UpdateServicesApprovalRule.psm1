@@ -33,7 +33,7 @@ function Get-TargetResource
     [OutputType([System.Collections.Hashtable])]
     param
     (
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
         [System.String]
         $Name
     )
@@ -125,29 +125,36 @@ function Set-TargetResource
     [CmdletBinding()]
     param
     (
+        [Parameter()]
         [ValidateSet("Present","Absent")]
         [System.String]
         $Ensure = "Present",
 
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
         [System.String]
         $Name,
 
+        [Parameter()]
         [System.String[]]
         $Classifications = @("All Classifications"),
 
+        [Parameter()]
         [System.String[]]
         $Products = @("All Products"),
 
+        [Parameter()]
         [System.String[]]
         $ComputerGroups = @("All Computers"),
 
+        [Parameter()]
         [System.Boolean]
         $Enabled,
 
+        [Parameter()]
         [System.Boolean]
         $Synchronize,
 
+        [Parameter()]
         [System.Boolean]
         $RunRuleNow
     )
@@ -304,29 +311,36 @@ function Test-TargetResource
     [OutputType([System.Boolean])]
     param
     (
+        [Parameter()]
         [ValidateSet("Present","Absent")]
         [System.String]
         $Ensure = "Present",
 
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
         [System.String]
         $Name,
 
+        [Parameter()]
         [System.String[]]
         $Classifications = @("All Classifications"),
 
+        [Parameter()]
         [System.String[]]
         $Products = @("All Products"),
 
+        [Parameter()]
         [System.String[]]
         $ComputerGroups = @("All Computers"),
 
+        [Parameter()]
         [System.Boolean]
         $Enabled,
 
+        [Parameter()]
         [System.Boolean]
         $Synchronize,
 
+        [Parameter()]
         [System.Boolean]
         $RunRuleNow
     )
