@@ -31,6 +31,8 @@ function Get-TargetResource
             ($Task.Actions.Execute -eq "$($env:SystemRoot)\System32\WindowsPowerShell\v1.0\powershell.exe")
         )
         {
+            Write-Verbose "Identified enabled scheduled task for cleanup rule"
+
             $Ensure = "Present"
             $Arguments = $Task.Actions.Arguments
             if($Arguments)
@@ -141,6 +143,7 @@ function Set-TargetResource
 
     if(Get-ScheduledTask -TaskName "WSUS Cleanup" -ErrorAction SilentlyContinue)
     {
+        Write-Verbose "Removing existing schedued task for WSUS cleanup"
         Unregister-ScheduledTask -TaskName "WSUS Cleanup" -Confirm:$false
     }
 
@@ -189,6 +192,8 @@ if($WsusServer)
 }
 "@
 
+        Write-Verbose "Creating new scheduled task for WSUS cleanup rule"
+        
         $Action = New-ScheduledTaskAction -Execute $Command -Argument $Argument
         $Trigger = New-ScheduledTaskTrigger -Daily -At $TimeOfDay
         Register-ScheduledTask -TaskName "WSUS Cleanup" -Action $Action -Trigger $Trigger -RunLevel Highest -User "SYSTEM"
