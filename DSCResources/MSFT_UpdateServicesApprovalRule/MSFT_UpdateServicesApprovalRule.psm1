@@ -47,8 +47,10 @@ function Get-TargetResource
         $ComputerGroups  = $null
         $Enabled         = $null
 
-        if ($null -ne $WsusServer) {
-            
+        if ($null -ne $WsusServer)
+        {
+            Write-Verbose "Identified WSUS server information: $WsusServer"
+
             $ApprovalRule = $WsusServer.GetInstallApprovalRules() | Where-Object {$_.Name -eq $Name}
             
             if($null -ne $ApprovalRule)
@@ -72,6 +74,9 @@ function Get-TargetResource
 
                 $Enabled = $ApprovalRule.Enabled
             }
+        }
+        else {
+            Write-Verbose "Did not identify an instance of WSUS"
         }
     }
     catch
