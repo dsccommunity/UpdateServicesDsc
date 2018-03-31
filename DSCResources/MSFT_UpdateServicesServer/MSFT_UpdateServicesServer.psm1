@@ -851,7 +851,7 @@ function Test-TargetResource
             $result = $false
         }
         # Test Classifications
-        if($null -eq (Compare-Object -ReferenceObject ($Wsus.Classifications | Sort-Object -Unique) -DifferenceObject ($Classifications | Sort-Object -Unique) -SyncWindow 0))
+        if($null -ne (Compare-Object -ReferenceObject ($Wsus.Classifications | Sort-Object -Unique) -DifferenceObject ($Classifications | Sort-Object -Unique) -SyncWindow 0))
         {
             Write-Verbose -Message "Classifications test failed"
             $result = $false
