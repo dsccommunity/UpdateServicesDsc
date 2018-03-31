@@ -563,8 +563,7 @@ function Set-TargetResource
             {
                 foreach($Classification in $Classifications)
                 {
-                    if($WsusClassification = $AllWsusClassifications | `
-                        Where-Object {$_.ID.Guid -eq $Classification})
+                    if($WsusClassification = $AllWsusClassifications | Where-Object {$_.ID.Guid -eq $Classification})
                     {
                         $null = $ClassificationCollection.Add($WsusServer.GetUpdateClassification(`
                             $WsusClassification.Id))
@@ -667,7 +666,7 @@ function Test-TargetResource
     [OutputType([System.Boolean])]
     param
     (
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
         [ValidateSet("Present","Absent")]
         [System.String]
         $Ensure,

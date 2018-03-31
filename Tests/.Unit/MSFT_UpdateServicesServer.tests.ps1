@@ -136,10 +136,10 @@ try
 
             Context 'server is in correct state (Ensure=Present)' {
 
-                Mock -CommandName Get-TargetResource -MockWith {$DSCTestValues} -Verifiable
-
                 $DSCTestValues.Remove('Ensure')
                 $DSCTestValues.Add('Ensure','Present')
+                
+                Mock -CommandName Get-TargetResource -MockWith {$DSCTestValues} -Verifiable
 
                 $script:result = $null
                     
