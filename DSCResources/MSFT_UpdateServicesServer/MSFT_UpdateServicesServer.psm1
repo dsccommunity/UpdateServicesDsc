@@ -33,7 +33,7 @@ function Get-TargetResource
     [OutputType([System.Collections.Hashtable])]
     param
     (
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
         [ValidateSet("Present","Absent")]
         [System.String]
         $Ensure
@@ -128,9 +128,9 @@ function Get-TargetResource
         Write-Verbose -Message "WSUSServer languages are $Languages"
 
         Write-Verbose -Message 'Getting WSUSServer classifications'
-        if ($Classifications = @($WsusSubscription.GetUpdateClassifications().ID.Guid)) {
-            if($null -eq (Compare-Object -ReferenceObject ($Classifications | Sort-Object -Unique) -DifferenceObject `
-                (($WsusServer.GetUpdateClassifications().ID.Guid) | Sort-Object -Unique) -SyncWindow 0))
+        if ($Classifications = @($WsusSubscription.GetUpdateClassifications().ID.Guid))
+        {
+            if($null -eq (Compare-Object -ReferenceObject ($Classifications | Sort-Object -Unique) -DifferenceObject (($WsusServer.GetUpdateClassifications().ID.Guid) | Sort-Object -Unique) -SyncWindow 0))
             {
                 $Classifications = @("*")
             }
@@ -140,9 +140,9 @@ function Get-TargetResource
         }
         Write-Verbose -Message "WSUSServer classifications are $Classifications"
         Write-Verbose -Message 'Getting WSUSServer products'
-        if ($Products = @($WsusSubscription.GetUpdateCategories().Title)) {
-            if($null -eq (Compare-Object -ReferenceObject ($Products | Sort-Object -Unique) -DifferenceObject `
-                (($WsusServer.GetUpdateCategories().Title) | Sort-Object -Unique) -SyncWindow 0))
+        if ($Products = @($WsusSubscription.GetUpdateCategories().Title))
+        {
+            if($null -eq (Compare-Object -ReferenceObject ($Products | Sort-Object -Unique) -DifferenceObject (($WsusServer.GetUpdateCategories().Title) | Sort-Object -Unique) -SyncWindow 0))
             {
                 $Products = @("*")
             }
@@ -235,84 +235,84 @@ function Set-TargetResource
     [CmdletBinding()]
     param
     (
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
         [ValidateSet("Present","Absent")]
         [System.String]
         $Ensure,
 
-        [parameter()]
+        [Parameter()]
         [System.Management.Automation.PSCredential]
         $SetupCredential,
 
-        [parameter()]
+        [Parameter()]
         [System.String]
         $SQLServer,
 
-        [parameter()]
+        [Parameter()]
         [System.String]
         $ContentDir = "%SystemDrive%\WSUS",
 
-        [parameter()]
+        [Parameter()]
         [System.Boolean]
         $UpdateImprovementProgram,
 
-        [parameter()]
+        [Parameter()]
         [System.String]
         $UpstreamServerName,
 
-        [parameter()]
+        [Parameter()]
         [System.UInt16]
         $UpstreamServerPort = 8530,
 
-        [parameter()]
+        [Parameter()]
         [System.Boolean]
         $UpstreamServerSSL,
 
-        [parameter()]
+        [Parameter()]
         [System.Boolean]
         $UpstreamServerReplica,
 
-        [parameter()]
+        [Parameter()]
         [System.String]
         $ProxyServerName,
 
-        [parameter()]
+        [Parameter()]
         [System.UInt16]
         $ProxyServerPort = 80,
 
-        [parameter()]
+        [Parameter()]
         [System.Management.Automation.PSCredential]
         $ProxyServerCredential,
 
-        [parameter()]
+        [Parameter()]
         [System.Boolean]
         $ProxyServerBasicAuthentication,
 
-        [parameter()]
+        [Parameter()]
         [System.String[]]
         $Languages = "*",
 
-        [parameter()]
+        [Parameter()]
         [System.String[]]
         $Products = @("Windows","Office"),
 
-        [parameter()]
+        [Parameter()]
         [System.String[]]
         $Classifications = @('E6CF1350-C01B-414D-A61F-263D14D133B4','E0789628-CE08-4437-BE74-2495B842F43B','0FA1201D-4330-4FA8-8AE9-B877473B6441'),
 
-        [parameter()]
+        [Parameter()]
         [System.Boolean]
         $SynchronizeAutomatically,
 
-        [parameter()]
+        [Parameter()]
         [System.String]
         $SynchronizeAutomaticallyTimeOfDay,
 
-        [parameter()]
+        [Parameter()]
         [System.UInt16]
         $SynchronizationsPerDay = 1,
 
-        [parameter()]
+        [Parameter()]
         [System.Boolean]
         $Synchronize
     )
@@ -672,79 +672,79 @@ function Test-TargetResource
         [System.String]
         $Ensure,
 
-        [parameter()]
+        [Parameter()]
         [System.Management.Automation.PSCredential]
         $SetupCredential,
 
-        [parameter()]
+        [Parameter()]
         [System.String]
         $SQLServer,
 
-        [parameter()]
+        [Parameter()]
         [System.String]
         $ContentDir,
 
-        [parameter()]
+        [Parameter()]
         [System.Boolean]
         $UpdateImprovementProgram,
 
-        [parameter()]
+        [Parameter()]
         [System.String]
         $UpstreamServerName,
 
-        [parameter()]
+        [Parameter()]
         [System.UInt16]
         $UpstreamServerPort = 8530,
 
-        [parameter()]
+        [Parameter()]
         [System.Boolean]
         $UpstreamServerSSL,
 
-        [parameter()]
+        [Parameter()]
         [System.Boolean]
         $UpstreamServerReplica,
 
-        [parameter()]
+        [Parameter()]
         [System.String]
         $ProxyServerName,
 
-        [parameter()]
+        [Parameter()]
         [System.UInt16]
         $ProxyServerPort = 80,
 
-        [parameter()]
+        [Parameter()]
         [System.Management.Automation.PSCredential]
         $ProxyServerCredential,
 
-        [parameter()]
+        [Parameter()]
         [System.Boolean]
         $ProxyServerBasicAuthentication,
 
-        [parameter()]
+        [Parameter()]
         [System.String[]]
         $Languages = "*",
 
-        [parameter()]
+        [Parameter()]
         [System.String[]]
         $Products = @("Windows","Office"),
 
-        [parameter()]
+        [Parameter()]
         [System.String[]]
         $Classifications = @('E6CF1350-C01B-414D-A61F-263D14D133B4','E0789628-CE08-4437-BE74-2495B842F43B','0FA1201D-4330-4FA8-8AE9-B877473B6441'),
 
-        [parameter()]
+        [Parameter()]
         [System.Boolean]
         $SynchronizeAutomatically,
 
-        [parameter()]
+        [Parameter()]
         [System.String]
         $SynchronizeAutomaticallyTimeOfDay,
 
-        [parameter()]
+        [Parameter()]
         [System.UInt16]
         $SynchronizationsPerDay = 1,
 
-        [parameter()]
+        [Parameter()]
         [System.Boolean]
         $Synchronize
     )
@@ -839,23 +839,20 @@ function Test-TargetResource
             }
         }
         else {
-            if($null -ne (Compare-Object -ReferenceObject ($Wsus.Languages | Sort-Object -Unique) `
-                -DifferenceObject ($Languages | Sort-Object -Unique) -SyncWindow 0))
+            if($null -ne (Compare-Object -ReferenceObject ($Wsus.Languages | Sort-Object -Unique) -DifferenceObject ($Languages | Sort-Object -Unique) -SyncWindow 0))
             {
                 Write-Verbose -Message "Languages test failed"
                 $result = $false
             }   
         }
         # Test Products
-        if($null -ne (Compare-Object -ReferenceObject ($Wsus.Products | Sort-Object -Unique) `
-            -DifferenceObject ($Products | Sort-Object -Unique) -SyncWindow 0))
+        if($null -ne (Compare-Object -ReferenceObject ($Wsus.Products | Sort-Object -Unique) -DifferenceObject ($Products | Sort-Object -Unique) -SyncWindow 0))
         {
             Write-Verbose -Message "Products test failed"
             $result = $false
         }
         # Test Classifications
-        if((Compare-Object -ReferenceObject ($Wsus.Classifications | Sort-Object -Unique) `
-            -DifferenceObject ($Classifications | Sort-Object -Unique) -SyncWindow 0) -ne $null)
+        if($null -eq (Compare-Object -ReferenceObject ($Wsus.Classifications | Sort-Object -Unique) -DifferenceObject ($Classifications | Sort-Object -Unique) -SyncWindow 0))
         {
             Write-Verbose -Message "Classifications test failed"
             $result = $false

@@ -18,7 +18,7 @@ function Get-TargetResource
     [OutputType([System.Collections.Hashtable])]
     param
     (
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
         [ValidateSet("Present","Absent")]
         [System.String]
         $Ensure
@@ -111,32 +111,40 @@ function Set-TargetResource
     [CmdletBinding()]
     param
     (
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
         [ValidateSet("Present","Absent")]
         [System.String]
         $Ensure,
 
+        [Parameter()]
         [System.Boolean]
         $DeclineSupersededUpdates,
 
+        [Parameter()]
         [System.Boolean]
         $DeclineExpiredUpdates,
 
+        [Parameter()]
         [System.Boolean]
         $CleanupObsoleteUpdates,
 
+        [Parameter()]
         [System.Boolean]
         $CompressUpdates,
 
+        [Parameter()]
         [System.Boolean]
         $CleanupObsoleteComputers,
 
+        [Parameter()]
         [System.Boolean]
         $CleanupUnneededContentFiles,
 
+        [Parameter()]
         [System.Boolean]
         $CleanupLocalPublishedContentFiles,
 
+        [Parameter()]
         [System.String]
         $TimeOfDay = "04:00:00"
     )
@@ -234,32 +242,40 @@ function Test-TargetResource
     [OutputType([System.Boolean])]
     param
     (
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
         [ValidateSet("Present","Absent")]
         [System.String]
         $Ensure,
 
+        [Parameter()]
         [System.Boolean]
         $DeclineSupersededUpdates,
 
+        [Parameter()]
         [System.Boolean]
         $DeclineExpiredUpdates,
 
+        [Parameter()]
         [System.Boolean]
         $CleanupObsoleteUpdates,
 
+        [Parameter()]
         [System.Boolean]
         $CompressUpdates,
 
+        [Parameter()]
         [System.Boolean]
         $CleanupObsoleteComputers,
 
+        [Parameter()]
         [System.Boolean]
         $CleanupUnneededContentFiles,
 
+        [Parameter()]
         [System.Boolean]
         $CleanupLocalPublishedContentFiles,
 
+        [Parameter()]
         [System.String]
         $TimeOfDay = "04:00:00"
     )

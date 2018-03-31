@@ -185,8 +185,7 @@ function Set-TargetResource
                             -TypeName Microsoft.UpdateServices.Administration.UpdateClassificationCollection
                         foreach($Classification in $Classifications)
                         {
-                            if($WsusClassification = Get-WsusClassification | `
-                                Where-Object {$_.Classification.ID.Guid -eq $Classification})
+                            if($WsusClassification = Get-WsusClassification | Where-Object {$_.Classification.ID.Guid -eq $Classification})
                             {
                                 $ClassificationCollection.Add($WsusServer.GetUpdateClassification(`
                                     $WsusClassification.Classification.Id))
@@ -213,8 +212,7 @@ function Set-TargetResource
                         $ComputerGroupCollection = New-Object -TypeName Microsoft.UpdateServices.Administration.ComputerTargetGroupCollection
                         foreach($ComputerGroup in $ComputerGroups)
                         {
-                            if($WsusComputerGroup = $WsusServer.GetComputerTargetGroups() | `
-                                Where-Object {$_.Name -eq $ComputerGroup})
+                            if($WsusComputerGroup = $WsusServer.GetComputerTargetGroups() | Where-Object {$_.Name -eq $ComputerGroup})
                             {
                                 $ComputerGroupCollection.Add($WsusComputerGroup)
                             }
@@ -356,20 +354,17 @@ function Test-TargetResource
     }
     if($result -and ($ApprovalRule.Ensure -eq "Present"))
     {
-        if($null -ne (Compare-Object -ReferenceObject ($ApprovalRule.Classifications | Sort-Object -Unique) `
-            -DifferenceObject ($Classifications | Sort-Object -Unique) -SyncWindow 0))
+        if($null -ne (Compare-Object -ReferenceObject ($ApprovalRule.Classifications | Sort-Object -Unique) -DifferenceObject ($Classifications | Sort-Object -Unique) -SyncWindow 0))
         {
             Write-Verbose -Message "Classifications test failed"
             $result = $false
         }
-        if($null -ne (Compare-Object -ReferenceObject ($ApprovalRule.Products | Sort-Object -Unique) `
-            -DifferenceObject ($Products | Sort-Object -Unique) -SyncWindow 0))
+        if($null -ne (Compare-Object -ReferenceObject ($ApprovalRule.Products | Sort-Object -Unique) -DifferenceObject ($Products | Sort-Object -Unique) -SyncWindow 0))
         {
             Write-Verbose -Message "Products test failed"
             $result = $false
         }
-        if($null -ne (Compare-Object -ReferenceObject ($ApprovalRule.ComputerGroups | Sort-Object -Unique) `
-            -DifferenceObject ($ComputerGroups | Sort-Object -Unique) -SyncWindow 0))
+        if($null -ne (Compare-Object -ReferenceObject ($ApprovalRule.ComputerGroups | Sort-Object -Unique) -DifferenceObject ($ComputerGroups | Sort-Object -Unique) -SyncWindow 0))
         {
             Write-Verbose -Message "ComputerGroups test failed"
             $result = $false

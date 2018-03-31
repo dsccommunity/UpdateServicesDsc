@@ -1,9 +1,9 @@
-Configuration UpdateServicesDsc_Config
+Configuration UpdateServicesConfig
 {
     Import-DscResource -ModuleName UpdateServicesDsc
     Import-DscResource -ModuleName PSDesiredStateConfiguration
 
-    Node $AllNodes.NodeName
+    Node localhost
     { 
 
         WindowsFeature UpdateServices
@@ -98,18 +98,5 @@ Configuration UpdateServicesDsc_Config
         }
 }
 
-$ConfigData = @{
-    AllNodes = @(
-        @{
-            NodeName = "*"
-            #For use with Azure Automation DSC
-            #PSDscAllowPlainTextPassword = $True
-        },
-        @{
-            NodeName = "localhost"
-        }
-    )
-}
-
 # Example command to compile in Azure Automation DSC
-# Start-AzureRmAutomationDscCompilationJob -ResourceGroupName <ResourceGroupName> -AutomationAccountName <AutomationAccountName> -ConfigurationName "UpdateServicesDsc_Config" -ConfigurationData $ConfigData
+# Start-AzureRmAutomationDscCompilationJob -ResourceGroupName <ResourceGroupName> -AutomationAccountName <AutomationAccountName> -ConfigurationName "UpdateServicesConfig"

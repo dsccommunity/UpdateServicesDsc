@@ -18,14 +18,14 @@ $TestEnvironment = Initialize-TestEnvironment `
 #endregion
 
 #region Integration Tests
-$ConfigFile = Join-Path -Path $PSScriptRoot -ChildPath "$($script:DSCModuleName).config.ps1"
+$ConfigFile = Join-Path -Path $PSScriptRoot -ChildPath "UpdateServicesConfig.ps1"
 . $ConfigFile -Verbose -ErrorAction Stop
 
 Describe "$($script:DSCResourceName)_Integration" {
     #region DEFAULT TESTS
-    It 'Should compile without throwing' {
+    It 'Should compile and start without throwing' {
         {
-            & "$($script:DSCModuleName)_Config" -OutputPath $TestEnvironment.WorkingFolder -ConfigurationData $configdata
+            & "UpdateServicesConfig" -OutputPath $TestEnvironment.WorkingFolder
             Start-DscConfiguration -Path $TestEnvironment.WorkingFolder -Wait -Verbose -Force
         } | Should not throw
     }
@@ -34,11 +34,5 @@ Describe "$($script:DSCResourceName)_Integration" {
         { Get-DscConfiguration -Verbose -ErrorAction Stop } | Should Not throw
     }
     #endregion
-
-    It 'Should have set the resource and all the parameters should match' {
-        $current = Get-DscConfiguration | Where-Object {
-            $_.ConfigurationName -eq "$($script:DSCModuleName)_Config"
-        }
-    }
 }
 #endregion
