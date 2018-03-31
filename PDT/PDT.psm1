@@ -783,7 +783,7 @@ function Wait-Win32ProcessStop
 
         [PSCredential] $Credential,
 
-        [Int] $Timeout = 60000
+        [Int] $Timeout = 180000
     )
 
     $start = [DateTime]::Now

@@ -106,6 +106,10 @@ For more information see the [Code of Conduct FAQ](https://opensource.microsoft.
 
 ## Versions
 
+### 1.0.75.0
+
+- Adjusted PDT to let processes run for up to 3 minutes
+
 ### 1.0.74.0
 
 - Test issues

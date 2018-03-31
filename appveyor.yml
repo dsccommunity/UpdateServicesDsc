@@ -1,7 +1,7 @@
 #---------------------------------#
 #      environment configuration  #
 #---------------------------------#
-version: 1.0.74.{build}
+version: 1.0.75.{build}
 install:
   - git clone https://github.com/PowerShell/DscResource.Tests
   - ps: |
