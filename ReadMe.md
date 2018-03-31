@@ -106,6 +106,11 @@ For more information see the [Code of Conduct FAQ](https://opensource.microsoft.
 
 ## Versions
 
+### 1.0.74.0
+
+- Test issues
+  - A number of PSSA rules evolved since the tests were written. Made all corrections.
+
 ### 1.0.73.0
 
 - Resolve issues
