@@ -241,7 +241,12 @@ function Set-TargetResource
                 }
                 "Absent"
                 {
-                    $WsusServer.DeleteInstallApprovalRule($Name)
+                    if($ApprovalRule = $WsusServer.GetInstallApprovalRules() | Where-Object {$_.Name -eq $Name})
+                    {
+                            $WsusServer.DeleteInstallApprovalRule($ApprovalRule.Id)
+                    } else {
+                        Write-Verbose "No rule named $Name exists."
+                    }
                 }
             }
         }
