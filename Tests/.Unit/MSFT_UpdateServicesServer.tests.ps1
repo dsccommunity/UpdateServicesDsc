@@ -8,7 +8,6 @@
    Code in HEADER and FOOTER regions are standard and may be moved into DSCResource.Tools in
    Future and therefore should not be altered if possible.
 #>
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingConvertToSecureStringWithPlainText', '',Scope='Function',Target='DSCGetValues')]
 param()
 
 $Global:DSCModuleName      = 'UpdateServicesDsc' # Example xNetworking
