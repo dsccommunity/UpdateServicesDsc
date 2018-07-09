@@ -182,19 +182,19 @@ function Set-TargetResource
             }
         }
         $Argument += @"
-$WsusServer = Get-WsusServer
-if($WsusServer)
+`$WsusServer = Get-WsusServer
+if(`$WsusServer)
 {
     'WSUS Server found...' | Out-File (Join-Path -Path ([IO.Path]::GetTempPath()) -ChildPath 'WsusCleanup.txt') -Append
-    $WsusCleanupManager = `$WsusServer.GetCleanupManager()
-    if($WsusCleanupManager)
+    `$WsusCleanupManager = `$WsusServer.GetCleanupManager()
+    if(`$WsusCleanupManager)
     {
         'WSUS Cleanup Manager found...' | Out-File (Join-Path -Path ([IO.Path]::GetTempPath()) -ChildPath 'WsusCleanup.txt') -Append
-        $WsusCleanupScope = New-Object Microsoft.UpdateServices.Administration.CleanupScope($DeclineSupersededUpdates,$DeclineExpiredUpdates,$CleanupObsoleteUpdates,$CompressUpdates,$CleanupObsoleteComputers,$CleanupUnneededContentFiles,$CleanupLocalPublishedContentFiles)
-        $WsusCleanupResults = $WsusCleanupManager.PerformCleanup($WsusCleanupScope)
-        if($WsusCleanupResults)
+        `$WsusCleanupScope = New-Object Microsoft.UpdateServices.Administration.CleanupScope(`$DeclineSupersededUpdates,`$DeclineExpiredUpdates,`$CleanupObsoleteUpdates,`$CompressUpdates,`$CleanupObsoleteComputers,`$CleanupUnneededContentFiles,`$CleanupLocalPublishedContentFiles)
+        `$WsusCleanupResults = `$WsusCleanupManager.PerformCleanup(`$WsusCleanupScope)
+        if(`$WsusCleanupResults)
         {
-        $WsusCleanupResults | Out-File (Join-Path -Path ([IO.Path]::GetTempPath()) -ChildPath 'WsusCleanup.txt') -Append
+        `$WsusCleanupResults | Out-File (Join-Path -Path ([IO.Path]::GetTempPath()) -ChildPath 'WsusCleanup.txt') -Append
         }
     }
 }
