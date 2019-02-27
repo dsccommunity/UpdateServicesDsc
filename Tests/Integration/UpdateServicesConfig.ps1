@@ -40,7 +40,7 @@ Configuration UpdateServicesConfig
                 )
                 SynchronizeAutomatically = $true
                 SynchronizeAutomaticallyTimeOfDay = '15:30:00'
-                TargetingMode = "Client"
+                ClientTargetingMode = "Client"
            }
             UpdateServicesApprovalRule 'DefinitionUpdates'
            {
