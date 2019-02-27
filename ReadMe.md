@@ -1,64 +1,124 @@
 # UpdateServicesDsc
 
+The **UpdateServicesDsc** module contains DSC resources
+for deployment and configuration of Windows Server Update Services.
+
+This project has adopted [this code of conduct](CODE_OF_CONDUCT.md).
+
+## Support
+
+This module is community maintained as a best-effort open source project
+and has no expressed support from any individual or organization.
+
+## Branches
+
+### master
+
 [![Build status](https://ci.appveyor.com/api/projects/status/wncsr23e1fqbv4nt?svg=true)](https://ci.appveyor.com/project/mgreenegit/UpdateServicesDsc)
+[![codecov](https://codecov.io/gh/mgreenegit/UpdateServicesDsc/branch/master/graph/badge.svg)](https://codecov.io/gh/mgreenegit/UpdateServicesDsc/branch/master)
 
-The **UpdateServicesDsc** module is a part of the Windows PowerShell Desired State Configuration (DSC) Resource Kit, which is a collection of DSC Resources.
+This is the branch containing the latest release -
+no contributions should be made directly to this branch.
 
-This module contains the **UpdateServicesApprovalRule, UpdateServicesCleanup, and UpdateServicesServer** resources.
+### dev
+[![Build status](https://ci.appveyor.com/api/projects/status/wncsr23e1fqbv4nt/branch/dev??svg=true)](https://ci.appveyor.com/project/mgreenegit/UpdateServicesDsc/branch/dev)
+[![codecov](https://codecov.io/gh/mgreenegit/UpdateServicesDsc/branch/dev/graph/badge.svg)](https://codecov.io/gh/mgreenegit/UpdateServicesDsc/branch/dev)
 
-**All of the resources in the DSC Resource Kit are provided AS IS, and are not supported through any Microsoft standard support program or service. The "x" in xStorage stands for experimental**, which means that these resources will be **fix forward** and monitored by the module owner(s).
+This is the development branch
+to which contributions should be proposed by contributors as pull requests.
+This development branch will periodically be merged to the master branch,
+and be released to [PowerShell Gallery](https://www.powershellgallery.com/).
 
-Please leave comments, feature requests, and bug reports in the Q & A tab for this module.
+## Contributing
 
-If you would like to modify this module, feel free.
-When modifying, please update the module name, resource friendly name, and MOF class name (instructions below).
-As specified in the license, you may copy or modify this resource as long as they are used on the Windows Platform.
+Regardless of the way you want to contribute
+we are tremendously happy to have you here.
 
-For more information about Windows PowerShell Desired State Configuration, check out the blog posts on the [PowerShell Blog](http://blogs.msdn.com/b/powershell/) ([this](http://blogs.msdn.com/b/powershell/archive/2013/11/01/configuration-in-a-devops-world-windows-powershell-desired-state-configuration.aspx) is a good starting point).
-There are also great community resources, such as [PowerShell.org](http://powershell.org/wp/tag/dsc/), or [PowerShell Magazine](http://www.powershellmagazine.com/tag/dsc/).
-For more information on the DSC Resource Kit, checkout [this blog post](http://go.microsoft.com/fwlink/?LinkID=389546).
+There are several ways you can contribute.
+You can submit an issue to report a bug.
+You can submit an issue to request an improvement.
+You can take part in discussions for issues.
+You can review pull requests and comment on other contributors changes.
+You can also improve the resources and tests,
+or even create new resources,
+by sending in pull requests yourself.
+
+* If you want to submit an issue or take part in discussions,
+  please browse the list of [issues](https://github.com/mgreenegit/UpdateServicesDsc/issues).
+  Please check out [Contributing to the DSC Resource Kit](https://github.com/PowerShell/DscResources/blob/master/CONTRIBUTING.md)
+  on how to work with issues.
+* If you want to review pull requests,
+  please first check out the [Review Pull Request guidelines](https://github.com/PowerShell/DscResources/blob/master/CONTRIBUTING.md#reviewing-pull-requests),
+  and the browse the list of [pull requests](https://github.com/mgreenegit/UpdateServicesDsc/pulls)
+  and look for those pull requests with label 'needs review'.
+* If you want to improve this resource module,
+  then please check out the following guidelines.
+  * The specific [Contributing to SqlServerDsc](https://github.com/mgreenegit/UpdateServicesDsc/blob/dev/CONTRIBUTING.md)
+    guidelines.
+  * The common [Style Guidelines & Best Practices](https://github.com/PowerShell/DscResources/blob/master/StyleGuidelines.md).
+  * The common [Testing Guidelines](https://github.com/PowerShell/DscResources/blob/master/TestsGuidelines.md).
+  * If you are new to GitHub (and git),
+    then please check out [Getting Started with GitHub](https://github.com/PowerShell/DscResources/blob/master/GettingStartedWithGitHub.md).
+  * If you are new to Pester and writing test, then please check out
+    [Getting started with Pester](https://github.com/PowerShell/DscResources/blob/master/GettingStartedWithPester.md).
+
+If you need any help along the way,
+don't be afraid to ask.
+We are here for each other.
 
 ## Installation
 
-To install **UpdateServicesDsc** module, on a machine with Windows Management Framework version 5 or newer from an elevated PowerShell session run:
+### From GitHub source code
 
-```PowerShell
-Install-Module UpdateServicesDsc
+To manually install the module, download the source code from GitHub and unzip
+the contents to the '$env:ProgramFiles\WindowsPowerShell\Modules' folder.
+
+### From PowerShell Gallery
+
+To install from the PowerShell gallery using PowerShellGet (in PowerShell 5.0)
+run the following command:
+
+```powershell
+Find-Module -Name SqlServerDsc | Install-Module
 ```
 
-To confirm installation
+To confirm installation, run the below command and ensure you see the SQL Server
+DSC resources available:
 
-```PowerShell
-Get-DSCResource UpdateServicesDsc
+```powershell
+Get-DscResource -Module SqlServerDsc
 ```
 
 ## Requirements
 
-This module requires a minimum version of PowerShell v5.0.
+The minimum Windows Management Framework (PowerShell) version required is 5.0
+or higher, which ships with Windows 10 or Windows Server 2016,
+but can also be installed on Windows 7 SP1, Windows 8.1,
+Windows Server 2008 R2 SP1, Windows Server 2012 and Windows Server 2012 R2.
 
 ## Details
 
 **UpdateServicesApprovalRule** resource has following properties
 
-- **Ensure**: An enumerated value that describes if the ApprovalRule is available
-- **Name**: Name of the approval rule.
-- **Classifications**: Classifications in the approval rule.
-- **Products**: Products in the approval rule.
-- **ComputerGroups**: Computer groups the approval rule applies to.
-- **Enabled**: Whether the approval rule is enabled.
-- **Synchronize**: Synchronize after creating or updating the approval rule.
+* **Ensure**: An enumerated value that describes if the ApprovalRule is available
+* **Name**: Name of the approval rule.
+* **Classifications**: Classifications in the approval rule.
+* **Products**: Products in the approval rule.
+* **ComputerGroups**: Computer groups the approval rule applies to.
+* **Enabled**: Whether the approval rule is enabled.
+* **Synchronize**: Synchronize after creating or updating the approval rule.
 
 **UpdateServicesCleanup** resource has following properties:
 
-- **Ensure**: An enumerated value that describes if the WSUS cleanup task exists.
-- **DeclineSupersededUpdates**: Decline updates that have not been approved fo 30 days or more, are not currently needed by any clients, and are superseded by an approved update.
-- **DeclineExpiredUpdates**: Decline updates that aren't approved and have been expired by Microsoft.
-- **CleanupObsoleteUpdates**: Delete updates that are expired and have not been approved for 30 days or more, and delete older update revisions that have not been approved for 30 days or more.
-- **CompressUpdates**: Compress updates.
-- **CleanupObsoleteComputers**: Delete computers that have not contacted the server in 30 days or more.
-- **CleanupUnneededContentFiles**: Delete update files that aren't needed by updates or downstream servers.
-- **CleanupLocalPublishedContentFiles**: Cleanup local published content files.
-- **TimeOfDay** Time of day to start cleanup.
+* **Ensure**: An enumerated value that describes if the WSUS cleanup task exists.
+* **DeclineSupersededUpdates**: Decline updates that have not been approved fo 30 days or more, are not currently needed by any clients, and are superseded by an approved update.
+* **DeclineExpiredUpdates**: Decline updates that aren't approved and have been expired by Microsoft.
+* **CleanupObsoleteUpdates**: Delete updates that are expired and have not been approved for 30 days or more, and delete older update revisions that have not been approved for 30 days or more.
+* **CompressUpdates**: Compress updates.
+* **CleanupObsoleteComputers**: Delete computers that have not contacted the server in 30 days or more.
+* **CleanupUnneededContentFiles**: Delete update files that aren't needed by updates or downstream servers.
+* **CleanupLocalPublishedContentFiles**: Cleanup local published content files.
+* **TimeOfDay** Time of day to start cleanup.
 
 **UpdateServicesServer** resource has following properties:
 
@@ -86,63 +146,52 @@ This module requires a minimum version of PowerShell v5.0.
 - **RunRuleNow**: Run Approval Rule on existing content.
 - **ClientTargetingMode**: An enumerated value that describes if how the Target Groups are populated.
 
-## Renaming Requirements
-
-When making changes to these resources, we suggest the following practice
-
-1. Update the following names by replacing MSFT with your company/community name or another prefix of your choice.
-
-- Module name (ex: xModule becomes cModule)
-- Resource folder (ex: MSFT\_xResource becomes Contoso\_xResource)
-- Resource Name (ex: MSFT\_xResource becomes Contoso\_cResource)
-- Resource Friendly Name (ex: xResource becomes cResource)
-- MOF class name (ex: MSFT\_xResource becomes Contoso\_cResource)
-- Filename for the <resource\>.schema.mof (ex: MSFT\_xResource.schema.mof becomes Contoso\_cResource.schema.mof)
-
-1. Update module and metadata information in the module manifest
-1. Update any configuration that use these resources
-
-We reserve resource and module names without prefixes for future use (e.g. "MSFT_Resource").
-
-This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
-For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
-
 ## Versions
+
+### 1.1.0
+
+* Resolve feedback for HQRM
+* Accept PR for client side targeting
 
 ### 1.0.76.0
 
-- Fixed PSSA rule override
+* Fixed PSSA rule override
 
 ### 1.0.75.0
 
-- Adjusted PDT to let processes run for up to 3 minutes
+* Adjusted PDT to let processes run for up to 3 minutes
 
 ### 1.0.74.0
 
-- Test issues
-  - A number of PSSA rules evolved since the tests were written. Made all corrections.
+* Test issues
+  * A number of PSSA rules evolved since the tests were written. Made all corrections.
 
 ### 1.0.73.0
 
-- Resolve issues
-  - Get was failing during deployment because ReferenceObject was null
+* Resolve issues
+  * Get was failing during deployment because ReferenceObject was null
 
 ### 1.0.47.0
 
-- High quality DSC module with the following updates:
-  - Rename to WSUSDsc
-  - Add Integration tests
-  - Fix typo in ReadMe
-  - Add RunRuleNow param to WSUSApprovalRule resource
-  - Fix error in WSUSServer resource causing Get- to fail
+* High quality DSC module with the following updates:
+  * Rename to WSUSDsc
+  * Add Integration tests
+  * Fix typo in ReadMe
+  * Add RunRuleNow param to WSUSApprovalRule resource
+  * Fix error in WSUSServer resource causing Get- to fail
 
 ### 1.0.0.0
 
-- Initial release of xWSUS module with coverage for the following areas:
-  - Managing xWSUS rules for content synchronization.
-  - Managing xWSUS rules for content cleanup and compression.
-  - Managing xWSUS service configuration
+* Initial release of xWSUS module with coverage for the following areas:
+  * Managing xWSUS rules for content synchronization.
+  * Managing xWSUS rules for content cleanup and compression.
+  * Managing xWSUS service configuration
 
 ## Contributing
 
 Please check out common DSC Resources [contributing guidelines](https://github.com/PowerShell/DscResource.Kit/blob/master/CONTRIBUTING.md).
+
+Thank you
+[SqlServerDsc](https://github.com/PowerShell/SqlServerDsc/blob/dev/README.md)
+maintainers for your awesome work on style and structure for DSC README files,
+which is copied here.
