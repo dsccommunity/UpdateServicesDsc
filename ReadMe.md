@@ -5,6 +5,11 @@ for deployment and configuration of Windows Server Update Services.
 
 This project has adopted [this code of conduct](CODE_OF_CONDUCT.md).
 
+## Support
+
+This module is community maintained as a best-effort open source project
+and has no other expressed support from any individual or organization.
+
 ## Branches
 
 ### master
