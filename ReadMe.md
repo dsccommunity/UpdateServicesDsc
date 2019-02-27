@@ -21,6 +21,7 @@ This is the branch containing the latest release -
 no contributions should be made directly to this branch.
 
 ### dev
+
 [![Build status](https://ci.appveyor.com/api/projects/status/wncsr23e1fqbv4nt/branch/dev??svg=true)](https://ci.appveyor.com/project/mgreenegit/UpdateServicesDsc/branch/dev)
 [![codecov](https://codecov.io/gh/mgreenegit/UpdateServicesDsc/branch/dev/graph/badge.svg)](https://codecov.io/gh/mgreenegit/UpdateServicesDsc/branch/dev)
 
