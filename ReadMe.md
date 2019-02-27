@@ -84,6 +84,7 @@ This module requires a minimum version of PowerShell v5.0.
 - **SynchronizationsPerDay**: Synchronizations per day.
 - **Synchronize**: Begin initial synchronization.
 - **RunRuleNow**: Run Approval Rule on existing content.
+- **ClientTargetingMode**: An enumerated value that describes if how the Target Groups are populated.
 
 ## Renaming Requirements
 
