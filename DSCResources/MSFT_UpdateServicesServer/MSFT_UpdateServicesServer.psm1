@@ -1,7 +1,7 @@
 # DSC resource to initialize and configure WSUS Server.
 
 # Classifications ID reference...
-# 
+#
 # Applications       = 5C9376AB-8CE6-464A-B136-22113DD69801
 # Connectors         = 434DE588-ED14-48F5-8EED-A15E09A991F6
 # Critical Updates   = E6CF1350-C01B-414D-A61F-263D14D133B4
@@ -63,16 +63,16 @@ function Get-TargetResource
         $WsusConfiguration = $WsusServer.GetConfiguration()
         Write-Verbose -Message 'Getting WSUSServer subscription'
         $WsusSubscription = $WsusServer.GetSubscription()
-            
+
         Write-Verbose -Message 'Getting WSUSServer SQL Server'
         $SQLServer = (Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Update Services\Server\Setup' `
-            -Name 'SQLServerName').SQLServerName
+                -Name 'SQLServerName').SQLServerName
         Write-Verbose -Message "WSUSServer SQL Server is $SQLServer"
         Write-Verbose -Message 'Getting WSUSServer content directory'
         $ContentDir = (Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Update Services\Server\Setup' `
-            -Name 'ContentDir').ContentDir
+                -Name 'ContentDir').ContentDir
         Write-Verbose -Message "WSUSServer content directory is $ContentDir"
-        
+
         Write-Verbose -Message 'Getting WSUSServer update improvement program'
         $UpdateImprovementProgram = $WsusConfiguration.MURollupOptin
         Write-Verbose -Message "WSUSServer content update improvement program is $UpdateImprovementProgram"
@@ -94,7 +94,7 @@ function Get-TargetResource
             $UpstreamServerSSL = $null
             $UpstreamServerReplica = $null
         }
-   
+
         if($WsusConfiguration.UseProxy)
         {
             Write-Verbose -Message 'Getting WSUSServer proxy server'
@@ -128,9 +128,9 @@ function Get-TargetResource
         Write-Verbose -Message "WSUSServer languages are $Languages"
 
         Write-Verbose -Message 'Getting WSUSServer classifications'
-        if ($Classifications = @($WsusSubscription.GetUpdateClassifications().ID.Guid))
-        {
-            if($null -eq (Compare-Object -ReferenceObject ($Classifications | Sort-Object -Unique) -DifferenceObject (($WsusServer.GetUpdateClassifications().ID.Guid) | Sort-Object -Unique) -SyncWindow 0))
+        if ($Classifications = @($WsusSubscription.GetUpdateClassifications().ID.Guid)) {
+            if($null -eq (Compare-Object -ReferenceObject ($Classifications | Sort-Object -Unique) -DifferenceObject `
+                    (($WsusServer.GetUpdateClassifications().ID.Guid) | Sort-Object -Unique) -SyncWindow 0))
             {
                 $Classifications = @("*")
             }
@@ -140,9 +140,9 @@ function Get-TargetResource
         }
         Write-Verbose -Message "WSUSServer classifications are $Classifications"
         Write-Verbose -Message 'Getting WSUSServer products'
-        if ($Products = @($WsusSubscription.GetUpdateCategories().Title))
-        {
-            if($null -eq (Compare-Object -ReferenceObject ($Products | Sort-Object -Unique) -DifferenceObject (($WsusServer.GetUpdateCategories().Title) | Sort-Object -Unique) -SyncWindow 0))
+        if ($Products = @($WsusSubscription.GetUpdateCategories().Title)) {
+            if($null -eq (Compare-Object -ReferenceObject ($Products | Sort-Object -Unique) -DifferenceObject `
+                    (($WsusServer.GetUpdateCategories().Title) | Sort-Object -Unique) -SyncWindow 0))
             {
                 $Products = @("*")
             }
@@ -158,6 +158,8 @@ function Get-TargetResource
         Write-Verbose -Message "WSUSServer synchronize automatically time of day is $SynchronizeAutomaticallyTimeOfDay"
         $SynchronizationsPerDay = $WsusSubscription.NumberOfSynchronizationsPerDay
         Write-Verbose -Message "WSUSServer number of synchronizations per day is $SynchronizationsPerDay"
+        $ClientTargetingMode = $WsusConfiguration.TargetingMode
+        Write-Verbose -Message "WSUSServer client targeting mode is $ClientTargetingMode"
     }
 
     $returnValue = @{
@@ -179,6 +181,7 @@ function Get-TargetResource
         SynchronizeAutomatically          = $SynchronizeAutomatically
         SynchronizeAutomaticallyTimeOfDay = $SynchronizeAutomaticallyTimeOfDay
         SynchronizationsPerDay            = $SynchronizationsPerDay
+        ClientTargetingMode               = $ClientTargetingMode
     }
 
     $returnValue
@@ -229,6 +232,9 @@ function Get-TargetResource
     Number of automatic synchronizations per day
     .PARAMETER Synchronize
     Run a synchronization immediately when running Set
+    .PARAMETER ClientTargetingMode
+    An enumerated value that describes if how the Target Groups are populated.
+    Accepts 'Client'(default) or 'Server'.
 #>
 function Set-TargetResource
 {
@@ -314,7 +320,11 @@ function Set-TargetResource
 
         [Parameter()]
         [System.Boolean]
-        $Synchronize
+        $Synchronize,
+
+        [ValidateSet("Client", "Server")]
+        [System.String]
+        $ClientTargetingMode
     )
 
     # Is WSUS configured?
@@ -356,11 +366,11 @@ function Set-TargetResource
             Write-Verbose -Message [string]$Process
             Wait-Win32ProcessEnd -Path $Path -Arguments $Arguments
         }
-        else 
+        else
         {
             $Process = Start-Win32Process -Path $Path -Arguments $Arguments
             Write-Verbose -Message [string]$Process
-            Wait-Win32ProcessEnd -Path $Path -Arguments $Arguments        
+            Wait-Win32ProcessEnd -Path $Path -Arguments $Arguments
         }
     }
 
@@ -450,6 +460,13 @@ function Set-TargetResource
             $WsusConfiguration.SetEnabledUpdateLanguages($Languages)
         }
 
+        #ClientTargetingMode
+        if($PSBoundParameters.ContainsKey("Client Targeting Mode"))
+        {
+            Write-Verbose -Message "Setting WSUS client targeting mode"
+            $WsusConfiguration.TargetingMode = $ClientTargetingMode
+        }
+
         # Save configuration before initial sync
         SaveWsusConfiguration
 
@@ -508,11 +525,11 @@ function Set-TargetResource
                     Write-Verbose -Message [string]$Process
                     Wait-Win32ProcessEnd -Path $Path -Arguments $Arguments
                 }
-                else 
+                else
                 {
                     $Process = Start-Win32Process -Path $Path -Arguments $Arguments
                     Write-Verbose -Message [string]$Process
-                    Wait-Win32ProcessEnd -Path $Path -Arguments $Arguments        
+                    Wait-Win32ProcessEnd -Path $Path -Arguments $Arguments
                 }
 
                 $WsusConfiguration.OobeInitialized = $true
@@ -563,10 +580,11 @@ function Set-TargetResource
             {
                 foreach($Classification in $Classifications)
                 {
-                    if($WsusClassification = $AllWsusClassifications | Where-Object {$_.ID.Guid -eq $Classification})
+                    if($WsusClassification = $AllWsusClassifications | `
+                            Where-Object {$_.ID.Guid -eq $Classification})
                     {
                         $null = $ClassificationCollection.Add($WsusServer.GetUpdateClassification(`
-                            $WsusClassification.Id))
+                                    $WsusClassification.Id))
                     }
                     else
                     {
@@ -590,7 +608,7 @@ function Set-TargetResource
             if($Synchronize)
             {
                 Write-Verbose -Message "Synchronizing WSUS"
-                    
+
                 $WsusServer.GetSubscription().StartSynchronization()
                 while($WsusServer.GetSubscription().GetSynchronizationStatus() -eq 'Running')
                 {
@@ -659,6 +677,9 @@ function Set-TargetResource
     Number of automatic synchronizations per day
     .PARAMETER Synchronize
     Run a synchronization immediately when running Set
+    .PARAMETER ClientTargetingMode
+    An enumerated value that describes if how the Target Groups are populated.
+    Accepts 'Client'(default) or 'Server'.
 #>
 function Test-TargetResource
 {
@@ -745,7 +766,11 @@ function Test-TargetResource
 
         [Parameter()]
         [System.Boolean]
-        $Synchronize
+        $Synchronize,
+
+        [ValidateSet("Client", "Server")]
+        [System.String]
+        $ClientTargetingMode
     )
 
     $result = $true
@@ -838,20 +863,23 @@ function Test-TargetResource
             }
         }
         else {
-            if($null -ne (Compare-Object -ReferenceObject ($Wsus.Languages | Sort-Object -Unique) -DifferenceObject ($Languages | Sort-Object -Unique) -SyncWindow 0))
+            if((Compare-Object -ReferenceObject ($Wsus.Languages | Sort-Object -Unique) `
+                        -DifferenceObject ($Languages | Sort-Object -Unique) -SyncWindow 0) -ne $null)
             {
                 Write-Verbose -Message "Languages test failed"
                 $result = $false
-            }   
+            }
         }
         # Test Products
-        if($null -ne (Compare-Object -ReferenceObject ($Wsus.Products | Sort-Object -Unique) -DifferenceObject ($Products | Sort-Object -Unique) -SyncWindow 0))
+        if((Compare-Object -ReferenceObject ($Wsus.Products | Sort-Object -Unique) `
+                    -DifferenceObject ($Products | Sort-Object -Unique) -SyncWindow 0) -ne $null)
         {
             Write-Verbose -Message "Products test failed"
             $result = $false
         }
         # Test Classifications
-        if($null -ne (Compare-Object -ReferenceObject ($Wsus.Classifications | Sort-Object -Unique) -DifferenceObject ($Classifications | Sort-Object -Unique) -SyncWindow 0))
+        if((Compare-Object -ReferenceObject ($Wsus.Classifications | Sort-Object -Unique) `
+                    -DifferenceObject ($Classifications | Sort-Object -Unique) -SyncWindow 0) -ne $null)
         {
             Write-Verbose -Message "Classifications test failed"
             $result = $false
@@ -871,6 +899,19 @@ function Test-TargetResource
             {
                 Write-Verbose -Message "SynchronizationsPerDay test failed"
                 $result = $false
+            }
+        }
+
+        # Test Client Targeting Mode
+        if($ClientTargetingMode)
+        {
+            if($PSBoundParameters.ContainsKey('ClientTargetingMode'))
+            {
+                if($Wsus.ClientTargetingMode -ne $ClientTargetingMode)
+                {
+                    Write-Verbose -Message "ClientTargetingMode test failed"
+                    $result = $false
+                }
             }
         }
     }
@@ -897,7 +938,7 @@ function SaveWsusConfiguration
             Start-Sleep -Seconds 1
         }
     }
-    until($WsusConfigurationReady)    
+    until($WsusConfigurationReady)
 }
 
 

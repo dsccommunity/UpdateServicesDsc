@@ -21,6 +21,7 @@ This is the branch containing the latest release -
 no contributions should be made directly to this branch.
 
 ### dev
+
 [![Build status](https://ci.appveyor.com/api/projects/status/wncsr23e1fqbv4nt/branch/dev??svg=true)](https://ci.appveyor.com/project/mgreenegit/UpdateServicesDsc/branch/dev)
 [![codecov](https://codecov.io/gh/mgreenegit/UpdateServicesDsc/branch/dev/graph/badge.svg)](https://codecov.io/gh/mgreenegit/UpdateServicesDsc/branch/dev)
 
@@ -144,9 +145,7 @@ Windows Server 2008 R2 SP1, Windows Server 2012 and Windows Server 2012 R2.
 * **SynchronizationsPerDay**: Synchronizations per day.
 * **Synchronize**: Begin initial synchronization.
 * **RunRuleNow**: Run Approval Rule on existing content.
-
-This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
-For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+* **ClientTargetingMode**: An enumerated value that describes if how the Target Groups are populated.
 
 ## Versions
 

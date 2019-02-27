@@ -29,7 +29,7 @@ Import-Module (Join-Path -Path $moduleRoot -ChildPath 'DSCResource.Tests\TestHel
 $TestEnvironment = Initialize-TestEnvironment `
     -DSCModuleName $Global:DSCModuleName `
     -DSCResourceName $Global:DSCResourceName `
-    -TestType Unit 
+    -TestType Unit
 #endregion
 
 # Begin Testing
@@ -63,6 +63,7 @@ try
             SynchronizeAutomatically = $true
             SynchronizeAutomaticallyTimeOfDay = '04:00:00'
             SynchronizationsPerDay = 24
+            ClientTargetingMode = "Client"
         }
 
         $DSCTestValues = @{
@@ -82,9 +83,10 @@ try
             SynchronizeAutomatically = $true
             SynchronizeAutomaticallyTimeOfDay = '04:00:00'
             SynchronizationsPerDay = 24
+            ClientTargetingMode = "Client"
         }
         #endregion
-        
+
         #region Function Get-TargetResource expecting Ensure Present
         Describe "$($Global:DSCResourceName)\Get-TargetResource" {
 
@@ -96,11 +98,11 @@ try
                 it 'calling Get should not throw' {
                     {$Script:resource = Get-TargetResource -Ensure 'Present' -verbose} | should not throw
                 }
-                
+
                 it 'sets the value for Ensure' {
                     $Script:resource.Ensure | should be 'Present'
                 }
-                
+
                 foreach ($setting in $DSCSetValues.Keys) {
                     it "returns $setting in Get results" {
                         $Script:resource.$setting | should be $DSCGetReturnValues.$setting
@@ -118,7 +120,7 @@ try
                     Mock -CommandName Get-WSUSServer -MockWith {}
                     {$Script:resource = Get-TargetResource -Ensure 'Absent' -verbose} | should not throw
                 }
-                
+
                 it 'sets the value for Ensure' {
                     $Script:resource.Ensure | should be 'Absent'
                 }
@@ -141,7 +143,7 @@ try
                 Mock -CommandName Get-TargetResource -MockWith {$DSCTestValues} -Verifiable
 
                 $script:result = $null
-                    
+
                 it 'calling test should not throw' {
                     {$script:result = Test-TargetResource @DSCTestValues -verbose} | should not throw
                 }
@@ -149,21 +151,21 @@ try
                 it "result should be true" {
                     $script:result | should be $true
                 }
-                
+
                 it 'mocks were called' {
                     Assert-VerifiableMock
                 }
             }
-            
+
             Context 'server should not be configured (Ensure=Absent)' {
-                
+
                 $DSCTestValues.Remove('Ensure')
                 $DSCTestValues.Add('Ensure','Absent')
 
                 Mock -CommandName Get-TargetResource -MockWith {$DSCTestValues} -Verifiable
-                                    
+
                 $script:result = $null
-                    
+
                 it 'calling test should not throw' {
                     {$script:result = Test-TargetResource @DSCTestValues -verbose} | should not throw
                 }
@@ -178,13 +180,13 @@ try
             }
 
             Context 'server should be configured correctly but is not' {
-                
+
                 $DSCTestValues.Remove('Ensure')
 
                 Mock -CommandName Get-TargetResource -MockWith {$DSCTestValues} -Verifiable
-                                    
+
                 $script:result = $null
-                    
+
                 it 'calling test should not throw' {
                     {$script:result = Test-TargetResource @DSCTestValues -Ensure 'Present' -verbose} | should not throw
                 }
@@ -199,21 +201,21 @@ try
             }
 
             Context "setting has drifted" {
-                
+
                 $DSCTestValues.Remove('Ensure')
                 $DSCTestValues.Add('Ensure','Present')
 
                 # Settings not currently tested: ProxyServerUserName, ProxyServerCredential, ProxyServerBasicAuthentication, 'Languages', 'Products', 'Classifications', 'SynchronizeAutomatically'
                 $settingsList = 'UpdateImprovementProgram', 'UpstreamServerName', 'UpstreamServerPort', 'UpstreamServerSSL', 'UpstreamServerReplica', 'ProxyServerName', 'ProxyServerPort', 'SynchronizeAutomaticallyTimeOfDay', 'SynchronizationsPerDay'
                 foreach ($setting in $settingsList) {
-                    
+
                     Mock -CommandName Get-TargetResource -MockWith {
                         $DSCTestValues.Remove("$setting")
                         $DSCTestValues
                     } -Verifiable
-                                        
+
                     $script:result = $null
-                        
+
                     it "calling test with change to $setting should not throw" {
                         {$script:result = Test-TargetResource @DSCTestValues -verbose} | should not throw
                     }
@@ -235,9 +237,9 @@ try
 
         #region Function Set-TargetResource
         Describe "$($Global:DSCResourceName)\Set-TargetResource" {
-            
+
             $DSCTestValues.Remove('Ensure')
-            
+
             Mock -CommandName Test-TargetResource -MockWith {$true}
             Mock -CommandName New-TerminatingError -MockWith {}
             Mock SaveWsusConfiguration -MockWith {}
@@ -257,7 +259,7 @@ try
                     Assert-MockCalled -CommandName New-TerminatingError -Times 0
                 }
             }
-            
+
             Context 'resource supports Ensure=Absent' {
 
                 it 'should not throw when running on a properly configured server' {
@@ -274,7 +276,7 @@ try
                 }
             }
         }
-        #endregion     
+        #endregion
     }
 }
 
