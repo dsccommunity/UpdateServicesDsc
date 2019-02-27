@@ -91,12 +91,14 @@ This module requires a minimum version of PowerShell v5.0.
 When making changes to these resources, we suggest the following practice
 
 1. Update the following names by replacing MSFT with your company/community name or another prefix of your choice.
+
 - Module name (ex: xModule becomes cModule)
 - Resource folder (ex: MSFT\_xResource becomes Contoso\_xResource)
 - Resource Name (ex: MSFT\_xResource becomes Contoso\_cResource)
 - Resource Friendly Name (ex: xResource becomes cResource)
 - MOF class name (ex: MSFT\_xResource becomes Contoso\_cResource)
 - Filename for the <resource\>.schema.mof (ex: MSFT\_xResource.schema.mof becomes Contoso\_cResource.schema.mof)
+
 1. Update module and metadata information in the module manifest
 1. Update any configuration that use these resources
 
