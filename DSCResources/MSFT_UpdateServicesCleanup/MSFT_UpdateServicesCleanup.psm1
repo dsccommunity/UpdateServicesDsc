@@ -10,7 +10,7 @@ Import-Module $currentPath\..\..\UpdateServicesHelper.psm1 -Verbose:$false -Erro
     .SYNOPSIS
     Returns the current CleanUp Task
     .PARAMETER Ensure
-    Determinse if the task should be added or removed
+    Determines if the task should be added or removed
 #>
 function Get-TargetResource
 {
@@ -37,11 +37,11 @@ function Get-TargetResource
             $Arguments = $Task.Actions.Arguments
             if($Arguments)
                 {
-                $Arguments = $Arguments.Split("`"")
+                $Arguments = $Arguments.Split('"')
                 if($Arguments.Count -ge 1)
                 {
                     $Arguments = $Arguments[1].Split(";")
-                    foreach($Var in @(
+                    $ArgumentNames = @(
                         "DeclineSupersededUpdates",
                         "DeclineExpiredUpdates",
                         "CleanupObsoleteUpdates",
@@ -49,10 +49,15 @@ function Get-TargetResource
                         "CleanupObsoleteComputers",
                         "CleanupUnneededContentFiles",
                         "CleanupLocalPublishedContentFiles"
-                        ))
-                    {
-                        Set-Variable -Name $Var -Value (Invoke-Expression((($Arguments `
-                            | Where-Object -FilterScript {$_ -like "`$$Var = *"}) -split " = ")[1]))
+                    )
+                    foreach ($Var in $Arguments) {
+                        $regex = [regex]'^\$(?<name>.*)\s=\s\$(?<value>.*)$'
+                        $groups = $regex.Match($Var).Groups
+                        $VarName = $groups['name'].value.Trim()
+                        $VarValueString = $groups['value'].value.Trim()
+                        if($VarName -in $ArgumentNames) {
+                            Set-variable -Name $VarName -Value $ExecutionContext.InvokeCommand.ExpandString($VarValueString)
+                        }
                     }
                 }
             }
@@ -201,7 +206,7 @@ if(`$WsusServer)
 "@
 
         Write-Verbose "Creating new scheduled task for WSUS cleanup rule"
-        
+
         $Action = New-ScheduledTaskAction -Execute $Command -Argument $Argument
         $Trigger = New-ScheduledTaskTrigger -Daily -At $TimeOfDay
         Register-ScheduledTask -TaskName "WSUS Cleanup" -Action $Action -Trigger $Trigger -RunLevel Highest -User "SYSTEM"
@@ -327,7 +332,7 @@ function Test-TargetResource
             $result = $false
         }
     }
-    
+
     $result
 }
 
