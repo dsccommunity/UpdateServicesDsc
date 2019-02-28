@@ -863,23 +863,23 @@ function Test-TargetResource
             }
         }
         else {
-            if((Compare-Object -ReferenceObject ($Wsus.Languages | Sort-Object -Unique) `
-                        -DifferenceObject ($Languages | Sort-Object -Unique) -SyncWindow 0) -ne $null)
+            if($null -ne (Compare-Object -ReferenceObject ($Wsus.Languages | Sort-Object -Unique) `
+                        -DifferenceObject ($Languages | Sort-Object -Unique) -SyncWindow 0))
             {
                 Write-Verbose -Message "Languages test failed"
                 $result = $false
             }
         }
         # Test Products
-        if((Compare-Object -ReferenceObject ($Wsus.Products | Sort-Object -Unique) `
-                    -DifferenceObject ($Products | Sort-Object -Unique) -SyncWindow 0) -ne $null)
+        if($null -ne (Compare-Object -ReferenceObject ($Wsus.Products | Sort-Object -Unique) `
+                    -DifferenceObject ($Products | Sort-Object -Unique) -SyncWindow 0))
         {
             Write-Verbose -Message "Products test failed"
             $result = $false
         }
         # Test Classifications
-        if((Compare-Object -ReferenceObject ($Wsus.Classifications | Sort-Object -Unique) `
-                    -DifferenceObject ($Classifications | Sort-Object -Unique) -SyncWindow 0) -ne $null)
+        if($null -ne (Compare-Object -ReferenceObject ($Wsus.Classifications | Sort-Object -Unique) `
+                    -DifferenceObject ($Classifications | Sort-Object -Unique) -SyncWindow 0))
         {
             Write-Verbose -Message "Classifications test failed"
             $result = $false
