@@ -80,14 +80,14 @@ To install from the PowerShell gallery using PowerShellGet (in PowerShell 5.0)
 run the following command:
 
 ```powershell
-Find-Module -Name SqlServerDsc | Install-Module
+Find-Module -Name UpdateServicesDsc | Install-Module
 ```
 
 To confirm installation, run the below command and ensure you see the SQL Server
 DSC resources available:
 
 ```powershell
-Get-DscResource -Module SqlServerDsc
+Get-DscResource -Module UpdateServicesDsc
 ```
 
 ## Requirements
@@ -188,11 +188,10 @@ Windows Server 2008 R2 SP1, Windows Server 2012 and Windows Server 2012 R2.
   * Managing xWSUS rules for content cleanup and compression.
   * Managing xWSUS service configuration
 
-## Contributing
+## Contributing Guidelines
 
 Please check out common DSC Resources [contributing guidelines](https://github.com/PowerShell/DscResource.Kit/blob/master/CONTRIBUTING.md).
 
-Thank you
-[SqlServerDsc](https://github.com/PowerShell/SqlServerDsc/blob/dev/README.md)
+Thank you [SqlServerDsc](https://github.com/PowerShell/SqlServerDsc/blob/dev/README.md)
 maintainers for your awesome work on style and structure for DSC README files,
 which is copied here.
