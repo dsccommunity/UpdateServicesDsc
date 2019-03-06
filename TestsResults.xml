@@ -1,0 +1,879 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<test-results xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="nunit_schema_2.5.xsd" name="Pester" total="259" errors="0" failures="2" not-run="0" inconclusive="0" ignored="61" skipped="0" invalid="0" date="2019-02-28" time="14:45:29">
+  <environment user="GaelColas" machine-name="DESKTOP-0A9DA6S" cwd="C:\src\UpdateServicesDsc" user-domain="AzureAD" platform="Microsoft Windows 10 Pro|C:\WINDOWS|\Device\Harddisk0\Partition4" nunit-version="2.5.8.0" os-version="10.0.17763" clr-version="4.0.30319.42000" />
+  <culture-info current-culture="en-GB" current-uiculture="en-GB" />
+  <test-suite type="TestFixture" name="Pester" executed="True" result="Failure" success="False" time="2063.2391" asserts="0" description="Pester">
+    <results>
+      <test-suite type="TestFixture" name="C:\src\UpdateServicesDsc\DSCResource.Tests\Meta.Tests.ps1" executed="True" result="Failure" success="False" time="1989.75" asserts="0" description="C:\src\UpdateServicesDsc\DSCResource.Tests\Meta.Tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="Common Tests - Relative Path Length" executed="True" result="Ignored" success="True" time="2.0342" asserts="0" description="Common Tests - Relative Path Length">
+            <results>
+              <test-suite type="TestFixture" name="When the resource should be used to compile a configuration in Azure Automation" executed="True" result="Ignored" success="True" time="1.8699" asserts="0" description="When the resource should be used to compile a configuration in Azure Automation">
+                <results>
+                  <test-case description="The length of the relative full path \.github should not exceed the max hard limit" name="Common Tests - Relative Path Length.When the resource should be used to compile a configuration in Azure Automation.The length of the relative full path \.github should not exceed the max hard limit" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                  <test-case description="The length of the relative full path \.vscode should not exceed the max hard limit" name="Common Tests - Relative Path Length.When the resource should be used to compile a configuration in Azure Automation.The length of the relative full path \.vscode should not exceed the max hard limit" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                  <test-case description="The length of the relative full path \DSCResources should not exceed the max hard limit" name="Common Tests - Relative Path Length.When the resource should be used to compile a configuration in Azure Automation.The length of the relative full path \DSCResources should not exceed the max hard limit" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                  <test-case description="The length of the relative full path \en-US should not exceed the max hard limit" name="Common Tests - Relative Path Length.When the resource should be used to compile a configuration in Azure Automation.The length of the relative full path \en-US should not exceed the max hard limit" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                  <test-case description="The length of the relative full path \PDT should not exceed the max hard limit" name="Common Tests - Relative Path Length.When the resource should be used to compile a configuration in Azure Automation.The length of the relative full path \PDT should not exceed the max hard limit" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                  <test-case description="The length of the relative full path \Tests should not exceed the max hard limit" name="Common Tests - Relative Path Length.When the resource should be used to compile a configuration in Azure Automation.The length of the relative full path \Tests should not exceed the max hard limit" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                  <test-case description="The length of the relative full path \.codecov.yml should not exceed the max hard limit" name="Common Tests - Relative Path Length.When the resource should be used to compile a configuration in Azure Automation.The length of the relative full path \.codecov.yml should not exceed the max hard limit" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                  <test-case description="The length of the relative full path \.gitattributes should not exceed the max hard limit" name="Common Tests - Relative Path Length.When the resource should be used to compile a configuration in Azure Automation.The length of the relative full path \.gitattributes should not exceed the max hard limit" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                  <test-case description="The length of the relative full path \.gitignore should not exceed the max hard limit" name="Common Tests - Relative Path Length.When the resource should be used to compile a configuration in Azure Automation.The length of the relative full path \.gitignore should not exceed the max hard limit" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                  <test-case description="The length of the relative full path \.MetaTestOptIn.json should not exceed the max hard limit" name="Common Tests - Relative Path Length.When the resource should be used to compile a configuration in Azure Automation.The length of the relative full path \.MetaTestOptIn.json should not exceed the max hard limit" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                  <test-case description="The length of the relative full path \appveyor.yml should not exceed the max hard limit" name="Common Tests - Relative Path Length.When the resource should be used to compile a configuration in Azure Automation.The length of the relative full path \appveyor.yml should not exceed the max hard limit" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                  <test-case description="The length of the relative full path \CHANGELOG.md should not exceed the max hard limit" name="Common Tests - Relative Path Length.When the resource should be used to compile a configuration in Azure Automation.The length of the relative full path \CHANGELOG.md should not exceed the max hard limit" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                  <test-case description="The length of the relative full path \CODE_OF_CONDUCT.md should not exceed the max hard limit" name="Common Tests - Relative Path Length.When the resource should be used to compile a configuration in Azure Automation.The length of the relative full path \CODE_OF_CONDUCT.md should not exceed the max hard limit" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                  <test-case description="The length of the relative full path \LICENSE should not exceed the max hard limit" name="Common Tests - Relative Path Length.When the resource should be used to compile a configuration in Azure Automation.The length of the relative full path \LICENSE should not exceed the max hard limit" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                  <test-case description="The length of the relative full path \ReadMe.md should not exceed the max hard limit" name="Common Tests - Relative Path Length.When the resource should be used to compile a configuration in Azure Automation.The length of the relative full path \ReadMe.md should not exceed the max hard limit" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                  <test-case description="The length of the relative full path \UpdateServicesDsc.psd1 should not exceed the max hard limit" name="Common Tests - Relative Path Length.When the resource should be used to compile a configuration in Azure Automation.The length of the relative full path \UpdateServicesDsc.psd1 should not exceed the max hard limit" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                  <test-case description="The length of the relative full path \UpdateServicesHelper.psm1 should not exceed the max hard limit" name="Common Tests - Relative Path Length.When the resource should be used to compile a configuration in Azure Automation.The length of the relative full path \UpdateServicesHelper.psm1 should not exceed the max hard limit" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                  <test-case description="The length of the relative full path \.github\ISSUE_TEMPLATE should not exceed the max hard limit" name="Common Tests - Relative Path Length.When the resource should be used to compile a configuration in Azure Automation.The length of the relative full path \.github\ISSUE_TEMPLATE should not exceed the max hard limit" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                  <test-case description="The length of the relative full path \.github\PULL_REQUEST_TEMPLATE.md should not exceed the max hard limit" name="Common Tests - Relative Path Length.When the resource should be used to compile a configuration in Azure Automation.The length of the relative full path \.github\PULL_REQUEST_TEMPLATE.md should not exceed the max hard limit" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                  <test-case description="The length of the relative full path \.github\ISSUE_TEMPLATE\General.md should not exceed the max hard limit" name="Common Tests - Relative Path Length.When the resource should be used to compile a configuration in Azure Automation.The length of the relative full path \.github\ISSUE_TEMPLATE\General.md should not exceed the max hard limit" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                  <test-case description="The length of the relative full path \.github\ISSUE_TEMPLATE\Problem_with_resource.md should not exceed the max hard limit" name="Common Tests - Relative Path Length.When the resource should be used to compile a configuration in Azure Automation.The length of the relative full path \.github\ISSUE_TEMPLATE\Problem_with_resource.md should not exceed the max hard limit" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                  <test-case description="The length of the relative full path \.github\ISSUE_TEMPLATE\Resource_proposal.md should not exceed the max hard limit" name="Common Tests - Relative Path Length.When the resource should be used to compile a configuration in Azure Automation.The length of the relative full path \.github\ISSUE_TEMPLATE\Resource_proposal.md should not exceed the max hard limit" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                  <test-case description="The length of the relative full path \.vscode\analyzersettings.psd1 should not exceed the max hard limit" name="Common Tests - Relative Path Length.When the resource should be used to compile a configuration in Azure Automation.The length of the relative full path \.vscode\analyzersettings.psd1 should not exceed the max hard limit" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                  <test-case description="The length of the relative full path \.vscode\settings.json should not exceed the max hard limit" name="Common Tests - Relative Path Length.When the resource should be used to compile a configuration in Azure Automation.The length of the relative full path \.vscode\settings.json should not exceed the max hard limit" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                  <test-case description="The length of the relative full path \DSCResources\MSFT_UpdateServicesApprovalRule should not exceed the max hard limit" name="Common Tests - Relative Path Length.When the resource should be used to compile a configuration in Azure Automation.The length of the relative full path \DSCResources\MSFT_UpdateServicesApprovalRule should not exceed the max hard limit" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                  <test-case description="The length of the relative full path \DSCResources\MSFT_UpdateServicesCleanup should not exceed the max hard limit" name="Common Tests - Relative Path Length.When the resource should be used to compile a configuration in Azure Automation.The length of the relative full path \DSCResources\MSFT_UpdateServicesCleanup should not exceed the max hard limit" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                  <test-case description="The length of the relative full path \DSCResources\MSFT_UpdateServicesServer should not exceed the max hard limit" name="Common Tests - Relative Path Length.When the resource should be used to compile a configuration in Azure Automation.The length of the relative full path \DSCResources\MSFT_UpdateServicesServer should not exceed the max hard limit" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                  <test-case description="The length of the relative full path \DSCResources\MSFT_UpdateServicesApprovalRule\MSFT_UpdateServicesApprovalRule.psm1 should not exceed the max hard limit" name="Common Tests - Relative Path Length.When the resource should be used to compile a configuration in Azure Automation.The length of the relative full path \DSCResources\MSFT_UpdateServicesApprovalRule\MSFT_UpdateServicesApprovalRule.psm1 should not exceed the max hard limit" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                  <test-case description="The length of the relative full path \DSCResources\MSFT_UpdateServicesApprovalRule\MSFT_UpdateServicesApprovalRule.schema.mof should not exceed the max hard limit" name="Common Tests - Relative Path Length.When the resource should be used to compile a configuration in Azure Automation.The length of the relative full path \DSCResources\MSFT_UpdateServicesApprovalRule\MSFT_UpdateServicesApprovalRule.schema.mof should not exceed the max hard limit" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                  <test-case description="The length of the relative full path \DSCResources\MSFT_UpdateServicesCleanup\MSFT_UpdateServicesCleanup.psm1 should not exceed the max hard limit" name="Common Tests - Relative Path Length.When the resource should be used to compile a configuration in Azure Automation.The length of the relative full path \DSCResources\MSFT_UpdateServicesCleanup\MSFT_UpdateServicesCleanup.psm1 should not exceed the max hard limit" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                  <test-case description="The length of the relative full path \DSCResources\MSFT_UpdateServicesCleanup\MSFT_UpdateServicesCleanup.schema.mof should not exceed the max hard limit" name="Common Tests - Relative Path Length.When the resource should be used to compile a configuration in Azure Automation.The length of the relative full path \DSCResources\MSFT_UpdateServicesCleanup\MSFT_UpdateServicesCleanup.schema.mof should not exceed the max hard limit" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                  <test-case description="The length of the relative full path \DSCResources\MSFT_UpdateServicesServer\MSFT_UpdateServicesServer.psm1 should not exceed the max hard limit" name="Common Tests - Relative Path Length.When the resource should be used to compile a configuration in Azure Automation.The length of the relative full path \DSCResources\MSFT_UpdateServicesServer\MSFT_UpdateServicesServer.psm1 should not exceed the max hard limit" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                  <test-case description="The length of the relative full path \DSCResources\MSFT_UpdateServicesServer\MSFT_UpdateServicesServer.schema.mof should not exceed the max hard limit" name="Common Tests - Relative Path Length.When the resource should be used to compile a configuration in Azure Automation.The length of the relative full path \DSCResources\MSFT_UpdateServicesServer\MSFT_UpdateServicesServer.schema.mof should not exceed the max hard limit" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                  <test-case description="The length of the relative full path \DSCResources\MSFT_UpdateServicesServer\WSUS.cab should not exceed the max hard limit" name="Common Tests - Relative Path Length.When the resource should be used to compile a configuration in Azure Automation.The length of the relative full path \DSCResources\MSFT_UpdateServicesServer\WSUS.cab should not exceed the max hard limit" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                  <test-case description="The length of the relative full path \en-US\UpdateServices.strings.psd1 should not exceed the max hard limit" name="Common Tests - Relative Path Length.When the resource should be used to compile a configuration in Azure Automation.The length of the relative full path \en-US\UpdateServices.strings.psd1 should not exceed the max hard limit" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                  <test-case description="The length of the relative full path \PDT\en-us should not exceed the max hard limit" name="Common Tests - Relative Path Length.When the resource should be used to compile a configuration in Azure Automation.The length of the relative full path \PDT\en-us should not exceed the max hard limit" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                  <test-case description="The length of the relative full path \PDT\PDT.psm1 should not exceed the max hard limit" name="Common Tests - Relative Path Length.When the resource should be used to compile a configuration in Azure Automation.The length of the relative full path \PDT\PDT.psm1 should not exceed the max hard limit" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                  <test-case description="The length of the relative full path \PDT\en-us\PDT.strings.psd1 should not exceed the max hard limit" name="Common Tests - Relative Path Length.When the resource should be used to compile a configuration in Azure Automation.The length of the relative full path \PDT\en-us\PDT.strings.psd1 should not exceed the max hard limit" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                  <test-case description="The length of the relative full path \Tests\Helpers should not exceed the max hard limit" name="Common Tests - Relative Path Length.When the resource should be used to compile a configuration in Azure Automation.The length of the relative full path \Tests\Helpers should not exceed the max hard limit" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                  <test-case description="The length of the relative full path \Tests\Integration should not exceed the max hard limit" name="Common Tests - Relative Path Length.When the resource should be used to compile a configuration in Azure Automation.The length of the relative full path \Tests\Integration should not exceed the max hard limit" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                  <test-case description="The length of the relative full path \Tests\Unit should not exceed the max hard limit" name="Common Tests - Relative Path Length.When the resource should be used to compile a configuration in Azure Automation.The length of the relative full path \Tests\Unit should not exceed the max hard limit" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                  <test-case description="The length of the relative full path \Tests\Helpers\ImitateUpdateServicesModule.psm1 should not exceed the max hard limit" name="Common Tests - Relative Path Length.When the resource should be used to compile a configuration in Azure Automation.The length of the relative full path \Tests\Helpers\ImitateUpdateServicesModule.psm1 should not exceed the max hard limit" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                  <test-case description="The length of the relative full path \Tests\Integration\UpdateServicesConfig.ps1 should not exceed the max hard limit" name="Common Tests - Relative Path Length.When the resource should be used to compile a configuration in Azure Automation.The length of the relative full path \Tests\Integration\UpdateServicesConfig.ps1 should not exceed the max hard limit" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                  <test-case description="The length of the relative full path \Tests\Integration\UpdateServicesDsc.tests.ps1 should not exceed the max hard limit" name="Common Tests - Relative Path Length.When the resource should be used to compile a configuration in Azure Automation.The length of the relative full path \Tests\Integration\UpdateServicesDsc.tests.ps1 should not exceed the max hard limit" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                  <test-case description="The length of the relative full path \Tests\Unit\MSFT_UpdateServicesApprovalRule.tests.ps1 should not exceed the max hard limit" name="Common Tests - Relative Path Length.When the resource should be used to compile a configuration in Azure Automation.The length of the relative full path \Tests\Unit\MSFT_UpdateServicesApprovalRule.tests.ps1 should not exceed the max hard limit" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                  <test-case description="The length of the relative full path \Tests\Unit\MSFT_UpdateServicesCleanup.tests.ps1 should not exceed the max hard limit" name="Common Tests - Relative Path Length.When the resource should be used to compile a configuration in Azure Automation.The length of the relative full path \Tests\Unit\MSFT_UpdateServicesCleanup.tests.ps1 should not exceed the max hard limit" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                  <test-case description="The length of the relative full path \Tests\Unit\MSFT_UpdateServicesServer.tests.ps1 should not exceed the max hard limit" name="Common Tests - Relative Path Length.When the resource should be used to compile a configuration in Azure Automation.The length of the relative full path \Tests\Unit\MSFT_UpdateServicesServer.tests.ps1 should not exceed the max hard limit" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="Common Tests - File Formatting" executed="True" result="Success" success="True" time="1.5736" asserts="0" description="Common Tests - File Formatting">
+            <results>
+              <test-suite type="TestFixture" name="When repository contains markdown files" executed="True" result="Success" success="True" time="0.6886" asserts="0" description="When repository contains markdown files">
+                <results>
+                  <test-case description="Markdown file 'CHANGELOG.md' should not have Byte Order Mark (BOM)" name="Common Tests - File Formatting.When repository contains markdown files.Markdown file 'CHANGELOG.md' should not have Byte Order Mark (BOM)" time="0.0383" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Markdown file 'CODE_OF_CONDUCT.md' should not have Byte Order Mark (BOM)" name="Common Tests - File Formatting.When repository contains markdown files.Markdown file 'CODE_OF_CONDUCT.md' should not have Byte Order Mark (BOM)" time="0.012" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Markdown file 'ReadMe.md' should not have Byte Order Mark (BOM)" name="Common Tests - File Formatting.When repository contains markdown files.Markdown file 'ReadMe.md' should not have Byte Order Mark (BOM)" time="0.0083" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Markdown file '.github\PULL_REQUEST_TEMPLATE.md' should not have Byte Order Mark (BOM)" name="Common Tests - File Formatting.When repository contains markdown files.Markdown file '.github\PULL_REQUEST_TEMPLATE.md' should not have Byte Order Mark (BOM)" time="0.013" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Markdown file '.github\ISSUE_TEMPLATE\General.md' should not have Byte Order Mark (BOM)" name="Common Tests - File Formatting.When repository contains markdown files.Markdown file '.github\ISSUE_TEMPLATE\General.md' should not have Byte Order Mark (BOM)" time="0.0139" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Markdown file '.github\ISSUE_TEMPLATE\Problem_with_resource.md' should not have Byte Order Mark (BOM)" name="Common Tests - File Formatting.When repository contains markdown files.Markdown file '.github\ISSUE_TEMPLATE\Problem_with_resource.md' should not have Byte Order Mark (BOM)" time="0.0077" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Markdown file '.github\ISSUE_TEMPLATE\Resource_proposal.md' should not have Byte Order Mark (BOM)" name="Common Tests - File Formatting.When repository contains markdown files.Markdown file '.github\ISSUE_TEMPLATE\Resource_proposal.md' should not have Byte Order Mark (BOM)" time="0.0163" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Markdown file 'DSCResource.Tests\CHANGELOG.md' should not have Byte Order Mark (BOM)" name="Common Tests - File Formatting.When repository contains markdown files.Markdown file 'DSCResource.Tests\CHANGELOG.md' should not have Byte Order Mark (BOM)" time="0.018" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Markdown file 'DSCResource.Tests\README.md' should not have Byte Order Mark (BOM)" name="Common Tests - File Formatting.When repository contains markdown files.Markdown file 'DSCResource.Tests\README.md' should not have Byte Order Mark (BOM)" time="0.0119" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Markdown file 'DSCResource.Tests\.github\PULL_REQUEST_TEMPLATE.md' should not have Byte Order Mark (BOM)" name="Common Tests - File Formatting.When repository contains markdown files.Markdown file 'DSCResource.Tests\.github\PULL_REQUEST_TEMPLATE.md' should not have Byte Order Mark (BOM)" time="0.0153" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Markdown file 'DSCResource.Tests\.github\ISSUE_TEMPLATE\General.md' should not have Byte Order Mark (BOM)" name="Common Tests - File Formatting.When repository contains markdown files.Markdown file 'DSCResource.Tests\.github\ISSUE_TEMPLATE\General.md' should not have Byte Order Mark (BOM)" time="0.0065" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Markdown file 'DSCResource.Tests\.github\ISSUE_TEMPLATE\Problem_with_resource.md' should not have Byte Order Mark (BOM)" name="Common Tests - File Formatting.When repository contains markdown files.Markdown file 'DSCResource.Tests\.github\ISSUE_TEMPLATE\Problem_with_resource.md' should not have Byte Order Mark (BOM)" time="0.0133" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-case description="Should not contain any files with Unicode file encoding" name="Common Tests - File Formatting.Should not contain any files with Unicode file encoding" time="0.2639" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should not contain any files with tab characters" name="Common Tests - File Formatting.Should not contain any files with tab characters" time="0.1457" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should not contain empty files" name="Common Tests - File Formatting.Should not contain empty files" time="0.1244" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should not contain files without a newline at the end" name="Common Tests - File Formatting.Should not contain files without a newline at the end" time="0.1476" asserts="0" success="True" result="Success" executed="True" />
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="Common Tests - Validate Script Files" executed="True" result="Success" success="True" time="2.2205" asserts="0" description="Common Tests - Validate Script Files">
+            <results>
+              <test-suite type="TestFixture" name="DSCResource.Tests\Meta.Tests.ps1" executed="True" result="Success" success="True" time="0.1649" asserts="0" description="DSCResource.Tests\Meta.Tests.ps1">
+                <results>
+                  <test-case description="Script file 'DSCResource.Tests\Meta.Tests.ps1' should not have Byte Order Mark (BOM)" name="Common Tests - Validate Script Files.DSCResource.Tests\Meta.Tests.ps1.Script file 'DSCResource.Tests\Meta.Tests.ps1' should not have Byte Order Mark (BOM)" time="0.0278" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="DSCResource.Tests\Tests\Unit\AppVeyor.Tests.ps1" executed="True" result="Success" success="True" time="0.119" asserts="0" description="DSCResource.Tests\Tests\Unit\AppVeyor.Tests.ps1">
+                <results>
+                  <test-case description="Script file 'DSCResource.Tests\Tests\Unit\AppVeyor.Tests.ps1' should not have Byte Order Mark (BOM)" name="Common Tests - Validate Script Files.DSCResource.Tests\Tests\Unit\AppVeyor.Tests.ps1.Script file 'DSCResource.Tests\Tests\Unit\AppVeyor.Tests.ps1' should not have Byte Order Mark (BOM)" time="0.016" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="DSCResource.Tests\Tests\Unit\DscResource.AnalyzerRules.Helper.Tests.ps1" executed="True" result="Success" success="True" time="0.1618" asserts="0" description="DSCResource.Tests\Tests\Unit\DscResource.AnalyzerRules.Helper.Tests.ps1">
+                <results>
+                  <test-case description="Script file 'DSCResource.Tests\Tests\Unit\DscResource.AnalyzerRules.Helper.Tests.ps1' should not have Byte Order Mark (BOM)" name="Common Tests - Validate Script Files.DSCResource.Tests\Tests\Unit\DscResource.AnalyzerRules.Helper.Tests.ps1.Script file 'DSCResource.Tests\Tests\Unit\DscResource.AnalyzerRules.Helper.Tests.ps1' should not have Byte Order Mark (BOM)" time="0.0168" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="DSCResource.Tests\Tests\Unit\DscResource.AnalyzerRules.Tests.ps1" executed="True" result="Success" success="True" time="0.1361" asserts="0" description="DSCResource.Tests\Tests\Unit\DscResource.AnalyzerRules.Tests.ps1">
+                <results>
+                  <test-case description="Script file 'DSCResource.Tests\Tests\Unit\DscResource.AnalyzerRules.Tests.ps1' should not have Byte Order Mark (BOM)" name="Common Tests - Validate Script Files.DSCResource.Tests\Tests\Unit\DscResource.AnalyzerRules.Tests.ps1.Script file 'DSCResource.Tests\Tests\Unit\DscResource.AnalyzerRules.Tests.ps1' should not have Byte Order Mark (BOM)" time="0.0084" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="DSCResource.Tests\Tests\Unit\DscResource.Container.Tests.ps1" executed="True" result="Success" success="True" time="0.1519" asserts="0" description="DSCResource.Tests\Tests\Unit\DscResource.Container.Tests.ps1">
+                <results>
+                  <test-case description="Script file 'DSCResource.Tests\Tests\Unit\DscResource.Container.Tests.ps1' should not have Byte Order Mark (BOM)" name="Common Tests - Validate Script Files.DSCResource.Tests\Tests\Unit\DscResource.Container.Tests.ps1.Script file 'DSCResource.Tests\Tests\Unit\DscResource.Container.Tests.ps1' should not have Byte Order Mark (BOM)" time="0.0128" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="DSCResource.Tests\Tests\Unit\DscResource.DocumentationHelper.Tests.ps1" executed="True" result="Success" success="True" time="0.1589" asserts="0" description="DSCResource.Tests\Tests\Unit\DscResource.DocumentationHelper.Tests.ps1">
+                <results>
+                  <test-case description="Script file 'DSCResource.Tests\Tests\Unit\DscResource.DocumentationHelper.Tests.ps1' should not have Byte Order Mark (BOM)" name="Common Tests - Validate Script Files.DSCResource.Tests\Tests\Unit\DscResource.DocumentationHelper.Tests.ps1.Script file 'DSCResource.Tests\Tests\Unit\DscResource.DocumentationHelper.Tests.ps1' should not have Byte Order Mark (BOM)" time="0.0157" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="DSCResource.Tests\Tests\Unit\DscResource.GalleryDeploy.Tests.ps1" executed="True" result="Success" success="True" time="0.1189" asserts="0" description="DSCResource.Tests\Tests\Unit\DscResource.GalleryDeploy.Tests.ps1">
+                <results>
+                  <test-case description="Script file 'DSCResource.Tests\Tests\Unit\DscResource.GalleryDeploy.Tests.ps1' should not have Byte Order Mark (BOM)" name="Common Tests - Validate Script Files.DSCResource.Tests\Tests\Unit\DscResource.GalleryDeploy.Tests.ps1.Script file 'DSCResource.Tests\Tests\Unit\DscResource.GalleryDeploy.Tests.ps1' should not have Byte Order Mark (BOM)" time="0.0091" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="DSCResource.Tests\Tests\Unit\TestHelper.Tests.ps1" executed="True" result="Success" success="True" time="0.1364" asserts="0" description="DSCResource.Tests\Tests\Unit\TestHelper.Tests.ps1">
+                <results>
+                  <test-case description="Script file 'DSCResource.Tests\Tests\Unit\TestHelper.Tests.ps1' should not have Byte Order Mark (BOM)" name="Common Tests - Validate Script Files.DSCResource.Tests\Tests\Unit\TestHelper.Tests.ps1.Script file 'DSCResource.Tests\Tests\Unit\TestHelper.Tests.ps1' should not have Byte Order Mark (BOM)" time="0.0172" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="DSCResource.Tests\Tests\Unit\TestRunner.Tests.ps1" executed="True" result="Success" success="True" time="0.1366" asserts="0" description="DSCResource.Tests\Tests\Unit\TestRunner.Tests.ps1">
+                <results>
+                  <test-case description="Script file 'DSCResource.Tests\Tests\Unit\TestRunner.Tests.ps1' should not have Byte Order Mark (BOM)" name="Common Tests - Validate Script Files.DSCResource.Tests\Tests\Unit\TestRunner.Tests.ps1.Script file 'DSCResource.Tests\Tests\Unit\TestRunner.Tests.ps1' should not have Byte Order Mark (BOM)" time="0.0096" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="Tests\Integration\UpdateServicesConfig.ps1" executed="True" result="Success" success="True" time="0.1255" asserts="0" description="Tests\Integration\UpdateServicesConfig.ps1">
+                <results>
+                  <test-case description="Script file 'Tests\Integration\UpdateServicesConfig.ps1' should not have Byte Order Mark (BOM)" name="Common Tests - Validate Script Files.Tests\Integration\UpdateServicesConfig.ps1.Script file 'Tests\Integration\UpdateServicesConfig.ps1' should not have Byte Order Mark (BOM)" time="0.0091" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="Tests\Integration\UpdateServicesDsc.tests.ps1" executed="True" result="Success" success="True" time="0.1374" asserts="0" description="Tests\Integration\UpdateServicesDsc.tests.ps1">
+                <results>
+                  <test-case description="Script file 'Tests\Integration\UpdateServicesDsc.tests.ps1' should not have Byte Order Mark (BOM)" name="Common Tests - Validate Script Files.Tests\Integration\UpdateServicesDsc.tests.ps1.Script file 'Tests\Integration\UpdateServicesDsc.tests.ps1' should not have Byte Order Mark (BOM)" time="0.0107" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="Tests\Unit\MSFT_UpdateServicesApprovalRule.tests.ps1" executed="True" result="Success" success="True" time="0.1409" asserts="0" description="Tests\Unit\MSFT_UpdateServicesApprovalRule.tests.ps1">
+                <results>
+                  <test-case description="Script file 'Tests\Unit\MSFT_UpdateServicesApprovalRule.tests.ps1' should not have Byte Order Mark (BOM)" name="Common Tests - Validate Script Files.Tests\Unit\MSFT_UpdateServicesApprovalRule.tests.ps1.Script file 'Tests\Unit\MSFT_UpdateServicesApprovalRule.tests.ps1' should not have Byte Order Mark (BOM)" time="0.0178" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="Tests\Unit\MSFT_UpdateServicesCleanup.tests.ps1" executed="True" result="Success" success="True" time="0.1109" asserts="0" description="Tests\Unit\MSFT_UpdateServicesCleanup.tests.ps1">
+                <results>
+                  <test-case description="Script file 'Tests\Unit\MSFT_UpdateServicesCleanup.tests.ps1' should not have Byte Order Mark (BOM)" name="Common Tests - Validate Script Files.Tests\Unit\MSFT_UpdateServicesCleanup.tests.ps1.Script file 'Tests\Unit\MSFT_UpdateServicesCleanup.tests.ps1' should not have Byte Order Mark (BOM)" time="0.0127" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="Tests\Unit\MSFT_UpdateServicesServer.tests.ps1" executed="True" result="Success" success="True" time="0.1709" asserts="0" description="Tests\Unit\MSFT_UpdateServicesServer.tests.ps1">
+                <results>
+                  <test-case description="Script file 'Tests\Unit\MSFT_UpdateServicesServer.tests.ps1' should not have Byte Order Mark (BOM)" name="Common Tests - Validate Script Files.Tests\Unit\MSFT_UpdateServicesServer.tests.ps1.Script file 'Tests\Unit\MSFT_UpdateServicesServer.tests.ps1' should not have Byte Order Mark (BOM)" time="0.019" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="Common Tests - .psm1 File Parsing" executed="True" result="Success" success="True" time="3.4997" asserts="0" description="Common Tests - .psm1 File Parsing">
+            <results>
+              <test-suite type="TestFixture" name="UpdateServicesHelper.psm1" executed="True" result="Success" success="True" time="0.1714" asserts="0" description="UpdateServicesHelper.psm1">
+                <results>
+                  <test-case description="Module file 'UpdateServicesHelper.psm1' should not contain parse errors" name="Common Tests - .psm1 File Parsing.UpdateServicesHelper.psm1.Module file 'UpdateServicesHelper.psm1' should not contain parse errors" time="0.027" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="DSCResource.Tests\AppVeyor.psm1" executed="True" result="Success" success="True" time="0.1799" asserts="0" description="DSCResource.Tests\AppVeyor.psm1">
+                <results>
+                  <test-case description="Module file 'DSCResource.Tests\AppVeyor.psm1' should not contain parse errors" name="Common Tests - .psm1 File Parsing.DSCResource.Tests\AppVeyor.psm1.Module file 'DSCResource.Tests\AppVeyor.psm1' should not contain parse errors" time="0.0368" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="DSCResource.Tests\MetaFixers.psm1" executed="True" result="Success" success="True" time="0.3566" asserts="0" description="DSCResource.Tests\MetaFixers.psm1">
+                <results>
+                  <test-case description="Module file 'DSCResource.Tests\MetaFixers.psm1' should not contain parse errors" name="Common Tests - .psm1 File Parsing.DSCResource.Tests\MetaFixers.psm1.Module file 'DSCResource.Tests\MetaFixers.psm1' should not contain parse errors" time="0.024" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="DSCResource.Tests\TestHelper.psm1" executed="True" result="Success" success="True" time="0.1714" asserts="0" description="DSCResource.Tests\TestHelper.psm1">
+                <results>
+                  <test-case description="Module file 'DSCResource.Tests\TestHelper.psm1' should not contain parse errors" name="Common Tests - .psm1 File Parsing.DSCResource.Tests\TestHelper.psm1.Module file 'DSCResource.Tests\TestHelper.psm1' should not contain parse errors" time="0.0287" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="DSCResource.Tests\TestRunner.psm1" executed="True" result="Success" success="True" time="0.1401" asserts="0" description="DSCResource.Tests\TestRunner.psm1">
+                <results>
+                  <test-case description="Module file 'DSCResource.Tests\TestRunner.psm1' should not contain parse errors" name="Common Tests - .psm1 File Parsing.DSCResource.Tests\TestRunner.psm1.Module file 'DSCResource.Tests\TestRunner.psm1' should not contain parse errors" time="0.0106" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="DSCResource.Tests\DscResource.AnalyzerRules\DscResource.AnalyzerRules.Helper.psm1" executed="True" result="Success" success="True" time="0.1359" asserts="0" description="DSCResource.Tests\DscResource.AnalyzerRules\DscResource.AnalyzerRules.Helper.psm1">
+                <results>
+                  <test-case description="Module file 'DSCResource.Tests\DscResource.AnalyzerRules\DscResource.AnalyzerRules.Helper.psm1' should not contain parse errors" name="Common Tests - .psm1 File Parsing.DSCResource.Tests\DscResource.AnalyzerRules\DscResource.AnalyzerRules.Helper.psm1.Module file 'DSCResource.Tests\DscResource.AnalyzerRules\DscResource.AnalyzerRules.Helper.psm1' should not contain parse errors" time="0.0114" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="DSCResource.Tests\DscResource.AnalyzerRules\DscResource.AnalyzerRules.psm1" executed="True" result="Success" success="True" time="0.119" asserts="0" description="DSCResource.Tests\DscResource.AnalyzerRules\DscResource.AnalyzerRules.psm1">
+                <results>
+                  <test-case description="Module file 'DSCResource.Tests\DscResource.AnalyzerRules\DscResource.AnalyzerRules.psm1' should not contain parse errors" name="Common Tests - .psm1 File Parsing.DSCResource.Tests\DscResource.AnalyzerRules\DscResource.AnalyzerRules.psm1.Module file 'DSCResource.Tests\DscResource.AnalyzerRules\DscResource.AnalyzerRules.psm1' should not contain parse errors" time="0.015" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="DSCResource.Tests\DscResource.CodeCoverage\CodeCovIo.psm1" executed="True" result="Success" success="True" time="0.1475" asserts="0" description="DSCResource.Tests\DscResource.CodeCoverage\CodeCovIo.psm1">
+                <results>
+                  <test-case description="Module file 'DSCResource.Tests\DscResource.CodeCoverage\CodeCovIo.psm1' should not contain parse errors" name="Common Tests - .psm1 File Parsing.DSCResource.Tests\DscResource.CodeCoverage\CodeCovIo.psm1.Module file 'DSCResource.Tests\DscResource.CodeCoverage\CodeCovIo.psm1' should not contain parse errors" time="0.0117" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="DSCResource.Tests\DscResource.Container\DscResource.Container.psm1" executed="True" result="Success" success="True" time="0.1494" asserts="0" description="DSCResource.Tests\DscResource.Container\DscResource.Container.psm1">
+                <results>
+                  <test-case description="Module file 'DSCResource.Tests\DscResource.Container\DscResource.Container.psm1' should not contain parse errors" name="Common Tests - .psm1 File Parsing.DSCResource.Tests\DscResource.Container\DscResource.Container.psm1.Module file 'DSCResource.Tests\DscResource.Container\DscResource.Container.psm1' should not contain parse errors" time="0.0149" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="DSCResource.Tests\DscResource.DocumentationHelper\MofHelper.psm1" executed="True" result="Success" success="True" time="0.1221" asserts="0" description="DSCResource.Tests\DscResource.DocumentationHelper\MofHelper.psm1">
+                <results>
+                  <test-case description="Module file 'DSCResource.Tests\DscResource.DocumentationHelper\MofHelper.psm1' should not contain parse errors" name="Common Tests - .psm1 File Parsing.DSCResource.Tests\DscResource.DocumentationHelper\MofHelper.psm1.Module file 'DSCResource.Tests\DscResource.DocumentationHelper\MofHelper.psm1' should not contain parse errors" time="0.011" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="DSCResource.Tests\DscResource.DocumentationHelper\PowerShellHelp.psm1" executed="True" result="Success" success="True" time="0.1281" asserts="0" description="DSCResource.Tests\DscResource.DocumentationHelper\PowerShellHelp.psm1">
+                <results>
+                  <test-case description="Module file 'DSCResource.Tests\DscResource.DocumentationHelper\PowerShellHelp.psm1' should not contain parse errors" name="Common Tests - .psm1 File Parsing.DSCResource.Tests\DscResource.DocumentationHelper\PowerShellHelp.psm1.Module file 'DSCResource.Tests\DscResource.DocumentationHelper\PowerShellHelp.psm1' should not contain parse errors" time="0.0066" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="DSCResource.Tests\DscResource.DocumentationHelper\WikiPages.psm1" executed="True" result="Success" success="True" time="0.1965" asserts="0" description="DSCResource.Tests\DscResource.DocumentationHelper\WikiPages.psm1">
+                <results>
+                  <test-case description="Module file 'DSCResource.Tests\DscResource.DocumentationHelper\WikiPages.psm1' should not contain parse errors" name="Common Tests - .psm1 File Parsing.DSCResource.Tests\DscResource.DocumentationHelper\WikiPages.psm1.Module file 'DSCResource.Tests\DscResource.DocumentationHelper\WikiPages.psm1' should not contain parse errors" time="0.0102" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="DSCResource.Tests\DscResource.GalleryDeploy\DscResource.GalleryDeploy.psm1" executed="True" result="Success" success="True" time="0.2811" asserts="0" description="DSCResource.Tests\DscResource.GalleryDeploy\DscResource.GalleryDeploy.psm1">
+                <results>
+                  <test-case description="Module file 'DSCResource.Tests\DscResource.GalleryDeploy\DscResource.GalleryDeploy.psm1' should not contain parse errors" name="Common Tests - .psm1 File Parsing.DSCResource.Tests\DscResource.GalleryDeploy\DscResource.GalleryDeploy.psm1.Module file 'DSCResource.Tests\DscResource.GalleryDeploy\DscResource.GalleryDeploy.psm1' should not contain parse errors" time="0.0437" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="DSCResource.Tests\Tests\TestHelpers\CommonTestHelper.psm1" executed="True" result="Success" success="True" time="0.1492" asserts="0" description="DSCResource.Tests\Tests\TestHelpers\CommonTestHelper.psm1">
+                <results>
+                  <test-case description="Module file 'DSCResource.Tests\Tests\TestHelpers\CommonTestHelper.psm1' should not contain parse errors" name="Common Tests - .psm1 File Parsing.DSCResource.Tests\Tests\TestHelpers\CommonTestHelper.psm1.Module file 'DSCResource.Tests\Tests\TestHelpers\CommonTestHelper.psm1' should not contain parse errors" time="0.0068" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="DSCResources\MSFT_UpdateServicesApprovalRule\MSFT_UpdateServicesApprovalRule.psm1" executed="True" result="Success" success="True" time="0.1355" asserts="0" description="DSCResources\MSFT_UpdateServicesApprovalRule\MSFT_UpdateServicesApprovalRule.psm1">
+                <results>
+                  <test-case description="Module file 'DSCResources\MSFT_UpdateServicesApprovalRule\MSFT_UpdateServicesApprovalRule.psm1' should not contain parse errors" name="Common Tests - .psm1 File Parsing.DSCResources\MSFT_UpdateServicesApprovalRule\MSFT_UpdateServicesApprovalRule.psm1.Module file 'DSCResources\MSFT_UpdateServicesApprovalRule\MSFT_UpdateServicesApprovalRule.psm1' should not contain parse errors" time="0.0105" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="DSCResources\MSFT_UpdateServicesCleanup\MSFT_UpdateServicesCleanup.psm1" executed="True" result="Success" success="True" time="0.1604" asserts="0" description="DSCResources\MSFT_UpdateServicesCleanup\MSFT_UpdateServicesCleanup.psm1">
+                <results>
+                  <test-case description="Module file 'DSCResources\MSFT_UpdateServicesCleanup\MSFT_UpdateServicesCleanup.psm1' should not contain parse errors" name="Common Tests - .psm1 File Parsing.DSCResources\MSFT_UpdateServicesCleanup\MSFT_UpdateServicesCleanup.psm1.Module file 'DSCResources\MSFT_UpdateServicesCleanup\MSFT_UpdateServicesCleanup.psm1' should not contain parse errors" time="0.0112" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="DSCResources\MSFT_UpdateServicesServer\MSFT_UpdateServicesServer.psm1" executed="True" result="Success" success="True" time="0.2103" asserts="0" description="DSCResources\MSFT_UpdateServicesServer\MSFT_UpdateServicesServer.psm1">
+                <results>
+                  <test-case description="Module file 'DSCResources\MSFT_UpdateServicesServer\MSFT_UpdateServicesServer.psm1' should not contain parse errors" name="Common Tests - .psm1 File Parsing.DSCResources\MSFT_UpdateServicesServer\MSFT_UpdateServicesServer.psm1.Module file 'DSCResources\MSFT_UpdateServicesServer\MSFT_UpdateServicesServer.psm1' should not contain parse errors" time="0.0153" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="PDT\PDT.psm1" executed="True" result="Success" success="True" time="0.1234" asserts="0" description="PDT\PDT.psm1">
+                <results>
+                  <test-case description="Module file 'PDT\PDT.psm1' should not contain parse errors" name="Common Tests - .psm1 File Parsing.PDT\PDT.psm1.Module file 'PDT\PDT.psm1' should not contain parse errors" time="0.0122" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="Tests\Helpers\ImitateUpdateServicesModule.psm1" executed="True" result="Success" success="True" time="0.1329" asserts="0" description="Tests\Helpers\ImitateUpdateServicesModule.psm1">
+                <results>
+                  <test-case description="Module file 'Tests\Helpers\ImitateUpdateServicesModule.psm1' should not contain parse errors" name="Common Tests - .psm1 File Parsing.Tests\Helpers\ImitateUpdateServicesModule.psm1.Module file 'Tests\Helpers\ImitateUpdateServicesModule.psm1' should not contain parse errors" time="0.009" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="Common Tests - Validate Module Files" executed="True" result="Success" success="True" time="3.0322" asserts="0" description="Common Tests - Validate Module Files">
+            <results>
+              <test-suite type="TestFixture" name="UpdateServicesHelper.psm1" executed="True" result="Success" success="True" time="0.1485" asserts="0" description="UpdateServicesHelper.psm1">
+                <results>
+                  <test-case description="Module file 'UpdateServicesHelper.psm1' should not have Byte Order Mark (BOM)" name="Common Tests - Validate Module Files.UpdateServicesHelper.psm1.Module file 'UpdateServicesHelper.psm1' should not have Byte Order Mark (BOM)" time="0.0193" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="DSCResource.Tests\AppVeyor.psm1" executed="True" result="Success" success="True" time="0.2173" asserts="0" description="DSCResource.Tests\AppVeyor.psm1">
+                <results>
+                  <test-case description="Module file 'DSCResource.Tests\AppVeyor.psm1' should not have Byte Order Mark (BOM)" name="Common Tests - Validate Module Files.DSCResource.Tests\AppVeyor.psm1.Module file 'DSCResource.Tests\AppVeyor.psm1' should not have Byte Order Mark (BOM)" time="0.006" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="DSCResource.Tests\MetaFixers.psm1" executed="True" result="Success" success="True" time="0.1631" asserts="0" description="DSCResource.Tests\MetaFixers.psm1">
+                <results>
+                  <test-case description="Module file 'DSCResource.Tests\MetaFixers.psm1' should not have Byte Order Mark (BOM)" name="Common Tests - Validate Module Files.DSCResource.Tests\MetaFixers.psm1.Module file 'DSCResource.Tests\MetaFixers.psm1' should not have Byte Order Mark (BOM)" time="0.0243" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="DSCResource.Tests\TestHelper.psm1" executed="True" result="Success" success="True" time="0.1514" asserts="0" description="DSCResource.Tests\TestHelper.psm1">
+                <results>
+                  <test-case description="Module file 'DSCResource.Tests\TestHelper.psm1' should not have Byte Order Mark (BOM)" name="Common Tests - Validate Module Files.DSCResource.Tests\TestHelper.psm1.Module file 'DSCResource.Tests\TestHelper.psm1' should not have Byte Order Mark (BOM)" time="0.0113" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="DSCResource.Tests\TestRunner.psm1" executed="True" result="Success" success="True" time="0.138" asserts="0" description="DSCResource.Tests\TestRunner.psm1">
+                <results>
+                  <test-case description="Module file 'DSCResource.Tests\TestRunner.psm1' should not have Byte Order Mark (BOM)" name="Common Tests - Validate Module Files.DSCResource.Tests\TestRunner.psm1.Module file 'DSCResource.Tests\TestRunner.psm1' should not have Byte Order Mark (BOM)" time="0.016" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="DSCResource.Tests\DscResource.AnalyzerRules\DscResource.AnalyzerRules.Helper.psm1" executed="True" result="Success" success="True" time="0.1226" asserts="0" description="DSCResource.Tests\DscResource.AnalyzerRules\DscResource.AnalyzerRules.Helper.psm1">
+                <results>
+                  <test-case description="Module file 'DSCResource.Tests\DscResource.AnalyzerRules\DscResource.AnalyzerRules.Helper.psm1' should not have Byte Order Mark (BOM)" name="Common Tests - Validate Module Files.DSCResource.Tests\DscResource.AnalyzerRules\DscResource.AnalyzerRules.Helper.psm1.Module file 'DSCResource.Tests\DscResource.AnalyzerRules\DscResource.AnalyzerRules.Helper.psm1' should not have Byte Order Mark (BOM)" time="0.0098" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="DSCResource.Tests\DscResource.AnalyzerRules\DscResource.AnalyzerRules.psm1" executed="True" result="Success" success="True" time="0.1312" asserts="0" description="DSCResource.Tests\DscResource.AnalyzerRules\DscResource.AnalyzerRules.psm1">
+                <results>
+                  <test-case description="Module file 'DSCResource.Tests\DscResource.AnalyzerRules\DscResource.AnalyzerRules.psm1' should not have Byte Order Mark (BOM)" name="Common Tests - Validate Module Files.DSCResource.Tests\DscResource.AnalyzerRules\DscResource.AnalyzerRules.psm1.Module file 'DSCResource.Tests\DscResource.AnalyzerRules\DscResource.AnalyzerRules.psm1' should not have Byte Order Mark (BOM)" time="0.0116" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="DSCResource.Tests\DscResource.CodeCoverage\CodeCovIo.psm1" executed="True" result="Success" success="True" time="0.1344" asserts="0" description="DSCResource.Tests\DscResource.CodeCoverage\CodeCovIo.psm1">
+                <results>
+                  <test-case description="Module file 'DSCResource.Tests\DscResource.CodeCoverage\CodeCovIo.psm1' should not have Byte Order Mark (BOM)" name="Common Tests - Validate Module Files.DSCResource.Tests\DscResource.CodeCoverage\CodeCovIo.psm1.Module file 'DSCResource.Tests\DscResource.CodeCoverage\CodeCovIo.psm1' should not have Byte Order Mark (BOM)" time="0.0105" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="DSCResource.Tests\DscResource.Container\DscResource.Container.psm1" executed="True" result="Success" success="True" time="0.1496" asserts="0" description="DSCResource.Tests\DscResource.Container\DscResource.Container.psm1">
+                <results>
+                  <test-case description="Module file 'DSCResource.Tests\DscResource.Container\DscResource.Container.psm1' should not have Byte Order Mark (BOM)" name="Common Tests - Validate Module Files.DSCResource.Tests\DscResource.Container\DscResource.Container.psm1.Module file 'DSCResource.Tests\DscResource.Container\DscResource.Container.psm1' should not have Byte Order Mark (BOM)" time="0.0203" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="DSCResource.Tests\DscResource.DocumentationHelper\MofHelper.psm1" executed="True" result="Success" success="True" time="0.1485" asserts="0" description="DSCResource.Tests\DscResource.DocumentationHelper\MofHelper.psm1">
+                <results>
+                  <test-case description="Module file 'DSCResource.Tests\DscResource.DocumentationHelper\MofHelper.psm1' should not have Byte Order Mark (BOM)" name="Common Tests - Validate Module Files.DSCResource.Tests\DscResource.DocumentationHelper\MofHelper.psm1.Module file 'DSCResource.Tests\DscResource.DocumentationHelper\MofHelper.psm1' should not have Byte Order Mark (BOM)" time="0.0077" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="DSCResource.Tests\DscResource.DocumentationHelper\PowerShellHelp.psm1" executed="True" result="Success" success="True" time="0.1266" asserts="0" description="DSCResource.Tests\DscResource.DocumentationHelper\PowerShellHelp.psm1">
+                <results>
+                  <test-case description="Module file 'DSCResource.Tests\DscResource.DocumentationHelper\PowerShellHelp.psm1' should not have Byte Order Mark (BOM)" name="Common Tests - Validate Module Files.DSCResource.Tests\DscResource.DocumentationHelper\PowerShellHelp.psm1.Module file 'DSCResource.Tests\DscResource.DocumentationHelper\PowerShellHelp.psm1' should not have Byte Order Mark (BOM)" time="0.0102" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="DSCResource.Tests\DscResource.DocumentationHelper\WikiPages.psm1" executed="True" result="Success" success="True" time="0.1506" asserts="0" description="DSCResource.Tests\DscResource.DocumentationHelper\WikiPages.psm1">
+                <results>
+                  <test-case description="Module file 'DSCResource.Tests\DscResource.DocumentationHelper\WikiPages.psm1' should not have Byte Order Mark (BOM)" name="Common Tests - Validate Module Files.DSCResource.Tests\DscResource.DocumentationHelper\WikiPages.psm1.Module file 'DSCResource.Tests\DscResource.DocumentationHelper\WikiPages.psm1' should not have Byte Order Mark (BOM)" time="0.0115" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="DSCResource.Tests\DscResource.GalleryDeploy\DscResource.GalleryDeploy.psm1" executed="True" result="Success" success="True" time="0.1516" asserts="0" description="DSCResource.Tests\DscResource.GalleryDeploy\DscResource.GalleryDeploy.psm1">
+                <results>
+                  <test-case description="Module file 'DSCResource.Tests\DscResource.GalleryDeploy\DscResource.GalleryDeploy.psm1' should not have Byte Order Mark (BOM)" name="Common Tests - Validate Module Files.DSCResource.Tests\DscResource.GalleryDeploy\DscResource.GalleryDeploy.psm1.Module file 'DSCResource.Tests\DscResource.GalleryDeploy\DscResource.GalleryDeploy.psm1' should not have Byte Order Mark (BOM)" time="0.0155" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="DSCResource.Tests\Tests\TestHelpers\CommonTestHelper.psm1" executed="True" result="Success" success="True" time="0.1437" asserts="0" description="DSCResource.Tests\Tests\TestHelpers\CommonTestHelper.psm1">
+                <results>
+                  <test-case description="Module file 'DSCResource.Tests\Tests\TestHelpers\CommonTestHelper.psm1' should not have Byte Order Mark (BOM)" name="Common Tests - Validate Module Files.DSCResource.Tests\Tests\TestHelpers\CommonTestHelper.psm1.Module file 'DSCResource.Tests\Tests\TestHelpers\CommonTestHelper.psm1' should not have Byte Order Mark (BOM)" time="0.0078" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="DSCResources\MSFT_UpdateServicesApprovalRule\MSFT_UpdateServicesApprovalRule.psm1" executed="True" result="Success" success="True" time="0.1457" asserts="0" description="DSCResources\MSFT_UpdateServicesApprovalRule\MSFT_UpdateServicesApprovalRule.psm1">
+                <results>
+                  <test-case description="Module file 'DSCResources\MSFT_UpdateServicesApprovalRule\MSFT_UpdateServicesApprovalRule.psm1' should not have Byte Order Mark (BOM)" name="Common Tests - Validate Module Files.DSCResources\MSFT_UpdateServicesApprovalRule\MSFT_UpdateServicesApprovalRule.psm1.Module file 'DSCResources\MSFT_UpdateServicesApprovalRule\MSFT_UpdateServicesApprovalRule.psm1' should not have Byte Order Mark (BOM)" time="0.0087" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="DSCResources\MSFT_UpdateServicesCleanup\MSFT_UpdateServicesCleanup.psm1" executed="True" result="Success" success="True" time="0.1463" asserts="0" description="DSCResources\MSFT_UpdateServicesCleanup\MSFT_UpdateServicesCleanup.psm1">
+                <results>
+                  <test-case description="Module file 'DSCResources\MSFT_UpdateServicesCleanup\MSFT_UpdateServicesCleanup.psm1' should not have Byte Order Mark (BOM)" name="Common Tests - Validate Module Files.DSCResources\MSFT_UpdateServicesCleanup\MSFT_UpdateServicesCleanup.psm1.Module file 'DSCResources\MSFT_UpdateServicesCleanup\MSFT_UpdateServicesCleanup.psm1' should not have Byte Order Mark (BOM)" time="0.0204" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="DSCResources\MSFT_UpdateServicesServer\MSFT_UpdateServicesServer.psm1" executed="True" result="Success" success="True" time="0.1555" asserts="0" description="DSCResources\MSFT_UpdateServicesServer\MSFT_UpdateServicesServer.psm1">
+                <results>
+                  <test-case description="Module file 'DSCResources\MSFT_UpdateServicesServer\MSFT_UpdateServicesServer.psm1' should not have Byte Order Mark (BOM)" name="Common Tests - Validate Module Files.DSCResources\MSFT_UpdateServicesServer\MSFT_UpdateServicesServer.psm1.Module file 'DSCResources\MSFT_UpdateServicesServer\MSFT_UpdateServicesServer.psm1' should not have Byte Order Mark (BOM)" time="0.0121" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="PDT\PDT.psm1" executed="True" result="Success" success="True" time="0.1318" asserts="0" description="PDT\PDT.psm1">
+                <results>
+                  <test-case description="Module file 'PDT\PDT.psm1' should not have Byte Order Mark (BOM)" name="Common Tests - Validate Module Files.PDT\PDT.psm1.Module file 'PDT\PDT.psm1' should not have Byte Order Mark (BOM)" time="0.0142" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="Tests\Helpers\ImitateUpdateServicesModule.psm1" executed="True" result="Success" success="True" time="0.1193" asserts="0" description="Tests\Helpers\ImitateUpdateServicesModule.psm1">
+                <results>
+                  <test-case description="Module file 'Tests\Helpers\ImitateUpdateServicesModule.psm1' should not have Byte Order Mark (BOM)" name="Common Tests - Validate Module Files.Tests\Helpers\ImitateUpdateServicesModule.psm1.Module file 'Tests\Helpers\ImitateUpdateServicesModule.psm1' should not have Byte Order Mark (BOM)" time="0.0072" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="Common Tests - Module Manifest" executed="True" result="Success" success="True" time="0.3059" asserts="0" description="Common Tests - Module Manifest">
+            <results>
+              <test-case description="Should contain a PowerShellVersion property of at least 4.0 based on resource types" name="Common Tests - Module Manifest.Should contain a PowerShellVersion property of at least 4.0 based on resource types" time="0.0076" asserts="0" success="True" result="Success" executed="True" />
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="Common Tests - Script Resource Schema Validation" executed="True" result="Success" success="True" time="8.2614" asserts="0" description="Common Tests - Script Resource Schema Validation">
+            <results>
+              <test-suite type="TestFixture" name="MSFT_UpdateServicesApprovalRule" executed="True" result="Success" success="True" time="1.1358" asserts="0" description="MSFT_UpdateServicesApprovalRule">
+                <results>
+                  <test-case description="Should pass Test-xDscResource" name="Common Tests - Script Resource Schema Validation.MSFT_UpdateServicesApprovalRule.Should pass Test-xDscResource" time="0.6663" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Should pass Test-xDscSchema" name="Common Tests - Script Resource Schema Validation.MSFT_UpdateServicesApprovalRule.Should pass Test-xDscSchema" time="0.3389" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="MSFT_UpdateServicesCleanup" executed="True" result="Success" success="True" time="1.0649" asserts="0" description="MSFT_UpdateServicesCleanup">
+                <results>
+                  <test-case description="Should pass Test-xDscResource" name="Common Tests - Script Resource Schema Validation.MSFT_UpdateServicesCleanup.Should pass Test-xDscResource" time="0.5629" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Should pass Test-xDscSchema" name="Common Tests - Script Resource Schema Validation.MSFT_UpdateServicesCleanup.Should pass Test-xDscSchema" time="0.352" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="MSFT_UpdateServicesServer" executed="True" result="Success" success="True" time="1.4827" asserts="0" description="MSFT_UpdateServicesServer">
+                <results>
+                  <test-case description="Should pass Test-xDscResource" name="Common Tests - Script Resource Schema Validation.MSFT_UpdateServicesServer.Should pass Test-xDscResource" time="0.7981" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Should pass Test-xDscSchema" name="Common Tests - Script Resource Schema Validation.MSFT_UpdateServicesServer.Should pass Test-xDscSchema" time="0.5127" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="Common Tests - PS Script Analyzer on Resource Files" executed="True" result="Failure" success="False" time="1604.4394" asserts="0" description="Common Tests - PS Script Analyzer on Resource Files">
+            <results>
+              <test-suite type="TestFixture" name="MSFT_UpdateServicesApprovalRule.psm1" executed="True" result="Success" success="True" time="262.1483" asserts="0" description="MSFT_UpdateServicesApprovalRule.psm1">
+                <results>
+                  <test-case description="Should pass all error-level PS Script Analyzer rules" name="Common Tests - PS Script Analyzer on Resource Files.MSFT_UpdateServicesApprovalRule.psm1.Should pass all error-level PS Script Analyzer rules" time="0.0986" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Should pass all required PS Script Analyzer rules" name="Common Tests - PS Script Analyzer on Resource Files.MSFT_UpdateServicesApprovalRule.psm1.Should pass all required PS Script Analyzer rules" time="100.9196" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Should pass all flagged PS Script Analyzer rules" name="Common Tests - PS Script Analyzer on Resource Files.MSFT_UpdateServicesApprovalRule.psm1.Should pass all flagged PS Script Analyzer rules" time="0.1315" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Should pass any recently-added, error-level PS Script Analyzer rules" name="Common Tests - PS Script Analyzer on Resource Files.MSFT_UpdateServicesApprovalRule.psm1.Should pass any recently-added, error-level PS Script Analyzer rules" time="0.0822" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Should not suppress any required PS Script Analyzer rules" name="Common Tests - PS Script Analyzer on Resource Files.MSFT_UpdateServicesApprovalRule.psm1.Should not suppress any required PS Script Analyzer rules" time="0.1256" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Should pass all custom DSC Resource Kit PSSA rules" name="Common Tests - PS Script Analyzer on Resource Files.MSFT_UpdateServicesApprovalRule.psm1.Should pass all custom DSC Resource Kit PSSA rules" time="160.5446" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="MSFT_UpdateServicesCleanup.psm1" executed="True" result="Failure" success="False" time="203.1325" asserts="0" description="MSFT_UpdateServicesCleanup.psm1">
+                <results>
+                  <test-case description="Should pass all error-level PS Script Analyzer rules" name="Common Tests - PS Script Analyzer on Resource Files.MSFT_UpdateServicesCleanup.psm1.Should pass all error-level PS Script Analyzer rules" time="0.1055" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Should pass all required PS Script Analyzer rules" name="Common Tests - PS Script Analyzer on Resource Files.MSFT_UpdateServicesCleanup.psm1.Should pass all required PS Script Analyzer rules" time="34.5997" asserts="0" success="False" result="Failure" executed="True">
+                    <failure>
+                      <message>Expected $null, but got Microsoft.Windows.PowerShell.ScriptAnalyzer.Generic.DiagnosticRecord.</message>
+                      <stack-trace>at &lt;ScriptBlock&gt;, C:\src\UpdateServicesDsc\DSCResource.Tests\Meta.Tests.ps1: line 499
+499:                         $requiredPssaRulesOutput | Should -Be $null</stack-trace>
+                    </failure>
+                  </test-case>
+                  <test-case description="Should pass all flagged PS Script Analyzer rules" name="Common Tests - PS Script Analyzer on Resource Files.MSFT_UpdateServicesCleanup.psm1.Should pass all flagged PS Script Analyzer rules" time="0.0873" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Should pass any recently-added, error-level PS Script Analyzer rules" name="Common Tests - PS Script Analyzer on Resource Files.MSFT_UpdateServicesCleanup.psm1.Should pass any recently-added, error-level PS Script Analyzer rules" time="0.0777" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Should not suppress any required PS Script Analyzer rules" name="Common Tests - PS Script Analyzer on Resource Files.MSFT_UpdateServicesCleanup.psm1.Should not suppress any required PS Script Analyzer rules" time="0.0736" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Should pass all custom DSC Resource Kit PSSA rules" name="Common Tests - PS Script Analyzer on Resource Files.MSFT_UpdateServicesCleanup.psm1.Should pass all custom DSC Resource Kit PSSA rules" time="167.8878" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="MSFT_UpdateServicesServer.psm1" executed="True" result="Failure" success="False" time="1134.8944" asserts="0" description="MSFT_UpdateServicesServer.psm1">
+                <results>
+                  <test-case description="Should pass all error-level PS Script Analyzer rules" name="Common Tests - PS Script Analyzer on Resource Files.MSFT_UpdateServicesServer.psm1.Should pass all error-level PS Script Analyzer rules" time="0.1099" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Should pass all required PS Script Analyzer rules" name="Common Tests - PS Script Analyzer on Resource Files.MSFT_UpdateServicesServer.psm1.Should pass all required PS Script Analyzer rules" time="654.5711" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Should pass all flagged PS Script Analyzer rules" name="Common Tests - PS Script Analyzer on Resource Files.MSFT_UpdateServicesServer.psm1.Should pass all flagged PS Script Analyzer rules" time="0.1201" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Should pass any recently-added, error-level PS Script Analyzer rules" name="Common Tests - PS Script Analyzer on Resource Files.MSFT_UpdateServicesServer.psm1.Should pass any recently-added, error-level PS Script Analyzer rules" time="0.1511" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Should not suppress any required PS Script Analyzer rules" name="Common Tests - PS Script Analyzer on Resource Files.MSFT_UpdateServicesServer.psm1.Should not suppress any required PS Script Analyzer rules" time="0.3626" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Should pass all custom DSC Resource Kit PSSA rules" name="Common Tests - PS Script Analyzer on Resource Files.MSFT_UpdateServicesServer.psm1.Should pass all custom DSC Resource Kit PSSA rules" time="479.116" asserts="0" success="False" result="Failure" executed="True">
+                    <failure>
+                      <message>Expected $null, but got @(Microsoft.Windows.PowerShell.ScriptAnalyzer.Generic.DiagnosticRecord, Microsoft.Windows.PowerShell.ScriptAnalyzer.Generic.DiagnosticRecord, Microsoft.Windows.PowerShell.ScriptAnalyzer.Generic.DiagnosticRecord, Microsoft.Windows.PowerShell.ScriptAnalyzer.Generic.DiagnosticRecord).</message>
+                      <stack-trace>at &lt;ScriptBlock&gt;, C:\src\UpdateServicesDsc\DSCResource.Tests\Meta.Tests.ps1: line 577
+577:                         $customPssaRulesOutput | Should -Be $null</stack-trace>
+                    </failure>
+                  </test-case>
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="Common Tests - Validate Example Files" executed="True" result="Success" success="True" time="0.23" asserts="0" description="Common Tests - Validate Example Files">
+            <results />
+          </test-suite>
+          <test-suite type="TestFixture" name="Common Tests - Validate Example Files To Be Published" executed="True" result="Success" success="True" time="0.2466" asserts="0" description="Common Tests - Validate Example Files To Be Published">
+            <results />
+          </test-suite>
+          <test-suite type="TestFixture" name="Common Tests - Validate Markdown Files" executed="True" result="Success" success="True" time="317.448" asserts="0" description="Common Tests - Validate Markdown Files">
+            <results>
+              <test-suite type="TestFixture" name="When installing markdown validation dependencies" executed="True" result="Success" success="True" time="170.8688" asserts="0" description="When installing markdown validation dependencies">
+                <results>
+                  <test-case description="Should not throw an error when installing package Gulp in global scope" name="Common Tests - Validate Markdown Files.When installing markdown validation dependencies.Should not throw an error when installing package Gulp in global scope" time="51.4848" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Should not throw an error when installing package Gulp in local scope" name="Common Tests - Validate Markdown Files.When installing markdown validation dependencies.Should not throw an error when installing package Gulp in local scope" time="31.4326" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Should not throw an error when installing package through2" name="Common Tests - Validate Markdown Files.When installing markdown validation dependencies.Should not throw an error when installing package through2" time="20.2231" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Should not throw an error when installing package markdownlint" name="Common Tests - Validate Markdown Files.When installing markdown validation dependencies.Should not throw an error when installing package markdownlint" time="31.4468" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Should not throw an error when installing package gulp-concat as a dev-dependency" name="Common Tests - Validate Markdown Files.When installing markdown validation dependencies.Should not throw an error when installing package gulp-concat as a dev-dependency" time="35.547" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="When there are markdown files" executed="True" result="Success" success="True" time="12.0982" asserts="0" description="When there are markdown files">
+                <results>
+                  <test-case description="Should not have errors in any markdown files" name="Common Tests - Validate Markdown Files.When there are markdown files.Should not have errors in any markdown files" time="11.2524" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="When uninstalling markdown validation dependencies" executed="True" result="Success" success="True" time="134.159" asserts="0" description="When uninstalling markdown validation dependencies">
+                <results>
+                  <test-case description="Should not throw an error when uninstalling package gulp-concat as a dev-dependency" name="Common Tests - Validate Markdown Files.When uninstalling markdown validation dependencies.Should not throw an error when uninstalling package gulp-concat as a dev-dependency" time="34.5781" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Should not throw an error when uninstalling package markdownlint" name="Common Tests - Validate Markdown Files.When uninstalling markdown validation dependencies.Should not throw an error when uninstalling package markdownlint" time="29.6303" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Should not throw an error when uninstalling package through2" name="Common Tests - Validate Markdown Files.When uninstalling markdown validation dependencies.Should not throw an error when uninstalling package through2" time="29.5676" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Should not throw an error when uninstalling package Gulp in local scope" name="Common Tests - Validate Markdown Files.When uninstalling markdown validation dependencies.Should not throw an error when uninstalling package Gulp in local scope" time="19.3234" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Should not throw an error when uninstalling package Gulp in global scope" name="Common Tests - Validate Markdown Files.When uninstalling markdown validation dependencies.Should not throw an error when uninstalling package Gulp in global scope" time="15.1954" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Should not throw an error when removing the node_modules folder" name="Common Tests - Validate Markdown Files.When uninstalling markdown validation dependencies.Should not throw an error when removing the node_modules folder" time="2.885" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="Common Tests - Spellcheck Files" executed="True" result="Ignored" success="True" time="39.3664" asserts="0" description="Common Tests - Spellcheck Files">
+            <results>
+              <test-suite type="TestFixture" name="When installing spellcheck dependencies" executed="True" result="Success" success="True" time="27.6417" asserts="0" description="When installing spellcheck dependencies">
+                <results>
+                  <test-case description="Should not throw an error when installing package cSpell in global scope" name="Common Tests - Spellcheck Files.When installing spellcheck dependencies.Should not throw an error when installing package cSpell in global scope" time="27.3575" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="When there are markdown files" executed="True" result="Ignored" success="True" time="0.3605" asserts="0" description="When there are markdown files">
+                <results>
+                  <test-case description="Should not have spelling errors in any markdown files" name="Common Tests - Spellcheck Files.When there are markdown files.Should not have spelling errors in any markdown files" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="When uninstalling spellcheck dependencies" executed="True" result="Success" success="True" time="10.8069" asserts="0" description="When uninstalling spellcheck dependencies">
+                <results>
+                  <test-case description="Should not throw an error when uninstalling package cSpell in global scope" name="Common Tests - Spellcheck Files.When uninstalling spellcheck dependencies.Should not throw an error when uninstalling package cSpell in global scope" time="10.194" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="Common Tests - Validate Markdown Links" executed="True" result="Ignored" success="True" time="6.9075" asserts="0" description="Common Tests - Validate Markdown Links">
+            <results>
+              <test-suite type="TestFixture" name="When installing markdown link validation dependencies" executed="True" result="Ignored" success="True" time="0.5063" asserts="0" description="When installing markdown link validation dependencies">
+                <results>
+                  <test-case description="Should not throw an error when installing and importing the module MarkdownLinkCheck" name="Common Tests - Validate Markdown Links.When installing markdown link validation dependencies.Should not throw an error when installing and importing the module MarkdownLinkCheck" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="UpdateServicesDsc\CHANGELOG.md" executed="True" result="Ignored" success="True" time="0.4885" asserts="0" description="UpdateServicesDsc\CHANGELOG.md">
+                <results>
+                  <test-case description="Should not contain any broken links" name="Common Tests - Validate Markdown Links.UpdateServicesDsc\CHANGELOG.md.Should not contain any broken links" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="UpdateServicesDsc\CODE_OF_CONDUCT.md" executed="True" result="Ignored" success="True" time="0.4149" asserts="0" description="UpdateServicesDsc\CODE_OF_CONDUCT.md">
+                <results>
+                  <test-case description="Should not contain any broken links" name="Common Tests - Validate Markdown Links.UpdateServicesDsc\CODE_OF_CONDUCT.md.Should not contain any broken links" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="UpdateServicesDsc\ReadMe.md" executed="True" result="Ignored" success="True" time="1.1358" asserts="0" description="UpdateServicesDsc\ReadMe.md">
+                <results>
+                  <test-case description="Should not contain any broken links" name="Common Tests - Validate Markdown Links.UpdateServicesDsc\ReadMe.md.Should not contain any broken links" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name=".github\PULL_REQUEST_TEMPLATE.md" executed="True" result="Ignored" success="True" time="0.7527" asserts="0" description=".github\PULL_REQUEST_TEMPLATE.md">
+                <results>
+                  <test-case description="Should not contain any broken links" name="Common Tests - Validate Markdown Links..github\PULL_REQUEST_TEMPLATE.md.Should not contain any broken links" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="ISSUE_TEMPLATE\General.md" executed="True" result="Ignored" success="True" time="0.7825" asserts="0" description="ISSUE_TEMPLATE\General.md">
+                <results>
+                  <test-case description="Should not contain any broken links" name="Common Tests - Validate Markdown Links.ISSUE_TEMPLATE\General.md.Should not contain any broken links" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="ISSUE_TEMPLATE\Problem_with_resource.md" executed="True" result="Ignored" success="True" time="0.4384" asserts="0" description="ISSUE_TEMPLATE\Problem_with_resource.md">
+                <results>
+                  <test-case description="Should not contain any broken links" name="Common Tests - Validate Markdown Links.ISSUE_TEMPLATE\Problem_with_resource.md.Should not contain any broken links" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="ISSUE_TEMPLATE\Resource_proposal.md" executed="True" result="Ignored" success="True" time="0.3054" asserts="0" description="ISSUE_TEMPLATE\Resource_proposal.md">
+                <results>
+                  <test-case description="Should not contain any broken links" name="Common Tests - Validate Markdown Links.ISSUE_TEMPLATE\Resource_proposal.md.Should not contain any broken links" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="DSCResource.Tests\CHANGELOG.md" executed="True" result="Ignored" success="True" time="0.2782" asserts="0" description="DSCResource.Tests\CHANGELOG.md">
+                <results>
+                  <test-case description="Should not contain any broken links" name="Common Tests - Validate Markdown Links.DSCResource.Tests\CHANGELOG.md.Should not contain any broken links" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="DSCResource.Tests\README.md" executed="True" result="Ignored" success="True" time="0.202" asserts="0" description="DSCResource.Tests\README.md">
+                <results>
+                  <test-case description="Should not contain any broken links" name="Common Tests - Validate Markdown Links.DSCResource.Tests\README.md.Should not contain any broken links" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name=".github\PULL_REQUEST_TEMPLATE.md" executed="True" result="Ignored" success="True" time="0.2341" asserts="0" description=".github\PULL_REQUEST_TEMPLATE.md">
+                <results>
+                  <test-case description="Should not contain any broken links" name="Common Tests - Validate Markdown Links..github\PULL_REQUEST_TEMPLATE.md.Should not contain any broken links" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="ISSUE_TEMPLATE\General.md" executed="True" result="Ignored" success="True" time="0.2218" asserts="0" description="ISSUE_TEMPLATE\General.md">
+                <results>
+                  <test-case description="Should not contain any broken links" name="Common Tests - Validate Markdown Links.ISSUE_TEMPLATE\General.md.Should not contain any broken links" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="ISSUE_TEMPLATE\Problem_with_resource.md" executed="True" result="Ignored" success="True" time="0.2107" asserts="0" description="ISSUE_TEMPLATE\Problem_with_resource.md">
+                <results>
+                  <test-case description="Should not contain any broken links" name="Common Tests - Validate Markdown Links.ISSUE_TEMPLATE\Problem_with_resource.md.Should not contain any broken links" time="0" asserts="0" success="True" result="Ignored" executed="False" />
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\src\UpdateServicesDsc\Tests\Integration\UpdateServicesDsc.tests.ps1" executed="True" result="Success" success="True" time="14.4522" asserts="0" description="C:\src\UpdateServicesDsc\Tests\Integration\UpdateServicesDsc.tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="MSFT_UpdateServicesServer_Integration" executed="True" result="Success" success="True" time="13.3836" asserts="0" description="MSFT_UpdateServicesServer_Integration">
+            <results>
+              <test-case description="Should compile without throwing" name="MSFT_UpdateServicesServer_Integration.Should compile without throwing" time="13.1374" asserts="0" success="True" result="Success" executed="True" />
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\src\UpdateServicesDsc\Tests\Unit\MSFT_UpdateServicesApprovalRule.tests.ps1" executed="True" result="Success" success="True" time="25.9389" asserts="0" description="C:\src\UpdateServicesDsc\Tests\Unit\MSFT_UpdateServicesApprovalRule.tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="MSFT_UpdateServicesApprovalRule\Get-TargetResource" executed="True" result="Success" success="True" time="7.3143" asserts="0" description="MSFT_UpdateServicesApprovalRule\Get-TargetResource">
+            <results>
+              <test-suite type="TestFixture" name="server should be configured." executed="True" result="Success" success="True" time="2.7285" asserts="0" description="server should be configured.">
+                <results>
+                  <test-case description="calling Get should not throw" name="MSFT_UpdateServicesApprovalRule\Get-TargetResource.server should be configured..calling Get should not throw" time="0.2872" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Ensure" name="MSFT_UpdateServicesApprovalRule\Get-TargetResource.server should be configured..Ensure" time="0.0548" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Classifications" name="MSFT_UpdateServicesApprovalRule\Get-TargetResource.server should be configured..Classifications" time="0.0428" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Products" name="MSFT_UpdateServicesApprovalRule\Get-TargetResource.server should be configured..Products" time="0.0516" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Computer Groups" name="MSFT_UpdateServicesApprovalRule\Get-TargetResource.server should be configured..Computer Groups" time="0.0733" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Enabled" name="MSFT_UpdateServicesApprovalRule\Get-TargetResource.server should be configured..Enabled" time="0.0481" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="mocks were not called" name="MSFT_UpdateServicesApprovalRule\Get-TargetResource.server should be configured..mocks were not called" time="0.1407" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="server should not be configured." executed="True" result="Success" success="True" time="2.4529" asserts="0" description="server should not be configured.">
+                <results>
+                  <test-case description="calling Get should not throw" name="MSFT_UpdateServicesApprovalRule\Get-TargetResource.server should not be configured..calling Get should not throw" time="0.3281" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Ensure" name="MSFT_UpdateServicesApprovalRule\Get-TargetResource.server should not be configured..Ensure" time="0.0583" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Classifications" name="MSFT_UpdateServicesApprovalRule\Get-TargetResource.server should not be configured..Classifications" time="0.0475" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Products" name="MSFT_UpdateServicesApprovalRule\Get-TargetResource.server should not be configured..Products" time="0.0483" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Computer Groups" name="MSFT_UpdateServicesApprovalRule\Get-TargetResource.server should not be configured..Computer Groups" time="0.0476" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Enabled" name="MSFT_UpdateServicesApprovalRule\Get-TargetResource.server should not be configured..Enabled" time="0.0512" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="mocks were called" name="MSFT_UpdateServicesApprovalRule\Get-TargetResource.server should not be configured..mocks were called" time="0.2139" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="mocks were not called" name="MSFT_UpdateServicesApprovalRule\Get-TargetResource.server should not be configured..mocks were not called" time="0.0455" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="server is not configured." executed="True" result="Success" success="True" time="1.4195" asserts="0" description="server is not configured.">
+                <results>
+                  <test-case description="calling Get should not throw" name="MSFT_UpdateServicesApprovalRule\Get-TargetResource.server is not configured..calling Get should not throw" time="0.0971" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Ensure" name="MSFT_UpdateServicesApprovalRule\Get-TargetResource.server is not configured..Ensure" time="0.0341" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Classifications" name="MSFT_UpdateServicesApprovalRule\Get-TargetResource.server is not configured..Classifications" time="0.0334" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Products" name="MSFT_UpdateServicesApprovalRule\Get-TargetResource.server is not configured..Products" time="0.0364" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Computer Groups" name="MSFT_UpdateServicesApprovalRule\Get-TargetResource.server is not configured..Computer Groups" time="0.0593" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Enabled" name="MSFT_UpdateServicesApprovalRule\Get-TargetResource.server is not configured..Enabled" time="0.0617" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="mocks were not called" name="MSFT_UpdateServicesApprovalRule\Get-TargetResource.server is not configured..mocks were not called" time="0.0556" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="MSFT_UpdateServicesApprovalRule\Test-TargetResource" executed="True" result="Success" success="True" time="6.8075" asserts="0" description="MSFT_UpdateServicesApprovalRule\Test-TargetResource">
+            <results>
+              <test-suite type="TestFixture" name="server is in correct state (Ensure=Present)" executed="True" result="Success" success="True" time="1.6196" asserts="0" description="server is in correct state (Ensure=Present)">
+                <results>
+                  <test-case description="calling test should not throw" name="MSFT_UpdateServicesApprovalRule\Test-TargetResource.server is in correct state (Ensure=Present).calling test should not throw" time="0.1409" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="result should be true" name="MSFT_UpdateServicesApprovalRule\Test-TargetResource.server is in correct state (Ensure=Present).result should be true" time="0.1473" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="server should not be configured (Ensure=Absent) but is" executed="True" result="Success" success="True" time="3.7619" asserts="0" description="server should not be configured (Ensure=Absent) but is">
+                <results>
+                  <test-case description="calling test should not throw" name="MSFT_UpdateServicesApprovalRule\Test-TargetResource.server should not be configured (Ensure=Absent) but is.calling test should not throw" time="1.2154" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="result should be false" name="MSFT_UpdateServicesApprovalRule\Test-TargetResource.server should not be configured (Ensure=Absent) but is.result should be false" time="0.0882" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="setting has drifted" executed="True" result="Success" success="True" time="1.1183" asserts="0" description="setting has drifted">
+                <results>
+                  <test-case description="calling test should not throw" name="MSFT_UpdateServicesApprovalRule\Test-TargetResource.setting has drifted.calling test should not throw" time="0.1312" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="result should be false when Classifications has changed" name="MSFT_UpdateServicesApprovalRule\Test-TargetResource.setting has drifted.result should be false when Classifications has changed" time="0.0429" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="calling test should not throw" name="MSFT_UpdateServicesApprovalRule\Test-TargetResource.setting has drifted.calling test should not throw" time="0.0716" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="result should be false when Products has changed" name="MSFT_UpdateServicesApprovalRule\Test-TargetResource.setting has drifted.result should be false when Products has changed" time="0.0237" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="calling test should not throw" name="MSFT_UpdateServicesApprovalRule\Test-TargetResource.setting has drifted.calling test should not throw" time="0.1086" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="result should be false when ComputerGroups has changed" name="MSFT_UpdateServicesApprovalRule\Test-TargetResource.setting has drifted.result should be false when ComputerGroups has changed" time="0.0098" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="MSFT_UpdateServicesApprovalRule\Set-TargetResource" executed="True" result="Success" success="True" time="5.486" asserts="0" description="MSFT_UpdateServicesApprovalRule\Set-TargetResource">
+            <results>
+              <test-suite type="TestFixture" name="server is already in a correct state (resource is idempotent)" executed="True" result="Success" success="True" time="1.3064" asserts="0" description="server is already in a correct state (resource is idempotent)">
+                <results>
+                  <test-case description="should not throw when running on a properly configured server" name="MSFT_UpdateServicesApprovalRule\Set-TargetResource.server is already in a correct state (resource is idempotent).should not throw when running on a properly configured server" time="0.5224" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="mocks were called" name="MSFT_UpdateServicesApprovalRule\Set-TargetResource.server is already in a correct state (resource is idempotent).mocks were called" time="0.108" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="mocks were not called" name="MSFT_UpdateServicesApprovalRule\Set-TargetResource.server is already in a correct state (resource is idempotent).mocks were not called" time="0.0337" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="server is not in a correct state (resource takes action)" executed="True" result="Success" success="True" time="1.4049" asserts="0" description="server is not in a correct state (resource takes action)">
+                <results>
+                  <test-case description="should not throw when running on an incorrectly configured server" name="MSFT_UpdateServicesApprovalRule\Set-TargetResource.server is not in a correct state (resource takes action).should not throw when running on an incorrectly configured server" time="0.4942" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="mocks were called" name="MSFT_UpdateServicesApprovalRule\Set-TargetResource.server is not in a correct state (resource takes action).mocks were called" time="0.1008" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="mocks were not called" name="MSFT_UpdateServicesApprovalRule\Set-TargetResource.server is not in a correct state (resource takes action).mocks were not called" time="0.0224" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="server should not be configured (Ensure=Absent)" executed="True" result="Success" success="True" time="1.1505" asserts="0" description="server should not be configured (Ensure=Absent)">
+                <results>
+                  <test-case description="should not throw when running on an incorrectly configured server" name="MSFT_UpdateServicesApprovalRule\Set-TargetResource.server should not be configured (Ensure=Absent).should not throw when running on an incorrectly configured server" time="0.2231" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="mocks were called" name="MSFT_UpdateServicesApprovalRule\Set-TargetResource.server should not be configured (Ensure=Absent).mocks were called" time="0.0817" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="mocks were not called" name="MSFT_UpdateServicesApprovalRule\Set-TargetResource.server should not be configured (Ensure=Absent).mocks were not called" time="0.0876" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="server is in correct state and synchronize is included" executed="True" result="Success" success="True" time="1.314" asserts="0" description="server is in correct state and synchronize is included">
+                <results>
+                  <test-case description="should not throw when running on a properly configured server" name="MSFT_UpdateServicesApprovalRule\Set-TargetResource.server is in correct state and synchronize is included.should not throw when running on a properly configured server" time="0.4684" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="mocks were called" name="MSFT_UpdateServicesApprovalRule\Set-TargetResource.server is in correct state and synchronize is included.mocks were called" time="0.0714" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="mocks were not called" name="MSFT_UpdateServicesApprovalRule\Set-TargetResource.server is in correct state and synchronize is included.mocks were not called" time="0.048" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\src\UpdateServicesDsc\Tests\Unit\MSFT_UpdateServicesCleanup.tests.ps1" executed="True" result="Success" success="True" time="15.1865" asserts="0" description="C:\src\UpdateServicesDsc\Tests\Unit\MSFT_UpdateServicesCleanup.tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="MSFT_UpdateServicesCleanup\Get-TargetResource" executed="True" result="Success" success="True" time="3.0648" asserts="0" description="MSFT_UpdateServicesCleanup\Get-TargetResource">
+            <results>
+              <test-suite type="TestFixture" name="server is configured." executed="True" result="Success" success="True" time="1.5016" asserts="0" description="server is configured.">
+                <results>
+                  <test-case description="calling Get should not throw" name="MSFT_UpdateServicesCleanup\Get-TargetResource.server is configured..calling Get should not throw" time="0.3032" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Ensure" name="MSFT_UpdateServicesCleanup\Get-TargetResource.server is configured..Ensure" time="0.0412" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="DeclineSupersededUpdates should be true" name="MSFT_UpdateServicesCleanup\Get-TargetResource.server is configured..DeclineSupersededUpdates should be true" time="0.047" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="DeclineExpiredUpdates should be true" name="MSFT_UpdateServicesCleanup\Get-TargetResource.server is configured..DeclineExpiredUpdates should be true" time="0.0146" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="CleanupObsoleteUpdates should be true" name="MSFT_UpdateServicesCleanup\Get-TargetResource.server is configured..CleanupObsoleteUpdates should be true" time="0.0234" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="CompressUpdates should be true" name="MSFT_UpdateServicesCleanup\Get-TargetResource.server is configured..CompressUpdates should be true" time="0.0258" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="CleanupObsoleteComputers should be true" name="MSFT_UpdateServicesCleanup\Get-TargetResource.server is configured..CleanupObsoleteComputers should be true" time="0.0276" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="CleanupUnneededContentFiles should be true" name="MSFT_UpdateServicesCleanup\Get-TargetResource.server is configured..CleanupUnneededContentFiles should be true" time="0.0222" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="CleanupLocalPublishedContentFiles should be true" name="MSFT_UpdateServicesCleanup\Get-TargetResource.server is configured..CleanupLocalPublishedContentFiles should be true" time="0.0189" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="TimeOfDay" name="MSFT_UpdateServicesCleanup\Get-TargetResource.server is configured..TimeOfDay" time="0.0501" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="mocks were called" name="MSFT_UpdateServicesCleanup\Get-TargetResource.server is configured..mocks were called" time="0.0114" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="server is not configured." executed="True" result="Success" success="True" time="0.5854" asserts="0" description="server is not configured.">
+                <results>
+                  <test-case description="calling Get should not throw" name="MSFT_UpdateServicesCleanup\Get-TargetResource.server is not configured..calling Get should not throw" time="0.087" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Ensure" name="MSFT_UpdateServicesCleanup\Get-TargetResource.server is not configured..Ensure" time="0.0132" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="mocks were called" name="MSFT_UpdateServicesCleanup\Get-TargetResource.server is not configured..mocks were called" time="0.0094" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="server is configured in an unexpected way." executed="True" result="Success" success="True" time="0.6606" asserts="0" description="server is configured in an unexpected way.">
+                <results>
+                  <test-case description="calling Get should not throw" name="MSFT_UpdateServicesCleanup\Get-TargetResource.server is configured in an unexpected way..calling Get should not throw" time="0.1184" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Ensure" name="MSFT_UpdateServicesCleanup\Get-TargetResource.server is configured in an unexpected way..Ensure" time="0.0248" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="mocks were called" name="MSFT_UpdateServicesCleanup\Get-TargetResource.server is configured in an unexpected way..mocks were called" time="0.0182" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="MSFT_UpdateServicesCleanup\Test-TargetResource" executed="True" result="Success" success="True" time="5.2909" asserts="0" description="MSFT_UpdateServicesCleanup\Test-TargetResource">
+            <results>
+              <test-suite type="TestFixture" name="server is in correct state (Ensure=Present)" executed="True" result="Success" success="True" time="0.769" asserts="0" description="server is in correct state (Ensure=Present)">
+                <results>
+                  <test-case description="calling test should not throw" name="MSFT_UpdateServicesCleanup\Test-TargetResource.server is in correct state (Ensure=Present).calling test should not throw" time="0.1679" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="result should be true" name="MSFT_UpdateServicesCleanup\Test-TargetResource.server is in correct state (Ensure=Present).result should be true" time="0.0472" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="mocks were called" name="MSFT_UpdateServicesCleanup\Test-TargetResource.server is in correct state (Ensure=Present).mocks were called" time="0.0123" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="server should not be configured (Ensure=Absent)" executed="True" result="Success" success="True" time="0.6142" asserts="0" description="server should not be configured (Ensure=Absent)">
+                <results>
+                  <test-case description="calling test should not throw" name="MSFT_UpdateServicesCleanup\Test-TargetResource.server should not be configured (Ensure=Absent).calling test should not throw" time="0.0628" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="result should be true" name="MSFT_UpdateServicesCleanup\Test-TargetResource.server should not be configured (Ensure=Absent).result should be true" time="0.0274" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="mocks were called" name="MSFT_UpdateServicesCleanup\Test-TargetResource.server should not be configured (Ensure=Absent).mocks were called" time="0.0195" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="server should be configured correctly but is not" executed="True" result="Success" success="True" time="0.7557" asserts="0" description="server should be configured correctly but is not">
+                <results>
+                  <test-case description="calling test should not throw" name="MSFT_UpdateServicesCleanup\Test-TargetResource.server should be configured correctly but is not.calling test should not throw" time="0.1279" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="result should be false" name="MSFT_UpdateServicesCleanup\Test-TargetResource.server should be configured correctly but is not.result should be false" time="0.0341" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="mocks were called" name="MSFT_UpdateServicesCleanup\Test-TargetResource.server should be configured correctly but is not.mocks were called" time="0.023" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="setting has drifted" executed="True" result="Success" success="True" time="2.8845" asserts="0" description="setting has drifted">
+                <results>
+                  <test-case description="calling test should not throw" name="MSFT_UpdateServicesCleanup\Test-TargetResource.setting has drifted.calling test should not throw" time="0.1151" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="result should be false when DeclineSupersededUpdates has changed" name="MSFT_UpdateServicesCleanup\Test-TargetResource.setting has drifted.result should be false when DeclineSupersededUpdates has changed" time="0.0197" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="mocks were called" name="MSFT_UpdateServicesCleanup\Test-TargetResource.setting has drifted.mocks were called" time="0.0278" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="calling test should not throw" name="MSFT_UpdateServicesCleanup\Test-TargetResource.setting has drifted.calling test should not throw" time="0.1569" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="result should be false when DeclineExpiredUpdates has changed" name="MSFT_UpdateServicesCleanup\Test-TargetResource.setting has drifted.result should be false when DeclineExpiredUpdates has changed" time="0.0131" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="mocks were called" name="MSFT_UpdateServicesCleanup\Test-TargetResource.setting has drifted.mocks were called" time="0.0138" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="calling test should not throw" name="MSFT_UpdateServicesCleanup\Test-TargetResource.setting has drifted.calling test should not throw" time="0.0899" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="result should be false when CleanupObsoleteUpdates has changed" name="MSFT_UpdateServicesCleanup\Test-TargetResource.setting has drifted.result should be false when CleanupObsoleteUpdates has changed" time="0.0198" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="mocks were called" name="MSFT_UpdateServicesCleanup\Test-TargetResource.setting has drifted.mocks were called" time="0.0044" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="calling test should not throw" name="MSFT_UpdateServicesCleanup\Test-TargetResource.setting has drifted.calling test should not throw" time="0.0868" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="result should be false when CompressUpdates has changed" name="MSFT_UpdateServicesCleanup\Test-TargetResource.setting has drifted.result should be false when CompressUpdates has changed" time="0.0132" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="mocks were called" name="MSFT_UpdateServicesCleanup\Test-TargetResource.setting has drifted.mocks were called" time="0.0072" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="calling test should not throw" name="MSFT_UpdateServicesCleanup\Test-TargetResource.setting has drifted.calling test should not throw" time="0.0832" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="result should be false when CleanupObsoleteComputers has changed" name="MSFT_UpdateServicesCleanup\Test-TargetResource.setting has drifted.result should be false when CleanupObsoleteComputers has changed" time="0.0181" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="mocks were called" name="MSFT_UpdateServicesCleanup\Test-TargetResource.setting has drifted.mocks were called" time="0.0075" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="calling test should not throw" name="MSFT_UpdateServicesCleanup\Test-TargetResource.setting has drifted.calling test should not throw" time="0.0745" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="result should be false when CleanupUnneededContentFiles has changed" name="MSFT_UpdateServicesCleanup\Test-TargetResource.setting has drifted.result should be false when CleanupUnneededContentFiles has changed" time="0.0104" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="mocks were called" name="MSFT_UpdateServicesCleanup\Test-TargetResource.setting has drifted.mocks were called" time="0.012" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="calling test should not throw" name="MSFT_UpdateServicesCleanup\Test-TargetResource.setting has drifted.calling test should not throw" time="0.0841" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="result should be false when CleanupLocalPublishedContentFiles has changed" name="MSFT_UpdateServicesCleanup\Test-TargetResource.setting has drifted.result should be false when CleanupLocalPublishedContentFiles has changed" time="0.0187" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="mocks were called" name="MSFT_UpdateServicesCleanup\Test-TargetResource.setting has drifted.mocks were called" time="0.023" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="MSFT_UpdateServicesCleanup\Set-TargetResource" executed="True" result="Success" success="True" time="4.0633" asserts="0" description="MSFT_UpdateServicesCleanup\Set-TargetResource">
+            <results>
+              <test-suite type="TestFixture" name="resource is idempotent (Ensure=Present)" executed="True" result="Success" success="True" time="1.5257" asserts="0" description="resource is idempotent (Ensure=Present)">
+                <results>
+                  <test-case description="should not throw when running on a properly configured server" name="MSFT_UpdateServicesCleanup\Set-TargetResource.resource is idempotent (Ensure=Present).should not throw when running on a properly configured server" time="0.858" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="mocks were called for commands that gather information" name="MSFT_UpdateServicesCleanup\Set-TargetResource.resource is idempotent (Ensure=Present).mocks were called for commands that gather information" time="0.1015" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="mocks were called that register a task to run WSUS cleanup" name="MSFT_UpdateServicesCleanup\Set-TargetResource.resource is idempotent (Ensure=Present).mocks were called that register a task to run WSUS cleanup" time="0.0638" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="mocks were not called that remove tasks or log errors" name="MSFT_UpdateServicesCleanup\Set-TargetResource.resource is idempotent (Ensure=Present).mocks were not called that remove tasks or log errors" time="0.0104" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="resource processes Set tasks to register Cleanup task (Ensure=Present)" executed="True" result="Success" success="True" time="1.1371" asserts="0" description="resource processes Set tasks to register Cleanup task (Ensure=Present)">
+                <results>
+                  <test-case description="should not throw when running on a properly configured server" name="MSFT_UpdateServicesCleanup\Set-TargetResource.resource processes Set tasks to register Cleanup task (Ensure=Present).should not throw when running on a properly configured server" time="0.4191" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="mocks were called for commands that gather information" name="MSFT_UpdateServicesCleanup\Set-TargetResource.resource processes Set tasks to register Cleanup task (Ensure=Present).mocks were called for commands that gather information" time="0.116" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="mocks were called that register a task to run WSUS cleanup" name="MSFT_UpdateServicesCleanup\Set-TargetResource.resource processes Set tasks to register Cleanup task (Ensure=Present).mocks were called that register a task to run WSUS cleanup" time="0.0174" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="mocks were not called that remove tasks or log errors" name="MSFT_UpdateServicesCleanup\Set-TargetResource.resource processes Set tasks to register Cleanup task (Ensure=Present).mocks were not called that remove tasks or log errors" time="0.0579" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="resource processes Set tasks to remove Cleanup task (Ensure=Absent)" executed="True" result="Success" success="True" time="0.9297" asserts="0" description="resource processes Set tasks to remove Cleanup task (Ensure=Absent)">
+                <results>
+                  <test-case description="should not throw when running on a properly configured server" name="MSFT_UpdateServicesCleanup\Set-TargetResource.resource processes Set tasks to remove Cleanup task (Ensure=Absent).should not throw when running on a properly configured server" time="0.1524" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="mocks were called for commands that gather information" name="MSFT_UpdateServicesCleanup\Set-TargetResource.resource processes Set tasks to remove Cleanup task (Ensure=Absent).mocks were called for commands that gather information" time="0.0662" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="mocks were called to remove Cleanup task" name="MSFT_UpdateServicesCleanup\Set-TargetResource.resource processes Set tasks to remove Cleanup task (Ensure=Absent).mocks were called to remove Cleanup task" time="0.0507" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="mocks were not called that register tasks or log errors" name="MSFT_UpdateServicesCleanup\Set-TargetResource.resource processes Set tasks to remove Cleanup task (Ensure=Absent).mocks were not called that register tasks or log errors" time="0.0534" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\src\UpdateServicesDsc\Tests\Unit\MSFT_UpdateServicesServer.tests.ps1" executed="True" result="Success" success="True" time="17.9115" asserts="0" description="C:\src\UpdateServicesDsc\Tests\Unit\MSFT_UpdateServicesServer.tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="MSFT_UpdateServicesServer\Get-TargetResource" executed="True" result="Success" success="True" time="2.7399" asserts="0" description="MSFT_UpdateServicesServer\Get-TargetResource">
+            <results>
+              <test-suite type="TestFixture" name="server should be configured." executed="True" result="Success" success="True" time="1.7006" asserts="0" description="server should be configured.">
+                <results>
+                  <test-case description="calling Get should not throw" name="MSFT_UpdateServicesServer\Get-TargetResource.server should be configured..calling Get should not throw" time="1.2142" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="sets the value for Ensure" name="MSFT_UpdateServicesServer\Get-TargetResource.server should be configured..sets the value for Ensure" time="0.0447" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="mocks were called" name="MSFT_UpdateServicesServer\Get-TargetResource.server should be configured..mocks were called" time="0.0103" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="server should not be configured." executed="True" result="Success" success="True" time="0.8062" asserts="0" description="server should not be configured.">
+                <results>
+                  <test-case description="calling Get should not throw" name="MSFT_UpdateServicesServer\Get-TargetResource.server should not be configured..calling Get should not throw" time="0.1728" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="sets the value for Ensure" name="MSFT_UpdateServicesServer\Get-TargetResource.server should not be configured..sets the value for Ensure" time="0.0166" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="mocks were called" name="MSFT_UpdateServicesServer\Get-TargetResource.server should not be configured..mocks were called" time="0.0153" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="MSFT_UpdateServicesServer\Test-TargetResource" executed="True" result="Success" success="True" time="7.6677" asserts="0" description="MSFT_UpdateServicesServer\Test-TargetResource">
+            <results>
+              <test-suite type="TestFixture" name="server is in correct state (Ensure=Present)" executed="True" result="Success" success="True" time="0.9784" asserts="0" description="server is in correct state (Ensure=Present)">
+                <results>
+                  <test-case description="calling test should not throw" name="MSFT_UpdateServicesServer\Test-TargetResource.server is in correct state (Ensure=Present).calling test should not throw" time="0.3926" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="result should be true" name="MSFT_UpdateServicesServer\Test-TargetResource.server is in correct state (Ensure=Present).result should be true" time="0.0345" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="mocks were called" name="MSFT_UpdateServicesServer\Test-TargetResource.server is in correct state (Ensure=Present).mocks were called" time="0.0087" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="server should not be configured (Ensure=Absent)" executed="True" result="Success" success="True" time="0.6239" asserts="0" description="server should not be configured (Ensure=Absent)">
+                <results>
+                  <test-case description="calling test should not throw" name="MSFT_UpdateServicesServer\Test-TargetResource.server should not be configured (Ensure=Absent).calling test should not throw" time="0.0877" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="result should be true" name="MSFT_UpdateServicesServer\Test-TargetResource.server should not be configured (Ensure=Absent).result should be true" time="0.0236" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="mocks were called" name="MSFT_UpdateServicesServer\Test-TargetResource.server should not be configured (Ensure=Absent).mocks were called" time="0.0222" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="server should be configured correctly but is not" executed="True" result="Success" success="True" time="0.784" asserts="0" description="server should be configured correctly but is not">
+                <results>
+                  <test-case description="calling test should not throw" name="MSFT_UpdateServicesServer\Test-TargetResource.server should be configured correctly but is not.calling test should not throw" time="0.159" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="result should be false" name="MSFT_UpdateServicesServer\Test-TargetResource.server should be configured correctly but is not.result should be false" time="0.0191" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="mocks were called" name="MSFT_UpdateServicesServer\Test-TargetResource.server should be configured correctly but is not.mocks were called" time="0.0199" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="setting has drifted" executed="True" result="Success" success="True" time="5.006" asserts="0" description="setting has drifted">
+                <results>
+                  <test-case description="calling test with change to UpdateImprovementProgram should not throw" name="MSFT_UpdateServicesServer\Test-TargetResource.setting has drifted.calling test with change to UpdateImprovementProgram should not throw" time="0.3256" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="result should be false when UpdateImprovementProgram has changed" name="MSFT_UpdateServicesServer\Test-TargetResource.setting has drifted.result should be false when UpdateImprovementProgram has changed" time="0.0101" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="mocks were called" name="MSFT_UpdateServicesServer\Test-TargetResource.setting has drifted.mocks were called" time="0.0109" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="calling test with change to UpstreamServerName should not throw" name="MSFT_UpdateServicesServer\Test-TargetResource.setting has drifted.calling test with change to UpstreamServerName should not throw" time="0.2952" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="result should be false when UpstreamServerName has changed" name="MSFT_UpdateServicesServer\Test-TargetResource.setting has drifted.result should be false when UpstreamServerName has changed" time="0.0065" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="mocks were called" name="MSFT_UpdateServicesServer\Test-TargetResource.setting has drifted.mocks were called" time="0.0091" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="calling test with change to UpstreamServerPort should not throw" name="MSFT_UpdateServicesServer\Test-TargetResource.setting has drifted.calling test with change to UpstreamServerPort should not throw" time="0.3576" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="result should be false when UpstreamServerPort has changed" name="MSFT_UpdateServicesServer\Test-TargetResource.setting has drifted.result should be false when UpstreamServerPort has changed" time="0.0148" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="mocks were called" name="MSFT_UpdateServicesServer\Test-TargetResource.setting has drifted.mocks were called" time="0.0097" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="calling test with change to UpstreamServerSSL should not throw" name="MSFT_UpdateServicesServer\Test-TargetResource.setting has drifted.calling test with change to UpstreamServerSSL should not throw" time="0.2545" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="result should be false when UpstreamServerSSL has changed" name="MSFT_UpdateServicesServer\Test-TargetResource.setting has drifted.result should be false when UpstreamServerSSL has changed" time="0.0171" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="mocks were called" name="MSFT_UpdateServicesServer\Test-TargetResource.setting has drifted.mocks were called" time="0.0038" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="calling test with change to UpstreamServerReplica should not throw" name="MSFT_UpdateServicesServer\Test-TargetResource.setting has drifted.calling test with change to UpstreamServerReplica should not throw" time="0.4213" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="result should be false when UpstreamServerReplica has changed" name="MSFT_UpdateServicesServer\Test-TargetResource.setting has drifted.result should be false when UpstreamServerReplica has changed" time="0.0069" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="mocks were called" name="MSFT_UpdateServicesServer\Test-TargetResource.setting has drifted.mocks were called" time="0.0029" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="calling test with change to ProxyServerName should not throw" name="MSFT_UpdateServicesServer\Test-TargetResource.setting has drifted.calling test with change to ProxyServerName should not throw" time="0.3642" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="result should be false when ProxyServerName has changed" name="MSFT_UpdateServicesServer\Test-TargetResource.setting has drifted.result should be false when ProxyServerName has changed" time="0.0149" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="mocks were called" name="MSFT_UpdateServicesServer\Test-TargetResource.setting has drifted.mocks were called" time="0.0115" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="calling test with change to ProxyServerPort should not throw" name="MSFT_UpdateServicesServer\Test-TargetResource.setting has drifted.calling test with change to ProxyServerPort should not throw" time="0.3443" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="result should be false when ProxyServerPort has changed" name="MSFT_UpdateServicesServer\Test-TargetResource.setting has drifted.result should be false when ProxyServerPort has changed" time="0.0122" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="mocks were called" name="MSFT_UpdateServicesServer\Test-TargetResource.setting has drifted.mocks were called" time="0.021" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="calling test with change to SynchronizeAutomaticallyTimeOfDay should not throw" name="MSFT_UpdateServicesServer\Test-TargetResource.setting has drifted.calling test with change to SynchronizeAutomaticallyTimeOfDay should not throw" time="0.2545" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="result should be false when SynchronizeAutomaticallyTimeOfDay has changed" name="MSFT_UpdateServicesServer\Test-TargetResource.setting has drifted.result should be false when SynchronizeAutomaticallyTimeOfDay has changed" time="0.0121" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="mocks were called" name="MSFT_UpdateServicesServer\Test-TargetResource.setting has drifted.mocks were called" time="0.0081" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="calling test with change to SynchronizationsPerDay should not throw" name="MSFT_UpdateServicesServer\Test-TargetResource.setting has drifted.calling test with change to SynchronizationsPerDay should not throw" time="0.3472" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="result should be false when SynchronizationsPerDay has changed" name="MSFT_UpdateServicesServer\Test-TargetResource.setting has drifted.result should be false when SynchronizationsPerDay has changed" time="0.018" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="mocks were called" name="MSFT_UpdateServicesServer\Test-TargetResource.setting has drifted.mocks were called" time="0.0085" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="MSFT_UpdateServicesServer\Set-TargetResource" executed="True" result="Success" success="True" time="3.8045" asserts="0" description="MSFT_UpdateServicesServer\Set-TargetResource">
+            <results>
+              <test-suite type="TestFixture" name="resource is idempotent (Ensure=Present)" executed="True" result="Success" success="True" time="1.9003" asserts="0" description="resource is idempotent (Ensure=Present)">
+                <results>
+                  <test-case description="should not throw when running on a properly configured server" name="MSFT_UpdateServicesServer\Set-TargetResource.resource is idempotent (Ensure=Present).should not throw when running on a properly configured server" time="1.3639" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="mocks were called" name="MSFT_UpdateServicesServer\Set-TargetResource.resource is idempotent (Ensure=Present).mocks were called" time="0.0665" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="mocks were not called that log errors" name="MSFT_UpdateServicesServer\Set-TargetResource.resource is idempotent (Ensure=Present).mocks were not called that log errors" time="0.0314" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="resource supports Ensure=Absent" executed="True" result="Success" success="True" time="1.5824" asserts="0" description="resource supports Ensure=Absent">
+                <results>
+                  <test-case description="should not throw when running on a properly configured server" name="MSFT_UpdateServicesServer\Set-TargetResource.resource supports Ensure=Absent.should not throw when running on a properly configured server" time="1.0883" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="mocks were called" name="MSFT_UpdateServicesServer\Set-TargetResource.resource supports Ensure=Absent.mocks were called" time="0.0761" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="mocks were not called that log errors" name="MSFT_UpdateServicesServer\Set-TargetResource.resource supports Ensure=Absent.mocks were not called that log errors" time="0.0229" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+    </results>
+  </test-suite>
+</test-results>

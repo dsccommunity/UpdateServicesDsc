@@ -12,7 +12,7 @@
 # RootModule = ''
 
 # Version number of this module.
-ModuleVersion = '1.0.76.0'
+ModuleVersion = '1.1.0.0'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -81,7 +81,7 @@ CmdletsToExport = @()
 AliasesToExport = @()
 
 # DSC resources to export from this module
-DscResourcesToExport = 'UpdateServicesApprovalRule', 'UpdateServicesCleanup', 
+DscResourcesToExport = 'UpdateServicesApprovalRule', 'UpdateServicesCleanup',
                'UpdateServicesServer'
 
 # List of all modules packaged with this module
@@ -96,7 +96,7 @@ PrivateData = @{
     PSData = @{
 
         # Tags applied to this module. These help with module discovery in online galleries.
-        Tags = 'DSCResource','WSUS'
+        Tags = 'DSCResource','WSUS','DSCResourceKit'
 
         # A URL to the license for this module.
         LicenseUri = 'https://github.com/mgreenegit/UpdateServicesDsc/blob/master/LICENSE'
@@ -114,7 +114,7 @@ PrivateData = @{
         # ExternalModuleDependencies = ''
 
     } # End of PSData hashtable
-    
+
  } # End of PrivateData hashtable
 
 # HelpInfo URI of this module
@@ -124,4 +124,3 @@ PrivateData = @{
 # DefaultCommandPrefix = ''
 
 }
-

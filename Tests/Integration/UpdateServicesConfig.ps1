@@ -3,8 +3,8 @@ Configuration UpdateServicesConfig
     Import-DscResource -ModuleName UpdateServicesDsc
     Import-DscResource -ModuleName PSDesiredStateConfiguration
 
-    Node localhost
-    { 
+    Node $AllNodes.NodeName
+    {
 
         WindowsFeature UpdateServices
         {
@@ -40,6 +40,7 @@ Configuration UpdateServicesConfig
                 )
                 SynchronizeAutomatically = $true
                 SynchronizeAutomaticallyTimeOfDay = '15:30:00'
+                ClientTargetingMode = "Client"
            }
             UpdateServicesApprovalRule 'DefinitionUpdates'
            {
@@ -58,7 +59,7 @@ Configuration UpdateServicesConfig
                 Enabled = $true
                 RunRuleNow = $true
             }
-           
+
            UpdateServicesApprovalRule 'SecurityUpdates'
            {
                 DependsOn = '[UpdateServicesServer]UpdateServices'
@@ -67,7 +68,7 @@ Configuration UpdateServicesConfig
                 Enabled = $true
                 RunRuleNow = $true
             }
-           
+
            UpdateServicesApprovalRule 'ServicePacks'
            {
                 DependsOn = '[UpdateServicesServer]UpdateServices'
@@ -94,7 +95,7 @@ Configuration UpdateServicesConfig
                 DeclineSupersededUpdates = $true
                 CleanupObsoleteUpdates = $true
                 CleanupUnneededContentFiles = $true
-            } 
+            }
         }
 }
 
