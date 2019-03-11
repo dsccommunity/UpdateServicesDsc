@@ -50,12 +50,14 @@ function Get-TargetResource
                         "CleanupUnneededContentFiles",
                         "CleanupLocalPublishedContentFiles"
                     )
-                    foreach ($Var in $Arguments) {
+                    foreach ($Var in $Arguments)
+                    {
                         $regex = [regex]'^\$(?<name>.*)\s=\s\$(?<value>.*)$'
                         $groups = $regex.Match($Var).Groups
                         $VarName = $groups['name'].value.Trim()
                         $VarValueString = $groups['value'].value.Trim()
-                        if($VarName -in $ArgumentNames) {
+                        if($VarName -in $ArgumentNames)
+                        {
                             Set-variable -Name $VarName -Value $ExecutionContext.InvokeCommand.ExpandString($VarValueString)
                         }
                     }
