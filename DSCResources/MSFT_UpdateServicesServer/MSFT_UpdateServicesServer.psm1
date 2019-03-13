@@ -128,7 +128,8 @@ function Get-TargetResource
         Write-Verbose -Message "WSUSServer languages are $Languages"
 
         Write-Verbose -Message 'Getting WSUSServer classifications'
-        if ($Classifications = @($WsusSubscription.GetUpdateClassifications().ID.Guid)) {
+        if ($Classifications = @($WsusSubscription.GetUpdateClassifications().ID.Guid))
+        {
             if($null -eq (Compare-Object -ReferenceObject ($Classifications | Sort-Object -Unique) -DifferenceObject `
                     (($WsusServer.GetUpdateClassifications().ID.Guid) | Sort-Object -Unique) -SyncWindow 0))
             {
@@ -140,7 +141,8 @@ function Get-TargetResource
         }
         Write-Verbose -Message "WSUSServer classifications are $Classifications"
         Write-Verbose -Message 'Getting WSUSServer products'
-        if ($Products = @($WsusSubscription.GetUpdateCategories().Title)) {
+        if ($Products = @($WsusSubscription.GetUpdateCategories().Title))
+        {
             if($null -eq (Compare-Object -ReferenceObject ($Products | Sort-Object -Unique) -DifferenceObject `
                     (($WsusServer.GetUpdateCategories().Title) | Sort-Object -Unique) -SyncWindow 0))
             {
@@ -322,6 +324,7 @@ function Set-TargetResource
         [System.Boolean]
         $Synchronize,
 
+        [Parameter()]
         [ValidateSet("Client", "Server")]
         [System.String]
         $ClientTargetingMode
@@ -768,6 +771,7 @@ function Test-TargetResource
         [System.Boolean]
         $Synchronize,
 
+        [Parameter()]
         [ValidateSet("Client", "Server")]
         [System.String]
         $ClientTargetingMode
@@ -863,23 +867,23 @@ function Test-TargetResource
             }
         }
         else {
-            if((Compare-Object -ReferenceObject ($Wsus.Languages | Sort-Object -Unique) `
-                        -DifferenceObject ($Languages | Sort-Object -Unique) -SyncWindow 0) -ne $null)
+            if($null -ne (Compare-Object -ReferenceObject ($Wsus.Languages | Sort-Object -Unique) `
+                        -DifferenceObject ($Languages | Sort-Object -Unique) -SyncWindow 0))
             {
                 Write-Verbose -Message "Languages test failed"
                 $result = $false
             }
         }
         # Test Products
-        if((Compare-Object -ReferenceObject ($Wsus.Products | Sort-Object -Unique) `
-                    -DifferenceObject ($Products | Sort-Object -Unique) -SyncWindow 0) -ne $null)
+        if($null -ne (Compare-Object -ReferenceObject ($Wsus.Products | Sort-Object -Unique) `
+                    -DifferenceObject ($Products | Sort-Object -Unique) -SyncWindow 0))
         {
             Write-Verbose -Message "Products test failed"
             $result = $false
         }
         # Test Classifications
-        if((Compare-Object -ReferenceObject ($Wsus.Classifications | Sort-Object -Unique) `
-                    -DifferenceObject ($Classifications | Sort-Object -Unique) -SyncWindow 0) -ne $null)
+        if($null -ne (Compare-Object -ReferenceObject ($Wsus.Classifications | Sort-Object -Unique) `
+                    -DifferenceObject ($Classifications | Sort-Object -Unique) -SyncWindow 0))
         {
             Write-Verbose -Message "Classifications test failed"
             $result = $false
