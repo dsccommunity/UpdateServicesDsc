@@ -123,7 +123,7 @@ function Get-TargetResource
         }
         else
         {
-            $Languages = $WsusConfiguration.GetEnabledUpdateLanguages() | Out-String
+            $Languages = $WsusConfiguration.GetEnabledUpdateLanguages()
         }
         Write-Verbose -Message "WSUSServer languages are $Languages"
 
@@ -298,7 +298,7 @@ function Set-TargetResource
 
         [Parameter()]
         [System.String[]]
-        $Languages = "*",
+        $Languages = @("*"),
 
         [Parameter()]
         [System.String[]]
@@ -745,7 +745,7 @@ function Test-TargetResource
 
         [Parameter()]
         [System.String[]]
-        $Languages = "*",
+        $Languages = @("*"),
 
         [Parameter()]
         [System.String[]]

@@ -4,6 +4,7 @@
 
 - Update for HQRM standard
 - Changes to Project layout
+- Fix Multiple Language Comparison Test
 
 ## 1.0.75.0
 
