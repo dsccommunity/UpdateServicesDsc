@@ -464,7 +464,7 @@ function Set-TargetResource
         }
 
         #ClientTargetingMode
-        if($PSBoundParameters.ContainsKey("Client Targeting Mode"))
+        if($PSBoundParameters.ContainsKey("ClientTargetingMode"))
         {
             Write-Verbose -Message "Setting WSUS client targeting mode"
             $WsusConfiguration.TargetingMode = $ClientTargetingMode

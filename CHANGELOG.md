@@ -4,6 +4,7 @@
 
 - Update for HQRM standard
 - Changes to Project layout
+- Fixed: ClientTargetMode should be properly set
 
 ## 1.0.75.0
 
