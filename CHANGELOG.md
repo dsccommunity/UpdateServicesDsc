@@ -6,6 +6,7 @@
 - Changes to Project layout
 - Fixed: ClientTargetMode should be properly set
 - Fixed: Fix multiple language comparison test
+
 ## 1.0.75.0
 
 - bug fixes
