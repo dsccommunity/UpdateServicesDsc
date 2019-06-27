@@ -25,7 +25,7 @@ Import-Module $currentPath\..\..\UpdateServicesHelper.psm1 -Verbose:$false -Erro
     .SYNOPSIS
     Returns the current configuration of WSUS
     .PARAMETER Ensure
-    Determinse if the configuration should be added or removed
+    Determins if the configuration should be added or removed
 #>
 function Get-TargetResource
 {
