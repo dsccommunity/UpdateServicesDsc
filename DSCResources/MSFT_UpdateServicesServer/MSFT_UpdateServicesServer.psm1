@@ -408,7 +408,7 @@ function Set-TargetResource
         $WsusConfiguration.MURollupOptin = $UpdateImprovementProgram
 
         # Configure Upstream Server
-        if($PSBoundParameters.ContainsKey('UpstreamServerName'))
+        if($PSBoundParameters.ContainsKey('UpstreamServerName')  -And ![string]::IsNullOrEmpty($UpstreamServerName))
         {
             Write-Verbose -Message "Configuring WSUS Upstream Server"
             $WsusConfiguration.SyncFromMicrosoftUpdate = $false
@@ -424,7 +424,7 @@ function Set-TargetResource
         }
 
         # Configure Proxy Server
-        if($PSBoundParameters.ContainsKey('ProxyServerName'))
+        if($PSBoundParameters.ContainsKey('ProxyServerName') -And ![string]::IsNullOrEmpty($ProxyServerName))
         {
             Write-Verbose -Message "Configuring WSUS proxy server"
             $WsusConfiguration.UseProxy = $true
