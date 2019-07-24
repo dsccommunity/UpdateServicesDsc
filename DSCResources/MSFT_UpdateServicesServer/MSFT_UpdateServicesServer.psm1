@@ -796,36 +796,38 @@ function Test-TargetResource
             $result = $false
         }
         # Test Upstream Server
-        if($Wsus.UpstreamServerName -ne $UpstreamServerName)
-        {
-            Write-Verbose -Message "UpstreamServerName test failed"
-            $result = $false
-        }
-        if($PSBoundParameters.ContainsKey('UpstreamServerName'))
-        {
-            if($Wsus.UpstreamServerPort -ne $UpstreamServerPort)
+        if($WsusConfiguration.SyncFromMicrosoftUpdate){
+            if($Wsus.UpstreamServerName -ne $UpstreamServerName  )
             {
-                Write-Verbose -Message "UpstreamServerPort test failed"
+                Write-Verbose -Message "UpstreamServerName test failed"
                 $result = $false
             }
-            if($Wsus.UpstreamServerSSL -ne $UpstreamServerSSL)
+            if($PSBoundParameters.ContainsKey('UpstreamServerName') -And ![string]::IsNullOrEmpty($UpstreamServerName))
             {
-                Write-Verbose -Message "UpstreamServerSSL test failed"
-                $result = $false
-            }
-            if($Wsus.UpstreamServerReplica -ne $UpstreamServerReplica)
-            {
-                Write-Verbose -Message "UpstreamServerReplica test failed"
-                $result = $false
+                if($Wsus.UpstreamServerPort -ne $UpstreamServerPort)
+                {
+                    Write-Verbose -Message "UpstreamServerPort test failed"
+                    $result = $false
+                }
+                if($Wsus.UpstreamServerSSL -ne $UpstreamServerSSL)
+                {
+                    Write-Verbose -Message "UpstreamServerSSL test failed"
+                    $result = $false
+                }
+                if($Wsus.UpstreamServerReplica -ne $UpstreamServerReplica)
+                {
+                    Write-Verbose -Message "UpstreamServerReplica test failed"
+                    $result = $false
+                }
             }
         }
         # Test Proxy Server
-        if($Wsus.ProxyServerName -ne $ProxyServerName)
+        if($Wsus.ProxyServerName -ne $ProxyServerName  )
         {
             Write-Verbose -Message "ProxyServerName test failed"
             $result = $false
         }
-        if($PSBoundParameters.ContainsKey('ProxyServerName'))
+        if($PSBoundParameters.ContainsKey('ProxyServerName') )
         {
             if($Wsus.ProxyServerPort -ne $ProxyServerPort)
             {
