@@ -14,3 +14,7 @@
 ## 1.0.72.0
 
 - First release of UpdateServicesDsc
+
+## 1.0.73.0
+
+- Added verification for empty vars
