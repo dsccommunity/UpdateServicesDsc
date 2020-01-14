@@ -45,7 +45,7 @@ or even create new resources,
 by sending in pull requests yourself.
 
 * If you want to submit an issue or take part in discussions,
-  please browse the list of [issues](https://github.com/mgreenegit/UpdateServicesDsc/issues).
+  please browse the list of [issues](https://github.com/dsccommunity/UpdateServicesDsc/issues).
   Please check out [Contributing to the DSC Resource Kit](https://github.com/PowerShell/DscResources/blob/master/CONTRIBUTING.md)
   on how to work with issues.
 * If you want to review pull requests,
@@ -54,8 +54,6 @@ by sending in pull requests yourself.
   and look for those pull requests with label 'needs review'.
 * If you want to improve this resource module,
   then please check out the following guidelines.
-  * The specific [Contributing to SqlServerDsc](https://github.com/mgreenegit/UpdateServicesDsc/blob/dev/CONTRIBUTING.md)
-    guidelines.
   * The common [Style Guidelines & Best Practices](https://github.com/PowerShell/DscResources/blob/master/StyleGuidelines.md).
   * The common [Testing Guidelines](https://github.com/PowerShell/DscResources/blob/master/TestsGuidelines.md).
   * If you are new to GitHub (and git),
@@ -126,6 +124,8 @@ Windows Server 2008 R2 SP1, Windows Server 2012 and Windows Server 2012 R2.
 * **Ensure**: An enumerated value that describes if WSUS is configured.
 * **SetupCredential**: Credential to be used to perform the initial configuration.
 * **SQLServer**: SQL Server for the WSUS database, omit for Windows Internal Database.
+  * If the database does not exist, then the Local System account must have sysadmin access to the SQL Instance to create the database OR the SetupCredential must be provided
+  * Only the SQL Server and Instance Name should be specified. The database will always be called SUSDB
 * **ContentDir**: Folder for WSUS update files.
 * **UpdateImprovementProgram**: Join the Microsoft Update Improvement Program.
 * **UpstreamServerName**: Upstream WSUS server, omit for Microsoft Update.
