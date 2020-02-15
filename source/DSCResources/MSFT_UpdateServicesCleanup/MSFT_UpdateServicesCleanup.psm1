@@ -1,10 +1,10 @@
 # DSC resource to manage WSUS Cleanup task.
 
-$currentPath = Split-Path -Parent $MyInvocation.MyCommand.Path
-Write-Debug -Message "CurrentPath: $currentPath"
+# Load Common Module
+$script:resourceHelperModulePath = Join-Path -Path $PSScriptRoot -ChildPath '..\..\Modules\DscResource.Common'
+Import-Module -Name $script:resourceHelperModulePath
+$script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
 
-# Load Common Code
-Import-Module $currentPath\..\..\UpdateServicesHelper.psm1 -Verbose:$false -ErrorAction Stop
 
 <#
     .SYNOPSIS

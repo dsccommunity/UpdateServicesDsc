@@ -15,11 +15,12 @@
 # Update Rollups     = 28BC880E-0592-4CBF-8F95-C79B17911D5F
 # Updates            = CD5FFD1E-E932-4E3A-BF74-18BF0B1BBD83
 
-$currentPath = Split-Path -Parent $MyInvocation.MyCommand.Path
-Write-Debug -Message "CurrentPath: $currentPath"
 
-# Load Common Code
-Import-Module -Name $currentPath\..\..\UpdateServicesHelper.psm1 -Verbose:$false -ErrorAction Stop
+# Load Common Module
+$script:resourceHelperModulePath = Join-Path -Path $PSScriptRoot -ChildPath '..\..\Modules\DscResource.Common'
+Import-Module -Name $script:resourceHelperModulePath
+$script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
+
 
 <#
     .SYNOPSIS
@@ -40,34 +41,34 @@ function Get-TargetResource
 
     try
     {
-        $WsusServer      = Get-WsusServer
-        $Ensure          = "Absent"
+        $WsusServer = Get-WsusServer
+        $Ensure = "Absent"
         $Classifications = $null
-        $Products        = $null
-        $ComputerGroups  = $null
-        $Enabled         = $null
+        $Products = $null
+        $ComputerGroups = $null
+        $Enabled = $null
 
         if ($null -ne $WsusServer)
         {
             Write-Verbose "Identified WSUS server information: $WsusServer"
 
-            $ApprovalRule = $WsusServer.GetInstallApprovalRules() | Where-Object {$_.Name -eq $Name}
-            
-            if($null -ne $ApprovalRule)
+            $ApprovalRule = $WsusServer.GetInstallApprovalRules() | Where-Object { $_.Name -eq $Name }
+
+            if ($null -ne $ApprovalRule)
             {
                 $Ensure = "Present"
-                
-                if(!($Classifications = @($ApprovalRule.GetUpdateClassifications().ID.Guid)))
+
+                if ( -Not ($Classifications = @($ApprovalRule.GetUpdateClassifications().ID.Guid)))
                 {
                     $Classifications = @("All Classifications")
                 }
 
-                if(!($Products = @($ApprovalRule.GetCategories().Title)))
+                if ( -Not ($Products = @($ApprovalRule.GetCategories().Title)))
                 {
                     $Products = @("All Products")
                 }
 
-                if(!($ComputerGroups = @($ApprovalRule.GetComputerTargetGroups().Name)))
+                if ( -Not ($ComputerGroups = @($ApprovalRule.GetComputerTargetGroups().Name)))
                 {
                     $ComputerGroups = @("All Computers")
                 }
@@ -75,13 +76,14 @@ function Get-TargetResource
                 $Enabled = $ApprovalRule.Enabled
             }
         }
-        else {
+        else
+        {
             Write-Verbose "Did not identify an instance of WSUS"
         }
     }
     catch
     {
-        throw New-TerminatingError -ErrorType WSUSConfigurationFailed
+        New-InvalidOperationException -Message $script:localizedData.WSUSConfigurationFailed -ErrorRecord $_
     }
 
     $returnValue = @{
@@ -126,7 +128,7 @@ function Set-TargetResource
     param
     (
         [Parameter()]
-        [ValidateSet("Present","Absent")]
+        [ValidateSet("Present", "Absent")]
         [System.String]
         $Ensure = "Present",
 
@@ -161,47 +163,47 @@ function Set-TargetResource
 
     try
     {
-        if($WsusServer = Get-WsusServer)
+        if ($WsusServer = Get-WsusServer)
         {
-            switch($Ensure)
+            switch ($Ensure)
             {
                 "Present"
                 {
-                    if($ApprovalRule = $WsusServer.GetInstallApprovalRules() | Where-Object {$_.Name -eq $Name})
+                    if ($ApprovalRule = $WsusServer.GetInstallApprovalRules() | Where-Object { $_.Name -eq $Name })
                     {
-                        Write-Verbose -Message "Using existing approval rule"
+                        Write-Verbose -Message $script:localizedData.UseExistingApprovalRule
                     }
                     else
                     {
-                        Write-Verbose -Message "Creating new approval rule"
+                        Write-Verbose -Message $script:localizedData.CreateApprovalRule
                         $ApprovalRule = $WsusServer.CreateInstallApprovalRule($Name)
                     }
-                    if($ApprovalRule)
+                    if ($ApprovalRule)
                     {
                         $ApprovalRule.Enabled = $Enabled
                         $ApprovalRule.Save()
 
                         $ClassificationCollection = New-Object `
                             -TypeName Microsoft.UpdateServices.Administration.UpdateClassificationCollection
-                        foreach($Classification in $Classifications)
+                        foreach ($Classification in $Classifications)
                         {
-                            if($WsusClassification = Get-WsusClassification | Where-Object {$_.Classification.ID.Guid -eq $Classification})
+                            if ($WsusClassification = Get-WsusClassification | Where-Object { $_.Classification.ID.Guid -eq $Classification })
                             {
                                 $ClassificationCollection.Add($WsusServer.GetUpdateClassification(`
-                                    $WsusClassification.Classification.Id))
+                                            $WsusClassification.Classification.Id))
                             }
                             else
                             {
-                                Write-Verbose -Message "Classification $Classification not found"
+                                Write-Verbose -Message ($script:localizedData.ClassificationNotFound -f $Classification)
                             }
                         }
                         $ApprovalRule.SetUpdateClassifications($ClassificationCollection)
                         $ApprovalRule.Save()
 
                         $ProductCollection = New-Object -TypeName Microsoft.UpdateServices.Administration.UpdateCategoryCollection
-                        foreach($Product in $Products)
+                        foreach ($Product in $Products)
                         {
-                            if($WsusProduct = Get-WsusProduct | Where-Object {$_.Product.Title -eq $Product})
+                            if ($WsusProduct = Get-WsusProduct | Where-Object { $_.Product.Title -eq $Product })
                             {
                                 $ProductCollection.Add($WsusServer.GetUpdateCategory($WsusProduct.Product.Id))
                             }
@@ -210,75 +212,81 @@ function Set-TargetResource
                         $ApprovalRule.Save()
 
                         $ComputerGroupCollection = New-Object -TypeName Microsoft.UpdateServices.Administration.ComputerTargetGroupCollection
-                        foreach($ComputerGroup in $ComputerGroups)
+                        foreach ($ComputerGroup in $ComputerGroups)
                         {
-                            if($WsusComputerGroup = $WsusServer.GetComputerTargetGroups() | Where-Object {$_.Name -eq $ComputerGroup})
+                            if ($WsusComputerGroup = $WsusServer.GetComputerTargetGroups() | Where-Object { $_.Name -eq $ComputerGroup })
                             {
                                 $ComputerGroupCollection.Add($WsusComputerGroup)
                             }
                         }
                         $ApprovalRule.SetComputerTargetGroups($ComputerGroupCollection)
                         $ApprovalRule.Save()
-                        if($RunRuleNow)
+                        if ($RunRuleNow)
                         {
-                            Write-Verbose -Message "Running Approval Rule"
-                                    
+                            Write-Verbose -Message ($script:localizedData.RunApprovalRule -f $Name)
+
                             try
                             {
                                 $ApprovalRule.ApplyRule()
                             }
                             catch
                             {
-                                throw
-                                Write-Verbose -Message "Failed to run Approval Rule"
+                                New-InvalidOperationException -Message (
+                                    $script:localizedData.RuleFailedToApply -f $Name
+                                ) -ErrorRecord $_
                             }
                         }
                     }
                     else
                     {
-                        throw New-TerminatingError -ErrorType ApprovalRuleFailed -FormatArgs @($Name)
+                        New-InvalidOperationException -Message (
+                            $script:localizedData.RuleFailedToCreate -f $Name
+                        ) -ErrorRecord $_
                     }
                 }
                 "Absent"
                 {
-                    if($ApprovalRule = $WsusServer.GetInstallApprovalRules() | Where-Object {$_.Name -eq $Name})
+                    if ($ApprovalRule = $WsusServer.GetInstallApprovalRules() | Where-Object { $_.Name -eq $Name })
                     {
-                            $WsusServer.DeleteInstallApprovalRule($ApprovalRule.Id)
-                    } else {
-                        Write-Verbose "No rule named $Name exists."
+                        $WsusServer.DeleteInstallApprovalRule($ApprovalRule.Id)
+                    }
+                    else
+                    {
+                        Write-Verbose $script:localizedData.RuleDoNotExist
                     }
                 }
             }
         }
         else
         {
-            Write-Verbose -Message "Get-WsusServer failed"
+            Write-Verbose -Message $script:localizedData.GetWsusServerFailed
         }
     }
     catch
     {
-        Write-Verbose -Message "Failed during creation of approval rule $Name"
-        throw
+        $errorMessage = $script:localizedData.RuleFailedToCreate -f $Name
+        New-InvalidOperationException -Message $errorMessage -ErrorRecord $_
     }
 
-    if(!(Test-TargetResource @PSBoundParameters))
+    if ( -Not (Test-TargetResource @PSBoundParameters))
     {
-        throw New-TerminatingError -ErrorType TestFailedAfterSet -ErrorCategory InvalidResult
+        $errorMessage = $script:localizedData.TestFailedAfterSet
+        New-InvalidResultException -Message $errorMessage -ErrorRecord $_
     }
     else
     {
-        if($Synchronize)
+        if ($Synchronize)
         {
-            Write-Verbose -Message "Synchronizing WSUS"
-                    
+            Write-Verbose -Message $script:localizedData.SyncWsus
+
             try
             {
                 $WsusServer.GetSubscription().StartSynchronization()
             }
             catch
             {
-                Write-Verbose -Message "Failed to start WSUS synchronization"
-                throw
+                $errorMessage = $script:localizedData.FailedSyncStart
+                New-InvalidOperationException -Message $errorMessage -ErrorRecord $_
             }
         }
     }
@@ -315,7 +323,7 @@ function Test-TargetResource
     param
     (
         [Parameter()]
-        [ValidateSet("Present","Absent")]
+        [ValidateSet("Present", "Absent")]
         [System.String]
         $Ensure = "Present",
 
@@ -349,38 +357,38 @@ function Test-TargetResource
     )
 
     $result = $true
-    
-    $ApprovalRule = Get-TargetResource -Name $Name    
 
-    if($ApprovalRule.Ensure -ne $Ensure)
+    $ApprovalRule = Get-TargetResource -Name $Name
+
+    if ($ApprovalRule.Ensure -ne $Ensure)
     {
-        Write-Verbose -Message "Ensure test failed"
+        Write-Verbose -Message $script:localizedData.EnsureTestFailed
         $result = $false
     }
-    if($result -and ($ApprovalRule.Ensure -eq "Present"))
+    if ($result -and ($ApprovalRule.Ensure -eq "Present"))
     {
-        if($null -ne (Compare-Object -ReferenceObject ($ApprovalRule.Classifications | Sort-Object -Unique) -DifferenceObject ($Classifications | Sort-Object -Unique) -SyncWindow 0))
+        if ($null -ne (Compare-Object -ReferenceObject ($ApprovalRule.Classifications | Sort-Object -Unique) -DifferenceObject ($Classifications | Sort-Object -Unique) -SyncWindow 0))
         {
-            Write-Verbose -Message "Classifications test failed"
+            Write-Verbose -Message $script:localizedData.ClassificationTestFailed
             $result = $false
         }
-        if($null -ne (Compare-Object -ReferenceObject ($ApprovalRule.Products | Sort-Object -Unique) -DifferenceObject ($Products | Sort-Object -Unique) -SyncWindow 0))
+        if ($null -ne (Compare-Object -ReferenceObject ($ApprovalRule.Products | Sort-Object -Unique) -DifferenceObject ($Products | Sort-Object -Unique) -SyncWindow 0))
         {
-            Write-Verbose -Message "Products test failed"
+            Write-Verbose -Message $script:localizedData.ProductsTestFailed
             $result = $false
         }
-        if($null -ne (Compare-Object -ReferenceObject ($ApprovalRule.ComputerGroups | Sort-Object -Unique) -DifferenceObject ($ComputerGroups | Sort-Object -Unique) -SyncWindow 0))
+        if ($null -ne (Compare-Object -ReferenceObject ($ApprovalRule.ComputerGroups | Sort-Object -Unique) -DifferenceObject ($ComputerGroups | Sort-Object -Unique) -SyncWindow 0))
         {
-            Write-Verbose -Message "ComputerGroups test failed"
+            Write-Verbose -Message $script:localizedData.ComputerGrpTestFailed
             $result = $false
         }
-        if($ApprovalRule.Enabled -ne $Enabled)
+        if ($ApprovalRule.Enabled -ne $Enabled)
         {
-            Write-Verbose -Message "Enabled test failed"
+            Write-Verbose -Message $script:localizedData.EnabledTestFailed
             $result = $false
         }
     }
-    
+
     $result
 }
 

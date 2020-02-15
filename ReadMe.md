@@ -1,7 +1,15 @@
 # UpdateServicesDsc
 
+[![Build Status](https://dev.azure.com/dsccommunity/UpdateServicesDsc/_apis/build/status/dsccommunity.UpdateServicesDsc?branchName=master)](https://dev.azure.com/dsccommunity/UpdateServicesDsc/_build/latest?definitionId={definitionId}&branchName=master)
+![Azure DevOps coverage (branch)](https://img.shields.io/azure-devops/coverage/dsccommunity/UpdateServicesDsc/{definitionId}/master)
+[![Azure DevOps tests](https://img.shields.io/azure-devops/tests/dsccommunity/UpdateServicesDsc/{definitionId}/master)](https://dsccommunity.visualstudio.com/UpdateServicesDsc/_test/analytics?definitionId={definitionId}&contextType=build)
+[![PowerShell Gallery (with prereleases)](https://img.shields.io/powershellgallery/vpre/UpdateServicesDsc?label=UpdateServicesDsc%20Preview)](https://www.powershellgallery.com/packages/UpdateServicesDsc/)
+[![PowerShell Gallery](https://img.shields.io/powershellgallery/v/UpdateServicesDsc?label=UpdateServicesDsc)](https://www.powershellgallery.com/packages/UpdateServicesDsc/)
+
 The **UpdateServicesDsc** module contains DSC resources
 for deployment and configuration of Windows Server Update Services.
+
+## Code of Conduct
 
 This project has adopted [this code of conduct](CODE_OF_CONDUCT.md).
 
@@ -10,62 +18,16 @@ This project has adopted [this code of conduct](CODE_OF_CONDUCT.md).
 This module is community maintained as a best-effort open source project
 and has no expressed support from any individual or organization.
 
-## Branches
+## Releases
 
-### master
-
-[![Build status](https://ci.appveyor.com/api/projects/status/wncsr23e1fqbv4nt?svg=true)](https://ci.appveyor.com/project/mgreenegit/UpdateServicesDsc)
-[![codecov](https://codecov.io/gh/mgreenegit/UpdateServicesDsc/branch/master/graph/badge.svg)](https://codecov.io/gh/mgreenegit/UpdateServicesDsc/branch/master)
-
-This is the branch containing the latest release -
-no contributions should be made directly to this branch.
-
-### dev
-
-[![Build status](https://ci.appveyor.com/api/projects/status/wncsr23e1fqbv4nt/branch/dev??svg=true)](https://ci.appveyor.com/project/mgreenegit/UpdateServicesDsc/branch/dev)
-[![codecov](https://codecov.io/gh/mgreenegit/UpdateServicesDsc/branch/dev/graph/badge.svg)](https://codecov.io/gh/mgreenegit/UpdateServicesDsc/branch/dev)
-
-This is the development branch
-to which contributions should be proposed by contributors as pull requests.
-This development branch will periodically be merged to the master branch,
-and be released to [PowerShell Gallery](https://www.powershellgallery.com/).
+For each merge to the branch `master` a preview release will be
+deployed to [PowerShell Gallery](https://www.powershellgallery.com/).
+Periodically a release version tag will be pushed which will deploy a
+full release to [PowerShell Gallery](https://www.powershellgallery.com/).
 
 ## Contributing
 
-Regardless of the way you want to contribute
-we are tremendously happy to have you here.
-
-There are several ways you can contribute.
-You can submit an issue to report a bug.
-You can submit an issue to request an improvement.
-You can take part in discussions for issues.
-You can review pull requests and comment on other contributors changes.
-You can also improve the resources and tests,
-or even create new resources,
-by sending in pull requests yourself.
-
-* If you want to submit an issue or take part in discussions,
-  please browse the list of [issues](https://github.com/mgreenegit/UpdateServicesDsc/issues).
-  Please check out [Contributing to the DSC Resource Kit](https://github.com/PowerShell/DscResources/blob/master/CONTRIBUTING.md)
-  on how to work with issues.
-* If you want to review pull requests,
-  please first check out the [Review Pull Request guidelines](https://github.com/PowerShell/DscResources/blob/master/CONTRIBUTING.md#reviewing-pull-requests),
-  and the browse the list of [pull requests](https://github.com/mgreenegit/UpdateServicesDsc/pulls)
-  and look for those pull requests with label 'needs review'.
-* If you want to improve this resource module,
-  then please check out the following guidelines.
-  * The specific [Contributing to SqlServerDsc](https://github.com/mgreenegit/UpdateServicesDsc/blob/dev/CONTRIBUTING.md)
-    guidelines.
-  * The common [Style Guidelines & Best Practices](https://github.com/PowerShell/DscResources/blob/master/StyleGuidelines.md).
-  * The common [Testing Guidelines](https://github.com/PowerShell/DscResources/blob/master/TestsGuidelines.md).
-  * If you are new to GitHub (and git),
-    then please check out [Getting Started with GitHub](https://github.com/PowerShell/DscResources/blob/master/GettingStartedWithGitHub.md).
-  * If you are new to Pester and writing test, then please check out
-    [Getting started with Pester](https://github.com/PowerShell/DscResources/blob/master/GettingStartedWithPester.md).
-
-If you need any help along the way,
-don't be afraid to ask.
-We are here for each other.
+Please check out common DSC Community [contributing guidelines](https://dsccommunity.org/guidelines/contributing).
 
 ## Installation
 
@@ -112,9 +74,12 @@ Windows Server 2008 R2 SP1, Windows Server 2012 and Windows Server 2012 R2.
 **UpdateServicesCleanup** resource has following properties:
 
 * **Ensure**: An enumerated value that describes if the WSUS cleanup task exists.
-* **DeclineSupersededUpdates**: Decline updates that have not been approved fo 30 days or more, are not currently needed by any clients, and are superseded by an approved update.
+* **DeclineSupersededUpdates**: Decline updates that have not been approved for
+ 30 days or more, are not currently needed by any clients, and are superseded by an approved update.
 * **DeclineExpiredUpdates**: Decline updates that aren't approved and have been expired by Microsoft.
-* **CleanupObsoleteUpdates**: Delete updates that are expired and have not been approved for 30 days or more, and delete older update revisions that have not been approved for 30 days or more.
+* **CleanupObsoleteUpdates**: Delete updates that are expired and have not been
+ approved for 30 days or more, and delete older update revisions that have not
+ been approved for 30 days or more.
 * **CompressUpdates**: Compress updates.
 * **CleanupObsoleteComputers**: Delete computers that have not contacted the server in 30 days or more.
 * **CleanupUnneededContentFiles**: Delete update files that aren't needed by updates or downstream servers.
@@ -149,49 +114,4 @@ Windows Server 2008 R2 SP1, Windows Server 2012 and Windows Server 2012 R2.
 
 ## Versions
 
-### 1.1.0
-
-* Resolve feedback for HQRM
-* Accept PR for client side targeting
-
-### 1.0.76.0
-
-* Fixed PSSA rule override
-
-### 1.0.75.0
-
-* Adjusted PDT to let processes run for up to 3 minutes
-
-### 1.0.74.0
-
-* Test issues
-  * A number of PSSA rules evolved since the tests were written. Made all corrections.
-
-### 1.0.73.0
-
-* Resolve issues
-  * Get was failing during deployment because ReferenceObject was null
-
-### 1.0.47.0
-
-* High quality DSC module with the following updates:
-  * Rename to WSUSDsc
-  * Add Integration tests
-  * Fix typo in ReadMe
-  * Add RunRuleNow param to WSUSApprovalRule resource
-  * Fix error in WSUSServer resource causing Get- to fail
-
-### 1.0.0.0
-
-* Initial release of xWSUS module with coverage for the following areas:
-  * Managing xWSUS rules for content synchronization.
-  * Managing xWSUS rules for content cleanup and compression.
-  * Managing xWSUS service configuration
-
-## Contributing Guidelines
-
-Please check out common DSC Resources [contributing guidelines](https://github.com/PowerShell/DscResource.Kit/blob/master/CONTRIBUTING.md).
-
-Thank you [SqlServerDsc](https://github.com/PowerShell/SqlServerDsc/blob/dev/README.md)
-maintainers for your awesome work on style and structure for DSC README files,
-which is copied here.
+Plese refer to the [Changelog](CHANGELOG.md)
