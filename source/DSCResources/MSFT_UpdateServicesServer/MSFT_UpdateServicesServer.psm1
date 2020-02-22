@@ -15,17 +15,16 @@
 # Update Rollups     = 28BC880E-0592-4CBF-8F95-C79B17911D5F
 # Updates            = CD5FFD1E-E932-4E3A-BF74-18BF0B1BBD83
 
-$currentPath = Split-Path -Parent $MyInvocation.MyCommand.Path
-Write-Debug -Message "CurrentPath: $currentPath"
-
-# Load Common Code
-Import-Module $currentPath\..\..\UpdateServicesHelper.psm1 -Verbose:$false -ErrorAction Stop
+# Load Common Module
+$script:resourceHelperModulePath = Join-Path -Path $PSScriptRoot -ChildPath '..\..\Modules\DscResource.Common'
+Import-Module -Name $script:resourceHelperModulePath
+$script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US' -FileName 'MSFT_UpdateServicesServer.strings.psd1'
 
 <#
     .SYNOPSIS
     Returns the current configuration of WSUS
     .PARAMETER Ensure
-    Determinse if the configuration should be added or removed
+    Determines if the configuration should be added or removed
 #>
 function Get-TargetResource
 {
@@ -39,10 +38,10 @@ function Get-TargetResource
         $Ensure
     )
 
-    Write-Verbose -Message 'Getting WSUSServer'
+    Write-Verbose -Message $script:localizedData.GettingWsusServer
     try
     {
-        if($WsusServer = Get-WsusServer)
+        if ($WsusServer = Get-WsusServer)
         {
             $Ensure = 'Present'
         }
@@ -56,36 +55,36 @@ function Get-TargetResource
         $Ensure = 'Absent'
     }
 
-    Write-Verbose -Message "WSUSServer is $Ensure"
-    if($Ensure -eq 'Present')
+    Write-Verbose -Message ($script:localizedData.WsusEnsureValue -f $Ensure)
+    if ($Ensure -eq 'Present')
     {
-        Write-Verbose -Message 'Getting WSUSServer configuration'
+        Write-Verbose -Message $script:localizedData.GettingWsusConfig
         $WsusConfiguration = $WsusServer.GetConfiguration()
-        Write-Verbose -Message 'Getting WSUSServer subscription'
+        Write-Verbose -Message $script:localizedData.GettingWsusSubscription
         $WsusSubscription = $WsusServer.GetSubscription()
 
-        Write-Verbose -Message 'Getting WSUSServer SQL Server'
+        Write-Verbose -Message $script:localizedData.GettingWsusSQLServer
         $SQLServer = (Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Update Services\Server\Setup' `
                 -Name 'SQLServerName').SQLServerName
-        Write-Verbose -Message "WSUSServer SQL Server is $SQLServer"
-        Write-Verbose -Message 'Getting WSUSServer content directory'
+        Write-Verbose -Message ($script:localizedData.SQLServerName -f $SQLServer)
+        Write-Verbose -Message $script:localizedData.GetWSUSContentDir
         $ContentDir = (Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Update Services\Server\Setup' `
                 -Name 'ContentDir').ContentDir
-        Write-Verbose -Message "WSUSServer content directory is $ContentDir"
+        Write-Verbose -Message ($script:localizedData.WsusContentDir -f $ContentDir)
 
-        Write-Verbose -Message 'Getting WSUSServer update improvement program'
+        Write-Verbose -Message $script:localizedData.GetWsusImproveProgram
         $UpdateImprovementProgram = $WsusConfiguration.MURollupOptin
-        Write-Verbose -Message "WSUSServer content update improvement program is $UpdateImprovementProgram"
+        Write-Verbose -Message ($script:localizedData.ImprovementProgram -f $UpdateImprovementProgram)
 
-        if(!$WsusConfiguration.SyncFromMicrosoftUpdate)
+        if (!$WsusConfiguration.SyncFromMicrosoftUpdate)
         {
-            Write-Verbose -Message 'Getting WSUSServer upstream server'
+            Write-Verbose -Message $script:localizedData.GetUpstreamServer
             $UpstreamServerName = $WsusConfiguration.UpstreamWsusServerName
             $UpstreamServerPort = $WsusConfiguration.UpstreamWsusServerPortNumber
             $UpstreamServerSSL = $WsusConfiguration.UpstreamWsusServerUseSsl
             $UpstreamServerReplica = $WsusConfiguration.IsReplicaServer
-            Write-Verbose -Message "WSUSServer upstream server is $UpstreamServerName, `
-                port $UpstreamServerPort, use SSL $UpstreamServerSSL, replica $UpstreamServerReplica"
+            Write-Verbose -Message ($script:localizedData.UpstreamServer -f `
+                    $UpstreamServerName, $UpstreamServerPort, $UpstreamServerSSL, $UpstreamServerReplica)
         }
         else
         {
@@ -95,9 +94,9 @@ function Get-TargetResource
             $UpstreamServerReplica = $null
         }
 
-        if($WsusConfiguration.UseProxy)
+        if ($WsusConfiguration.UseProxy)
         {
-            Write-Verbose -Message 'Getting WSUSServer proxy server'
+            Write-Verbose -Message $script:localizedData.GetWsusProxyServer
             $ProxyServerName = $WsusConfiguration.ProxyName
             $ProxyServerPort = $WsusConfiguration.ProxyServerPort
             $ProxyServerBasicAuthentication = $WsusConfiguration.AllowProxyCredentialsOverNonSsl
@@ -106,8 +105,7 @@ function Get-TargetResource
                 $ProxyServerCredentialUsername = "$($WsusConfiguration.ProxyUserDomain)\ `
                     $($WsusConfiguration.ProxyUserName)".Trim('\')
             }
-            Write-Verbose -Message "WSUSServer proxy server is $ProxyServerName, port $ProxyServerPort, `
-                basic authentication $ProxyServerBasicAuthentication"
+            Write-Verbose -Message ($script:localizedData.WsusProxyServer -f $ProxyServerName, $ProxyServerPort, $ProxyServerBasicAuthentication)
         }
         else
         {
@@ -116,8 +114,8 @@ function Get-TargetResource
             $ProxyServerBasicAuthentication = $null
         }
 
-        Write-Verbose -Message 'Getting WSUSServer languages'
-        if($WsusConfiguration.AllUpdateLanguagesEnabled)
+        Write-Verbose -Message $script:localizedData.GettingWsusLanguage
+        if ($WsusConfiguration.AllUpdateLanguagesEnabled)
         {
             $Languages = @("*")
         }
@@ -125,12 +123,12 @@ function Get-TargetResource
         {
             $Languages = $WsusConfiguration.GetEnabledUpdateLanguages()
         }
-        Write-Verbose -Message "WSUSServer languages are $Languages"
 
-        Write-Verbose -Message 'Getting WSUSServer classifications'
+        Write-Verbose -Message ($script:localizedData.WsusLanguages -f $Languages)
+        Write-Verbose -Message $script:localizedData.GettingWsusClassifications
         if ($Classifications = @($WsusSubscription.GetUpdateClassifications().ID.Guid))
         {
-            if($null -eq (Compare-Object -ReferenceObject ($Classifications | Sort-Object -Unique) -DifferenceObject `
+            if ($null -eq (Compare-Object -ReferenceObject ($Classifications | Sort-Object -Unique) -DifferenceObject `
                     (($WsusServer.GetUpdateClassifications().ID.Guid) | Sort-Object -Unique) -SyncWindow 0))
             {
                 $Classifications = @("*")
@@ -139,11 +137,11 @@ function Get-TargetResource
         else {
             $Classifications = @("*")
         }
-        Write-Verbose -Message "WSUSServer classifications are $Classifications"
-        Write-Verbose -Message 'Getting WSUSServer products'
+        Write-Verbose -Message ($script:localizedData.WsusClassifications -f $Classifications)
+        Write-Verbose -Message $script:localizedData.GettingWsusProducts
         if ($Products = @($WsusSubscription.GetUpdateCategories().Title))
         {
-            if($null -eq (Compare-Object -ReferenceObject ($Products | Sort-Object -Unique) -DifferenceObject `
+            if ($null -eq (Compare-Object -ReferenceObject ($Products | Sort-Object -Unique) -DifferenceObject `
                     (($WsusServer.GetUpdateCategories().Title) | Sort-Object -Unique) -SyncWindow 0))
             {
                 $Products = @("*")
@@ -152,16 +150,16 @@ function Get-TargetResource
         else {
             $Products = @("*")
         }
-        Write-Verbose -Message "WSUSServer products are $Products"
-        Write-Verbose -Message 'Getting WSUSServer synchronization settings'
+        Write-Verbose -Message ($script:localizedData.WsusProducts -f $Products)
+        Write-Verbose -Message $script:localizedData.GettingWsusSyncConfig
         $SynchronizeAutomatically = $WsusSubscription.SynchronizeAutomatically
-        Write-Verbose -Message "WSUSServer synchronize automatically is $SynchronizeAutomatically"
+        Write-Verbose -Message ($script:localizedData.WsusSyncAuto -f $SynchronizeAutomatically)
         $SynchronizeAutomaticallyTimeOfDay = $WsusSubscription.SynchronizeAutomaticallyTimeOfDay
-        Write-Verbose -Message "WSUSServer synchronize automatically time of day is $SynchronizeAutomaticallyTimeOfDay"
+        Write-Verbose -Message ($script:localizedData.WsusSyncAutoTimeOfDay -f $SynchronizeAutomaticallyTimeOfDay )
         $SynchronizationsPerDay = $WsusSubscription.NumberOfSynchronizationsPerDay
-        Write-Verbose -Message "WSUSServer number of synchronizations per day is $SynchronizationsPerDay"
+        Write-Verbose -Message ($script:localizedData.WsusSyncPerDay -f $SynchronizationsPerDay)
         $ClientTargetingMode = $WsusConfiguration.TargetingMode
-        Write-Verbose -Message "WSUSServer client targeting mode is $ClientTargetingMode"
+        Write-Verbose -Message ($script:localizedData.WsusClientTargetingMode -f $ClientTargetingMode)
     }
 
     $returnValue = @{
@@ -196,14 +194,14 @@ function Get-TargetResource
     Determines if the task should be created or removed.
     Accepts 'Present'(default) or 'Absent'.
     .PARAMETER SetupCredential
-    Credentisal to use when running setup.
+    Credential to use when running setup.
     Applicable when using SQL as data store.
     .PARAMETER SQLServer
     Optionally specify a SQL instance to store WSUS data
     .PARAMETER ContentDir
     Location to store WSUS content files
     .PARAMETER UpdateImprovementProgram
-    Provide feedback to Microsoft to help imrpove WSUS
+    Provide feedback to Microsoft to help improve WSUS
     .PARAMETER UpstreamServerName
     Name of another WSUS server to retrieve content from
     .PARAMETER UpstreamServerPort
@@ -211,7 +209,7 @@ function Get-TargetResource
     .PARAMETER UpstreamServerSSL
     If getting content from another server, whether to encrypt the traffic
     .PARAMETER UpstreamServerReplica
-    Boolean to specify whether to retrieve content from anotehr server
+    Boolean to specify whether to retrieve content from another server
     .PARAMETER ProxyServerName
     Host name of proxy server
     .PARAMETER ProxyServerPort
@@ -333,7 +331,7 @@ function Set-TargetResource
     # Is WSUS configured?
     try
     {
-        if($WsusServer = Get-WsusServer)
+        if ($WsusServer = Get-WsusServer)
         {
             $PostInstall = $false
         }
@@ -343,25 +341,25 @@ function Set-TargetResource
         $PostInstall = $true
     }
 
-    # Complete initial confiugration
-    if($PostInstall)
+    # Complete initial configuration
+    if ($PostInstall)
     {
-        Write-Verbose -Message "Running WSUS postinstall"
+        Write-Verbose -Message $script:localizedData.RunningWsusPostInstall
 
-        Import-Module $PSScriptRoot\..\..\PDT\PDT.psm1
+        Import-Module $PSScriptRoot\..\..\Modules\PDT\PDT.psm1
 
         $Path = "$($env:ProgramFiles)\Update Services\Tools\WsusUtil.exe"
         $Path = Invoke-ResolvePath $Path
-        Write-Verbose -Message "Path: $Path"
+        Write-Verbose -Message ($script:localizedData.ResolveWsusUtilExePath -f $Path)
 
         $Arguments = "postinstall "
-        if($PSBoundParameters.ContainsKey('SQLServer'))
+        if ($PSBoundParameters.ContainsKey('SQLServer'))
         {
             $Arguments += "SQL_INSTANCE_NAME=$SQLServer "
         }
         $Arguments += "CONTENT_DIR=$([Environment]::ExpandEnvironmentVariables($ContentDir))"
 
-        Write-Verbose -Message "Arguments: $Arguments"
+        Write-Verbose -Message ($script:localizedData.WsusUtilArgs -f $Arguments)
 
         if ($SetupCredential)
         {
@@ -380,7 +378,7 @@ function Set-TargetResource
     # Get WSUS server
     try
     {
-        if($WsusServer = Get-WsusServer)
+        if ($WsusServer = Get-WsusServer)
         {
             $Wsus = $true
         }
@@ -389,50 +387,50 @@ function Set-TargetResource
     {
         $Wsus = $false
 
-        throw New-TerminatingError -ErrorType WSUSConfigurationFailed
+        New-InvalidOperationException -Message $script:localizedData.WSUSConfigurationFailed -ErrorRecord $_
     }
 
     # Configure WSUS
-    if($Wsus)
+    if ($Wsus)
     {
-        Write-Verbose -Message "Configuring WSUS"
+        Write-Verbose -Message $script:localizedData.ConfiguringWsus
 
         # Get configuration and make sure that the configuration can be saved before continuing
         $WsusConfiguration = $WsusServer.GetConfiguration()
         $WsusSubscription = $WsusServer.GetSubscription()
-        Write-Verbose -Message "Check for previous configuration change"
+        Write-Verbose -Message $script:localizedData.CheckPreviousConfig
         SaveWsusConfiguration
 
         # Configure Update Improvement Program
-        Write-Verbose -Message "Configuring WSUS Update Improvement Program"
+        Write-Verbose -Message $script:localizedData.ConfiguringUpdateImprove
         $WsusConfiguration.MURollupOptin = $UpdateImprovementProgram
 
         # Configure Upstream Server
-        if($PSBoundParameters.ContainsKey('UpstreamServerName'))
+        if ($PSBoundParameters.ContainsKey('UpstreamServerName'))
         {
-            Write-Verbose -Message "Configuring WSUS Upstream Server"
-            $WsusConfiguration.SyncFromMicrosoftUpdate = $false
-            $WsusConfiguration.UpstreamWsusServerName = $UpstreamServerName
+            Write-Verbose -Message $script:localizedData.ConfiguringUpstreamServer
+            $WsusConfiguration.SyncFromMicrosoftUpdate      = $false
+            $WsusConfiguration.UpstreamWsusServerName       = $UpstreamServerName
             $WsusConfiguration.UpstreamWsusServerPortNumber = $UpstreamServerPort
-            $WsusConfiguration.UpstreamWsusServerUseSsl = $UpstreamServerSSL
-            $WsusConfiguration.IsReplicaServer = $UpstreamServerReplica
+            $WsusConfiguration.UpstreamWsusServerUseSsl     = $UpstreamServerSSL
+            $WsusConfiguration.IsReplicaServer              = $UpstreamServerReplica
         }
         else
         {
-            Write-Verbose -Message "Configuring WSUS for Microsoft Update"
+            Write-Verbose -Message $script:localizedData.ConfiguringWsusMsftUpdates
             $WsusConfiguration.SyncFromMicrosoftUpdate = $true
         }
 
         # Configure Proxy Server
-        if($PSBoundParameters.ContainsKey('ProxyServerName'))
+        if ($PSBoundParameters.ContainsKey('ProxyServerName'))
         {
-            Write-Verbose -Message "Configuring WSUS proxy server"
+            Write-Verbose -Message $script:localizedData.ConfiguringWsusProxy
             $WsusConfiguration.UseProxy = $true
             $WsusConfiguration.ProxyName = $ProxyServerName
             $WsusConfiguration.ProxyServerPort = $ProxyServerPort
-            if($PSBoundParameters.ContainsKey('ProxyServerCredential'))
+            if ($PSBoundParameters.ContainsKey('ProxyServerCredential'))
             {
-                Write-Verbose -Message "Configuring WSUS proxy server credential"
+                Write-Verbose -Message $script:localizedData.ConfiguringProxyCred
                 $WsusConfiguration.ProxyUserDomain = $ProxyServerCredential.GetNetworkCredential().Domain
                 $WsusConfiguration.ProxyUserName = $ProxyServerCredential.GetNetworkCredential().UserName
                 $WsusConfiguration.SetProxyPassword($ProxyServerCredential.GetNetworkCredential().Password)
@@ -441,19 +439,19 @@ function Set-TargetResource
             }
             else
             {
-                Write-Verbose -Message "Removing WSUS proxy server credential"
+                Write-Verbose -Message $script:localizedData.RemovingProxyCred
                 $WsusConfiguration.AnonymousProxyAccess = $true
             }
         }
         else
         {
-            Write-Verbose -Message "Configuring WSUS no proxy server"
+            Write-Verbose -Message $script:localizedData.ConfiguringNoProxy
             $WsusConfiguration.UseProxy = $false
         }
 
         #Languages
-        Write-Verbose -Message "Setting WSUS languages"
-        if($Languages -eq "*")
+        Write-Verbose -Message $script:localizedData.ConfiguringLanguages
+        if ($Languages -eq "*")
         {
             $WsusConfiguration.AllUpdateLanguagesEnabled = $true
         }
@@ -464,9 +462,9 @@ function Set-TargetResource
         }
 
         #ClientTargetingMode
-        if($PSBoundParameters.ContainsKey("ClientTargetingMode"))
+        if ($PSBoundParameters.ContainsKey("ClientTargetingMode"))
         {
-            Write-Verbose -Message "Setting WSUS client targeting mode"
+            Write-Verbose -Message $script:localizedData.ConfiguringClientTargetMode
             $WsusConfiguration.TargetingMode = $ClientTargetingMode
         }
 
@@ -474,44 +472,46 @@ function Set-TargetResource
         SaveWsusConfiguration
 
         # Post Install
-        if($PostInstall)
+        if ($PostInstall)
         {
-            Write-Verbose -Message "Removing default products and classifications before initial sync"
-            foreach($Product in ($WsusServer.GetSubscription().GetUpdateCategories().Title))
+            Write-Verbose -Message $script:localizedData.RemovingDefaultInit
+            # remove default products & classification
+            foreach ($Product in ($WsusServer.GetSubscription().GetUpdateCategories().Title))
             {
                 Get-WsusProduct | Where-Object {$_.Product.Title -eq $Product} | `
                     Set-WsusProduct -Disable
             }
-            foreach($Classification in `
+
+            foreach ($Classification in `
                 ($WsusServer.GetSubscription().GetUpdateClassifications().ID.Guid))
             {
                 Get-WsusClassification | Where-Object {$_.Classification.ID -eq $Classification} | `
                     Set-WsusClassification -Disable
             }
 
-            if($Synchronize)
+            if ($Synchronize)
             {
-                Write-Verbose -Message "Running WSUS initial synchronization online"
+                Write-Verbose -Message $script:localizedData.RunningInitSync
                 $WsusServer.GetSubscription().StartSynchronizationForCategoryOnly()
-                while($WsusServer.GetSubscription().GetSynchronizationStatus() -eq 'Running')
+                while ($WsusServer.GetSubscription().GetSynchronizationStatus() -eq 'Running')
                 {
                     Start-Sleep -Seconds 1
                 }
 
-                if($WsusServer.GetSubscription().GetSynchronizationHistory()[0].Result -eq 'Succeeded')
+                if ($WsusServer.GetSubscription().GetSynchronizationHistory()[0].Result -eq 'Succeeded')
                 {
-                    Write-Verbose -Message "Initial WSUS synchronization succeeded"
+                    Write-Verbose -Message $script:localizedData.InitSyncSuccess
                     $WsusConfiguration.OobeInitialized = $true
                     SaveWsusConfiguration
                 }
                 else
                 {
-                    Write-Verbose -Message "Initial WSUS synchronization failed"
+                    Write-Verbose -Message $script:localizedData.InitSyncFailure
                 }
             }
             else
             {
-                Write-Verbose -Message "Running WSUS initial synchronization offline"
+                Write-Verbose -Message $script:localizedData.RunningInitOfflineSync
 
                 $TempFile = [IO.Path]::GetTempFileName()
 
@@ -520,7 +520,7 @@ function Set-TargetResource
                 $Arguments = "import "
                 $Arguments += "`"$CABPath`" $TempFile"
 
-                Write-Verbose -Message "Arguments: $Arguments"
+                Write-Verbose -Message ($script:localizedData.WsusUtilArgs -f $Arguments)
 
                 if ($SetupCredential)
                 {
@@ -541,26 +541,26 @@ function Set-TargetResource
         }
 
         # Configure WSUS subscription
-        if($WsusConfiguration.OobeInitialized)
+        if ($WsusConfiguration.OobeInitialized)
         {
             $WsusSubscription = $WsusServer.GetSubscription()
 
             # Products
-            Write-Verbose -Message "Setting WSUS products"
+            Write-Verbose -Message $script:localizedData.ConfiguringProducts
             $ProductCollection = New-Object Microsoft.UpdateServices.Administration.UpdateCategoryCollection
             $AllWsusProducts = $WsusServer.GetUpdateCategories()
-            if($Products -eq "*")
+            if ($Products -eq "*")
             {
-                foreach($Product in $AllWsusProducts)
+                foreach ($Product in $AllWsusProducts)
                 {
                     $null = $ProductCollection.Add($WsusServer.GetUpdateCategory($Product.Id))
                 }
             }
             else
             {
-                foreach($Product in $Products)
+                foreach ($Product in $Products)
                 {
-                    if($WsusProduct = $AllWsusProducts | Where-Object {$_.Title -eq $Product})
+                    if ($WsusProduct = $AllWsusProducts | Where-Object {$_.Title -eq $Product})
                     {
                         $null = $ProductCollection.Add($WsusServer.GetUpdateCategory($WsusProduct.Id))
                     }
@@ -569,38 +569,38 @@ function Set-TargetResource
             $WsusSubscription.SetUpdateCategories($ProductCollection)
 
             # Classifications
-            Write-Verbose -Message "Setting WSUS classifications"
+            Write-Verbose -Message $script:localizedData.ConfiguringClassifications
             $ClassificationCollection = New-Object Microsoft.UpdateServices.Administration.UpdateClassificationCollection
             $AllWsusClassifications = $WsusServer.GetUpdateClassifications()
-            if($Classifications -eq "*")
+            if ($Classifications -eq "*")
             {
-                foreach($Classification in $AllWsusClassifications)
+                foreach ($Classification in $AllWsusClassifications)
                 {
                     $null = $ClassificationCollection.Add($WsusServer.GetUpdateClassification($Classification.Id))
                 }
             }
             else
             {
-                foreach($Classification in $Classifications)
+                foreach ($Classification in $Classifications)
                 {
-                    if($WsusClassification = $AllWsusClassifications | `
-                            Where-Object {$_.ID.Guid -eq $Classification})
+                    if ($WsusClassification = $AllWsusClassifications | Where-Object {$_.ID.Guid -eq $Classification})
                     {
-                        $null = $ClassificationCollection.Add($WsusServer.GetUpdateClassification(`
-                                    $WsusClassification.Id))
+                        $null = $ClassificationCollection.Add(
+                            $WsusServer.GetUpdateClassification($WsusClassification.Id)
+                        )
                     }
                     else
                     {
-                        Write-Verbose -Message "Classification $Classification not found"
+                        Write-Verbose -Message ($script:localizedData.ClassificationNotFound -f $Classification)
                     }
                 }
             }
             $WsusSubscription.SetUpdateClassifications($ClassificationCollection)
 
             #Synchronization Schedule
-            Write-Verbose -Message "Setting WSUS synchronization schedule"
+            Write-Verbose -Message $script:localizedData.ConfiguringSyncSchedule
             $WsusSubscription.SynchronizeAutomatically = $SynchronizeAutomatically
-            if($PSBoundParameters.ContainsKey('SynchronizeAutomaticallyTimeOfDay'))
+            if ($PSBoundParameters.ContainsKey('SynchronizeAutomaticallyTimeOfDay'))
             {
                 $WsusSubscription.SynchronizeAutomaticallyTimeOfDay = $SynchronizeAutomaticallyTimeOfDay
             }
@@ -608,30 +608,31 @@ function Set-TargetResource
 
             $WsusSubscription.Save()
 
-            if($Synchronize)
+            if ($Synchronize)
             {
-                Write-Verbose -Message "Synchronizing WSUS"
+                Write-Verbose -Message $script:localizedData.SynchronizingWsus
 
                 $WsusServer.GetSubscription().StartSynchronization()
-                while($WsusServer.GetSubscription().GetSynchronizationStatus() -eq 'Running')
+                while ($WsusServer.GetSubscription().GetSynchronizationStatus() -eq 'Running')
                 {
                     Start-Sleep -Seconds 1
                 }
-                if($WsusServer.GetSubscription().GetSynchronizationHistory()[0].Result -eq 'Succeeded')
+                if ($WsusServer.GetSubscription().GetSynchronizationHistory()[0].Result -eq 'Succeeded')
                 {
-                    Write-Verbose -Message "WSUS synchronization succeeded"
+                    Write-Verbose -Message $script:localizedData.InitSyncSuccess
                 }
                 else
                 {
-                    Write-Verbose -Message "WSUS synchronization failed"
+                    Write-Verbose -Message $script:localizedData.InitSyncFailure
                 }
             }
         }
     }
 
-    if(!(Test-TargetResource @PSBoundParameters))
+    if (!(Test-TargetResource @PSBoundParameters))
     {
-        throw New-TerminatingError -ErrorType TestFailedAfterSet -ErrorCategory InvalidResult
+        $errorMessage = $script:localizedData.TestFailedAfterSet
+        New-InvalidResultException -Message $errorMessage -ErrorRecord $_
     }
 }
 
@@ -642,14 +643,14 @@ function Set-TargetResource
     Determines if the task should be created or removed.
     Accepts 'Present'(default) or 'Absent'.
     .PARAMETER SetupCredential
-    Credentisal to use when running setup.
+    Credential to use when running setup.
     Applicable when using SQL as data store.
     .PARAMETER SQLServer
     Optionally specify a SQL instance to store WSUS data
     .PARAMETER ContentDir
     Location to store WSUS content files
     .PARAMETER UpdateImprovementProgram
-    Provide feedback to Microsoft to help imrpove WSUS
+    Provide feedback to Microsoft to help improve WSUS
     .PARAMETER UpstreamServerName
     Name of another WSUS server to retrieve content from
     .PARAMETER UpstreamServerPort
@@ -657,7 +658,7 @@ function Set-TargetResource
     .PARAMETER UpstreamServerSSL
     If getting content from another server, whether to encrypt the traffic
     .PARAMETER UpstreamServerReplica
-    Boolean to specify whether to retrieve content from anotehr server
+    Boolean to specify whether to retrieve content from another server
     .PARAMETER ProxyServerName
     Host name of proxy server
     .PARAMETER ProxyServerPort
@@ -782,138 +783,140 @@ function Test-TargetResource
     $Wsus = Get-TargetResource -Ensure $Ensure
 
     # Test Ensure
-    if($Wsus.Ensure -ne $Ensure)
+    if ($Wsus.Ensure -ne $Ensure)
     {
-        Write-Verbose -Message "Ensure test failed"
+        Write-Verbose -Message $script:localizedData.EnsureTestFailed
         $result = $false
     }
-    if($result -and ($Wsus.Ensure -eq "Present"))
+    if ($result -and ($Wsus.Ensure -eq "Present"))
     {
         # Test Update Improvement Program
-        if($Wsus.UpdateImprovementProgram -ne $UpdateImprovementProgram)
+        if ($Wsus.UpdateImprovementProgram -ne $UpdateImprovementProgram)
         {
-            Write-Verbose -Message "UpdateImprovementProgram test failed"
+            Write-Verbose -Message $script:localizedData.ImproveProgramTestFailed
             $result = $false
         }
         # Test Upstream Server
-        if($Wsus.UpstreamServerName -ne $UpstreamServerName)
+        if ($Wsus.UpstreamServerName -ne $UpstreamServerName)
         {
-            Write-Verbose -Message "UpstreamServerName test failed"
+            Write-Verbose -Message $script:localizedData.UpstreamNameTestFailed
             $result = $false
         }
-        if($PSBoundParameters.ContainsKey('UpstreamServerName'))
+
+        if ($PSBoundParameters.ContainsKey('UpstreamServerName'))
         {
-            if($Wsus.UpstreamServerPort -ne $UpstreamServerPort)
+            if ($Wsus.UpstreamServerPort -ne $UpstreamServerPort)
             {
-                Write-Verbose -Message "UpstreamServerPort test failed"
+                Write-Verbose -Message $script:localizedData.UpstreamPortTestFailed
                 $result = $false
             }
-            if($Wsus.UpstreamServerSSL -ne $UpstreamServerSSL)
+            if ($Wsus.UpstreamServerSSL -ne $UpstreamServerSSL)
             {
-                Write-Verbose -Message "UpstreamServerSSL test failed"
+                Write-Verbose -Message $script:localizedData.UpstreamSSLTestFailed
                 $result = $false
             }
-            if($Wsus.UpstreamServerReplica -ne $UpstreamServerReplica)
+            if ($Wsus.UpstreamServerReplica -ne $UpstreamServerReplica)
             {
-                Write-Verbose -Message "UpstreamServerReplica test failed"
+                Write-Verbose -Message $script:localizedData.UpstreamReplicaTestFailed
                 $result = $false
             }
         }
+
         # Test Proxy Server
-        if($Wsus.ProxyServerName -ne $ProxyServerName)
+        if ($Wsus.ProxyServerName -ne $ProxyServerName)
         {
-            Write-Verbose -Message "ProxyServerName test failed"
+            Write-Verbose -Message $script:localizedData.ProxyNameTestFailed
             $result = $false
         }
-        if($PSBoundParameters.ContainsKey('ProxyServerName'))
+        if ($PSBoundParameters.ContainsKey('ProxyServerName'))
         {
-            if($Wsus.ProxyServerPort -ne $ProxyServerPort)
+            if ($Wsus.ProxyServerPort -ne $ProxyServerPort)
             {
-                Write-Verbose -Message "ProxyServerPort test failed"
+                Write-Verbose -Message $script:localizedData.ProxyPortTestFailed
                 $result = $false
             }
-            if($PSBoundParameters.ContainsKey('ProxyServerCredential'))
+            if ($PSBoundParameters.ContainsKey('ProxyServerCredential'))
             {
-                if(
+                if (
                     ($null -eq $Wsus.ProxyServerCredentialUserName) -or
                     ($Wsus.ProxyServerCredentialUserName -ne $ProxyServerCredential.UserName)
                 )
                 {
-                    Write-Verbose -Message "ProxyServerCredential test failed - incorrect credential"
+                    Write-Verbose -Message $script:localizedData.ProxyCredTestFailed
                     $result = $false
                 }
-                if($Wsus.ProxyServerBasicAuthentication -ne $ProxyServerBasicAuthentication)
+                if ($Wsus.ProxyServerBasicAuthentication -ne $ProxyServerBasicAuthentication)
                 {
-                    Write-Verbose -Message "ProxyServerBasicAuthentication test failed"
+                    Write-Verbose -Message $script:localizedData.ProxyBasicAuthTestFailed
                     $result = $false
                 }
             }
             else
             {
-                if($null -ne $Wsus.ProxyServerCredentialUserName)
+                if ($null -ne $Wsus.ProxyServerCredentialUserName)
                 {
-                    Write-Verbose -Message "ProxyServerCredential test failed - credential set"
+                    Write-Verbose -Message $script:localizedData.ProxyCredSetTestFailed
                     $result = $false
                 }
             }
         }
         # Test Languages
-        if($Wsus.Languages.count -le 1 -and $Languages.count -le 1 -and $Languages -ne '*')
+        if ($Wsus.Languages.count -le 1 -and $Languages.count -le 1 -and $Languages -ne '*')
         {
-            if($Wsus.Languages -notmatch $Languages)
+            if ($Wsus.Languages -notmatch $Languages)
             {
-                Write-Verbose -Message "Languages test failed (evaluated as single string)"
+                Write-Verbose -Message $script:localizedData.LanguageAsStrTestFailed
                 $result = $false
             }
         }
         else {
-            if($null -ne (Compare-Object -ReferenceObject ($Wsus.Languages | Sort-Object -Unique) `
+            if ($null -ne (Compare-Object -ReferenceObject ($Wsus.Languages | Sort-Object -Unique) `
                         -DifferenceObject ($Languages | Sort-Object -Unique) -SyncWindow 0))
             {
-                Write-Verbose -Message "Languages test failed"
+                Write-Verbose -Message $script:localizedData.LanguageSetTestFailed
                 $result = $false
             }
         }
         # Test Products
-        if($null -ne (Compare-Object -ReferenceObject ($Wsus.Products | Sort-Object -Unique) `
+        if ($null -ne (Compare-Object -ReferenceObject ($Wsus.Products | Sort-Object -Unique) `
                     -DifferenceObject ($Products | Sort-Object -Unique) -SyncWindow 0))
         {
-            Write-Verbose -Message "Products test failed"
+            Write-Verbose -Message $script:localizedData.ProductTestFailed
             $result = $false
         }
         # Test Classifications
-        if($null -ne (Compare-Object -ReferenceObject ($Wsus.Classifications | Sort-Object -Unique) `
+        if ($null -ne (Compare-Object -ReferenceObject ($Wsus.Classifications | Sort-Object -Unique) `
                     -DifferenceObject ($Classifications | Sort-Object -Unique) -SyncWindow 0))
         {
-            Write-Verbose -Message "Classifications test failed"
+            Write-Verbose -Message $script:localizedData.ClassificationsTestFailed
             $result = $false
         }
         # Test Synchronization Schedule
-        if($SynchronizeAutomatically)
+        if ($SynchronizeAutomatically)
         {
-            if($PSBoundParameters.ContainsKey('SynchronizeAutomaticallyTimeOfDay'))
+            if ($PSBoundParameters.ContainsKey('SynchronizeAutomaticallyTimeOfDay'))
             {
-                if($Wsus.SynchronizeAutomaticallyTimeOfDay -ne $SynchronizeAutomaticallyTimeOfDay)
+                if ($Wsus.SynchronizeAutomaticallyTimeOfDay -ne $SynchronizeAutomaticallyTimeOfDay)
                 {
-                    Write-Verbose -Message "SynchronizeAutomaticallyTimeOfDay test failed"
+                    Write-Verbose -Message $script:localizedData.SyncTimeOfDayTestFailed
                     $result = $false
                 }
             }
-            if($Wsus.SynchronizationsPerDay -ne $SynchronizationsPerDay)
+            if ($Wsus.SynchronizationsPerDay -ne $SynchronizationsPerDay)
             {
-                Write-Verbose -Message "SynchronizationsPerDay test failed"
+                Write-Verbose -Message $script:localizedData.SyncPerDayTestFailed
                 $result = $false
             }
         }
 
         # Test Client Targeting Mode
-        if($ClientTargetingMode)
+        if ($ClientTargetingMode)
         {
-            if($PSBoundParameters.ContainsKey('ClientTargetingMode'))
+            if ($PSBoundParameters.ContainsKey('ClientTargetingMode'))
             {
-                if($Wsus.ClientTargetingMode -ne $ClientTargetingMode)
+                if ($Wsus.ClientTargetingMode -ne $ClientTargetingMode)
                 {
-                    Write-Verbose -Message "ClientTargetingMode test failed"
+                    Write-Verbose -Message $script:localizedData.ClientTargetingModeTestFailed
                     $result = $false
                 }
             }
@@ -942,7 +945,7 @@ function SaveWsusConfiguration
             Start-Sleep -Seconds 1
         }
     }
-    until($WsusConfigurationReady)
+    until ($WsusConfigurationReady)
 }
 
 
