@@ -1,38 +1,27 @@
-<#
-.Synopsis
-   Unit tests for UpdateServicesApprovalRuleDsc
-.DESCRIPTION
-   Unit tests for UpdateServicesApprovalRuleDsc
-
-.NOTES
-   Code in HEADER and FOOTER regions are standard and may be moved into DSCResource.Tools in
-   Future and therefore should not be altered if possible.
-#>
-
-$Global:DSCModuleName      = 'UpdateServicesDsc' # Example xNetworking
-$Global:DSCResourceName    = 'MSFT_UpdateServicesApprovalRule' # Example MSFT_xFirewall
+$script:dscModuleName = 'UpdateServicesDsc'
+$script:dscResourceName = 'MSFT_UpdateServicesApprovalRule'
 
 #region HEADER
+$script:moduleRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+
+Import-Module -Name DscResource.Test -Force -ErrorAction Stop
 
 $TestEnvironment = Initialize-TestEnvironment `
-    -DSCModuleName $Global:DSCModuleName `
-    -DSCResourceName $Global:DSCResourceName `
+    -DSCModuleName $script:dscModuleName `
+    -DSCResourceName $script:dscResourceName `
+    -ResourceType 'Mof' `
     -TestType Unit
-#endregion
+
+#endregion HEADER
 
 
 # Begin Testing
 try
 {
-
-    #region Pester Tests
-
-    # The InModuleScope command allows you to perform white-box unit testing on the internal
-    # (non-exported) code of a Script Module.
-    InModuleScope $Global:DSCResourceName {
+    InModuleScope $script:DSCResourceName {
 
         #region Pester Test Initialization
-        Import-Module $PSScriptRoot\..\..\Tests\Helpers\ImitateUpdateServicesModule.psm1
+        Import-Module $PSScriptRoot\..\Helpers\ImitateUpdateServicesModule.psm1
 
         $global:WsusServer = [pscustomobject] @{Name = 'ServerName'}
 
@@ -56,9 +45,11 @@ try
         #endregion
 
         #region Function Get-TargetResource expecting Ensure Present
-        Describe "$($Global:DSCResourceName)\Get-TargetResource" {
+        Describe "MSFT_UpdateServicesApprovalRule\Get-TargetResource" {
 
-            Mock -CommandName New-TerminatingError -MockWith {}
+            Mock -CommandName New-InvalidOperationException -MockWith {}
+            Mock -CommandName New-InvalidResultException -MockWith {}
+            Mock -CommandName New-InvalidArgumentException -MockWith {}
 
             Context 'server should be configured.' {
 
@@ -87,7 +78,9 @@ try
                 }
 
                 it "mocks were not called" {
-                    Assert-MockCalled -CommandName New-TerminatingError -Times 0
+                    Assert-MockCalled -CommandName New-InvalidResultException -Times 0
+                    Assert-MockCalled -CommandName New-InvalidArgumentException -Times 0
+                    Assert-MockCalled -CommandName New-InvalidOperationException -Times 0
                 }
 
             }
@@ -124,7 +117,9 @@ try
                 }
 
                 it "mocks were not called" {
-                    Assert-MockCalled -CommandName New-TerminatingError -Times 0
+                    Assert-MockCalled -CommandName New-InvalidResultException -Times 0
+                    Assert-MockCalled -CommandName New-InvalidArgumentException -Times 0
+                    Assert-MockCalled -CommandName New-InvalidOperationException -Times 0
                 }
             }
 
@@ -155,14 +150,16 @@ try
                 }
 
                 it "mocks were not called" {
-                    Assert-MockCalled -CommandName New-TerminatingError -Times 0
+                    Assert-MockCalled -CommandName New-InvalidResultException -Times 0
+                    Assert-MockCalled -CommandName New-InvalidArgumentException -Times 0
+                    Assert-MockCalled -CommandName New-InvalidOperationException -Times 0
                 }
             }
         }
         #endregion
 
         #region Function Test-TargetResource
-        Describe "$($Global:DSCResourceName)\Test-TargetResource" {
+        Describe "MSFT_UpdateServicesApprovalRule\Test-TargetResource" {
             Context 'server is in correct state (Ensure=Present)' {
                 $DSCTestValues.Remove('Ensure')
                 $DSCTestValues.Add('Ensure','Present')
@@ -219,14 +216,16 @@ try
         #endregion
 
         #region Function Set-TargetResource
-        Describe "$($Global:DSCResourceName)\Set-TargetResource" {
+        Describe "MSFT_UpdateServicesApprovalRule\Set-TargetResource" {
             $Collection = [pscustomobject]@{}
             $Collection | Add-Member -MemberType ScriptMethod -Name Add -Value {}
 
             Context 'server is already in a correct state (resource is idempotent)' {
                 Mock New-Object -mockwith {$Collection}
                 Mock Get-WsusProduct -mockwith {}
-                Mock New-TerminatingError -mockwith {}
+                Mock -CommandName New-InvalidOperationException -MockWith {}
+                Mock -CommandName New-InvalidResultException -MockWith {}
+                Mock -CommandName New-InvalidArgumentException -MockWith {}
 
                 it 'should not throw when running on a properly configured server' {
                     {Set-targetResource @DSCSetValues -verbose} | should not throw
@@ -238,7 +237,9 @@ try
                 }
 
                 it "mocks were not called" {
-                    Assert-MockCalled -CommandName New-TerminatingError -Times 0
+                    Assert-MockCalled -CommandName New-InvalidResultException -Times 0
+                    Assert-MockCalled -CommandName New-InvalidArgumentException -Times 0
+                    Assert-MockCalled -CommandName New-InvalidOperationException -Times 0
                 }
             }
 
@@ -246,7 +247,9 @@ try
 
                 Mock New-Object -mockwith {$Collection}
                 Mock Get-WsusProduct -mockwith {}
-                Mock New-TerminatingError -mockwith {}
+                Mock -CommandName New-InvalidOperationException -MockWith {}
+                Mock -CommandName New-InvalidResultException -MockWith {}
+                Mock -CommandName New-InvalidArgumentException -MockWith {}
                 Mock Test-TargetResource -mockwith {$true}
 
                 it 'should not throw when running on an incorrectly configured server' {
@@ -260,14 +263,18 @@ try
                 }
 
                 it "mocks were not called" {
-                    Assert-MockCalled -CommandName New-TerminatingError -Times 0
+                    Assert-MockCalled -CommandName New-InvalidResultException -Times 0
+                    Assert-MockCalled -CommandName New-InvalidArgumentException -Times 0
+                    Assert-MockCalled -CommandName New-InvalidOperationException -Times 0
                 }
             }
 
             Context 'server should not be configured (Ensure=Absent)' {
                 Mock New-Object -mockwith {$Collection}
                 Mock Get-WsusProduct -mockwith {}
-                Mock New-TerminatingError -mockwith {}
+                Mock -CommandName New-InvalidOperationException -MockWith {}
+                Mock -CommandName New-InvalidResultException -MockWith {}
+                Mock -CommandName New-InvalidArgumentException -MockWith {}
                 Mock Test-TargetResource -mockwith {$true}
 
                 it 'should not throw when running on an incorrectly configured server' {
@@ -281,14 +288,18 @@ try
                 it "mocks were not called" {
                     Assert-MockCalled -CommandName New-Object -Times 0
                     Assert-MockCalled -CommandName Get-WsusProduct -Times 0
-                    Assert-MockCalled -CommandName New-TerminatingError -Times 0
+                    Assert-MockCalled -CommandName New-InvalidResultException -Times 0
+                    Assert-MockCalled -CommandName New-InvalidArgumentException -Times 0
+                    Assert-MockCalled -CommandName New-InvalidOperationException -Times 0
                 }
             }
 
             Context 'server is in correct state and synchronize is included' {
                 Mock New-Object -mockwith {$Collection}
                 Mock Get-WsusProduct -mockwith {}
-                Mock New-TerminatingError -mockwith {}
+                Mock -CommandName New-InvalidOperationException -MockWith {}
+                Mock -CommandName New-InvalidResultException -MockWith {}
+                Mock -CommandName New-InvalidArgumentException -MockWith {}
 
                 it 'should not throw when running on a properly configured server' {
                     {Set-targetResource @DSCSetValues -Synchronize $true -verbose} | should not throw
@@ -300,7 +311,9 @@ try
                 }
 
                 it "mocks were not called" {
-                    Assert-MockCalled -CommandName New-TerminatingError -Times 0
+                    Assert-MockCalled -CommandName New-InvalidResultException -Times 0
+                    Assert-MockCalled -CommandName New-InvalidArgumentException -Times 0
+                    Assert-MockCalled -CommandName New-InvalidOperationException -Times 0
                 }
             }
         }

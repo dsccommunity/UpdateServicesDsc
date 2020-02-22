@@ -67,6 +67,6 @@ LanguageSetTestFailed   = Languages test failed.
 ProductTestFailed       = Products test failed.
 ClassificationsTestFailed= Classifications test failed.
 SyncTimeOfDayTestFailed = Synchronize Automatically Time Of Day test failed.
-SynPerDayTestFailed     = Synchronizations Per Day test failed.
+SyncPerDayTestFailed     = Synchronizations Per Day test failed.
 ClientTargetingModeTestFailed = Client Targeting Mode test failed.
 '@

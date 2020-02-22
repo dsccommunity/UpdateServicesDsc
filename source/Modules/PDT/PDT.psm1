@@ -1,6 +1,6 @@
 $script:resourceHelperModulePath = Join-Path -Path $PSScriptRoot -ChildPath '..\..\Modules\DscResource.Common'
 Import-Module -Name $script:resourceHelperModulePath -ErrorAction Stop
-$script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
+$script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US' -FileName 'PDT.strings.psd1'
 
 # New-InvalidArgumentError
 # New-InvalidArgumentException -ArgumentName 'Action' -Message $errorMessage
@@ -16,7 +16,7 @@ function Invoke-ResolvePath
     [CmdletBinding()]
     param
     (
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [System.String]
         $Path
@@ -107,7 +107,7 @@ function Test-RootedPath
 {
     param
     (
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [String]
         $Path
@@ -146,12 +146,13 @@ function Get-Arguments
     [CmdletBinding()]
     param
     (
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
         $FunctionBoundParameters,
 
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
         [string[]] $ArgumentNames,
 
+        [Parameter()]
         [string[]] $NewArgumentNames
     )
 
@@ -493,12 +494,14 @@ function Get-Win32Process
     [CmdletBinding()]
     param
     (
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [String] $Path,
 
+        [Parameter()]
         [String] $Arguments,
 
+        [Parameter()]
         [PSCredential] $Credential
     )
 
@@ -514,6 +517,7 @@ function Get-Win32Process
             }
             catch
             {
+                Write-Debug "WMI error"
             }
         }
     }
@@ -547,7 +551,7 @@ function Get-Win32ProcessOwner
 {
     param
     (
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
         [ValidateNotNull()]
         $Process
     )
@@ -558,6 +562,7 @@ function Get-Win32ProcessOwner
     }
     catch
     {
+        Write-Debug "Getting Process owner failed."
     }
     if ($null -ne $owner.Domain)
     {
@@ -580,6 +585,7 @@ function Get-Win32ProcessArgumentsFromCommandLine
 {
     param
     (
+        [Parameter()]
         [String] $CommandLine
     )
 
@@ -625,12 +631,14 @@ function Start-Win32Process
 {
     param
     (
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [String] $Path,
 
+        [Parameter()]
         [String] $Arguments,
 
+        [Parameter()]
         [PSCredential] $Credential
     )
 
@@ -651,7 +659,6 @@ function Start-Win32Process
             }
             catch
             {
-
                 $exception = New-Object -TypeName System.ArgumentException -ArgumentList $_
                 $errorCategory = [System.Management.Automation.ErrorCategory]::OperationStopped
                 $errorRecord = New-Object -TypeName System.Management.Automation.ErrorRecord `
@@ -705,21 +712,24 @@ function Wait-Win32ProcessStart
     [CmdletBinding()]
     param
     (
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [String] $Path,
 
+        [Parameter()]
         [String] $Arguments,
 
+        [Parameter()]
         [PSCredential] $Credential,
 
+        [Parameter()]
         [Int] $Timeout = 60000
     )
 
     $start = [DateTime]::Now
     $getArguments = Get-Arguments -FunctionBoundParameters $PSBoundParameters -ArgumentNames ("Path", "Arguments", "Credential")
     $started = (@(Get-Win32Process @GetArguments).Count -ge 1)
-    While (-not $started -and ([DateTime]::Now - $start).TotalMilliseconds -lt $Timeout)
+    while (-not $started -and ([DateTime]::Now - $start).TotalMilliseconds -lt $Timeout)
     {
         Start-Sleep -Seconds 1
         $started = @(Get-Win32Process @GetArguments).Count -ge 1
@@ -749,21 +759,24 @@ function Wait-Win32ProcessStop
     [CmdletBinding()]
     param
     (
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [String] $Path,
 
+        [Parameter()]
         [String] $Arguments,
 
+        [Parameter()]
         [PSCredential] $Credential,
 
+        [Parameter()]
         [Int] $Timeout = 180000
     )
 
     $start = [DateTime]::Now
     $getArguments = Get-Arguments -FunctionBoundParameters $PSBoundParameters -ArgumentNames ("Path", "Arguments", "Credential")
     $stopped = (@(Get-Win32Process @GetArguments).Count -eq 0)
-    While (-not $stopped -and ([DateTime]::Now - $start).TotalMilliseconds -lt $Timeout)
+    while (-not $stopped -and ([DateTime]::Now - $start).TotalMilliseconds -lt $Timeout)
     {
         Start-Sleep -Seconds 1
         $stopped = (@(Get-Win32Process @GetArguments).Count -eq 0)
@@ -792,12 +805,14 @@ function Wait-Win32ProcessEnd
     [CmdletBinding()]
     param
     (
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [String] $Path,
 
+        [Parameter()]
         [String] $Arguments,
 
+        [Parameter()]
         [PSCredential] $Credential
     )
 

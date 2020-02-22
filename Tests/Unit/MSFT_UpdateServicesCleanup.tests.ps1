@@ -1,37 +1,30 @@
-<#
-.Synopsis
-   Unit tests for UpdateServicesCleanup
-.DESCRIPTION
-   Unit tests for UpdateServicesCleanup
 
-.NOTES
-   Code in HEADER and FOOTER regions are standard and may be moved into DSCResource.Tools in
-   Future and therefore should not be altered if possible.
-#>
-
-$Global:DSCModuleName      = 'UpdateServicesDsc' # Example xNetworking
-$Global:DSCResourceName    = 'MSFT_UpdateServicesCleanup' # Example MSFT_xFirewall
+$script:DSCModuleName      = 'UpdateServicesDsc' # Example xNetworking
+$script:DSCResourceName    = 'MSFT_UpdateServicesCleanup' # Example MSFT_xFirewall
 
 #region HEADER
-[String] $moduleRoot = Split-Path -Parent (Split-Path -Parent (Split-Path -Parent $Script:MyInvocation.MyCommand.Path))
+$script:moduleRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+
+Import-Module -Name DscResource.Test -Force -ErrorAction Stop
 
 $TestEnvironment = Initialize-TestEnvironment `
-    -DSCModuleName $Global:DSCModuleName `
-    -DSCResourceName $Global:DSCResourceName `
+    -DSCModuleName $script:dscModuleName `
+    -DSCResourceName $script:dscResourceName `
+    -ResourceType 'Mof' `
     -TestType Unit
-#endregion
 
+#endregion HEADER
 
 # Begin Testing
 try
 {
-
     #region Pester Tests
 
     # The InModuleScope command allows you to perform white-box unit testing on the internal
     # (non-exported) code of a Script Module.
-    InModuleScope $Global:DSCResourceName {
-        $DSCSetValues = @{
+    InModuleScope $script:DSCResourceName {
+        $DSCSetValues =
+        @{
             DeclineSupersededUpdates = $true
             DeclineExpiredUpdates = $true
             CleanupObsoleteUpdates = $true
@@ -42,7 +35,8 @@ try
             TimeOfDay = "04:00:00"
         }
 
-        $DSCTestValues = @{
+        $DSCTestValues =
+        @{
             DeclineSupersededUpdates = $true
             DeclineExpiredUpdates = $true
             CleanupObsoleteUpdates = $true
@@ -55,7 +49,7 @@ try
         #endregion
 
         #region Function Get-TargetResource expecting Ensure Present
-        Describe "$($Global:DSCResourceName)\Get-TargetResource" {
+        Describe "MSFT_UpdateServicesCleanup\Get-TargetResource" {
             $Arguments = 'foo"$DeclineSupersededUpdates = $True;$DeclineExpiredUpdates = $True;$CleanupObsoleteUpdates = $True;$CompressUpdates = $True;$CleanupObsoleteComputers = $True;$CleanupUnneededContentFiles = $True;$CleanupLocalPublishedContentFiles = $True'
             $Execute = "$($env:SystemRoot)\System32\WindowsPowerShell\v1.0\powershell.exe"
             $StartBoundary = '20160101T04:00:00'
@@ -151,7 +145,7 @@ try
 
 
         #region Function Test-TargetResource
-        Describe "$($Global:DSCResourceName)\Test-TargetResource" {
+        Describe "MSFT_UpdateServicesCleanup\Test-TargetResource" {
             Context 'server is in correct state (Ensure=Present)' {
                 $DSCTestValues.Remove('Ensure')
                 $DSCTestValues.Add('Ensure','Present')
@@ -242,14 +236,14 @@ try
         #endregion
 
         #region Function Set-TargetResource
-        Describe "$($Global:DSCResourceName)\Set-TargetResource" {
+        Describe "MSFT_UpdateServicesCleanup\Set-TargetResource" {
             $Arguments = 'foo"$DeclineSupersededUpdates = $True;$DeclineExpiredUpdates = $True;$CleanupObsoleteUpdates = $True;$CompressUpdates = $True;$CleanupObsoleteComputers = $True;$CleanupUnneededContentFiles = $True;$CleanupLocalPublishedContentFiles = $True'
             $Execute = "$($env:SystemRoot)\System32\WindowsPowerShell\v1.0\powershell.exe"
             $StartBoundary = '20160101T04:00:00'
             Mock -CommandName Unregister-ScheduledTask -MockWith {}
             Mock -CommandName Register-ScheduledTask -MockWith {}
             Mock -CommandName Test-TargetResource -MockWith {$true}
-            Mock -CommandName New-TerminatingError -MockWith {}
+            Mock -CommandName New-InvalidResultException -MockWith {}
 
             Context 'resource is idempotent (Ensure=Present)' {
                Mock -CommandName Get-ScheduledTask -MockWith {$true}
@@ -270,7 +264,7 @@ try
                 }
 
                 it "mocks were not called that remove tasks or log errors" {
-                    Assert-MockCalled -CommandName New-TerminatingError -Times 0
+                    Assert-MockCalled -CommandName New-InvalidResultException -Times 0
                 }
             }
 
@@ -293,7 +287,7 @@ try
 
                 it "mocks were not called that remove tasks or log errors" {
                     Assert-MockCalled -CommandName Unregister-ScheduledTask -Times 0
-                    Assert-MockCalled -CommandName New-TerminatingError -Times 0
+                    Assert-MockCalled -CommandName New-InvalidResultException -Times 0
                 }
             }
 
@@ -315,7 +309,7 @@ try
 
                 it "mocks were not called that register tasks or log errors" {
                     Assert-MockCalled -CommandName Register-ScheduledTask -Times 0
-                    Assert-MockCalled -CommandName New-TerminatingError -Times 0
+                    Assert-MockCalled -CommandName New-InvalidResultException -Times 0
                 }
             }
         }

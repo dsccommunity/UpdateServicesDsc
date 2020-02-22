@@ -1,121 +1,113 @@
-<#
-.Synopsis
-   Unit tests for UpdateServicesServer
-.DESCRIPTION
-   Unit tests for UpdateServicesServer
-
-.NOTES
-   Code in HEADER and FOOTER regions are standard and may be moved into DSCResource.Tools in
-   Future and therefore should not be altered if possible.
-#>
-param()
-
-$Global:DSCModuleName      = 'UpdateServicesDsc' # Example xNetworking
-$Global:DSCResourceName    = 'MSFT_UpdateServicesServer' # Example MSFT_xFirewall
+$script:DSCModuleName = 'UpdateServicesDsc' # Example xNetworking
+$script:DSCResourceName = 'MSFT_UpdateServicesServer' # Example MSFT_xFirewall
 
 #region HEADER
-[String] $moduleRoot = Split-Path -Parent (Split-Path -Parent (Split-Path -Parent $Script:MyInvocation.MyCommand.Path))
+$script:moduleRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+
+Import-Module -Name DscResource.Test -Force -ErrorAction Stop
 
 $TestEnvironment = Initialize-TestEnvironment `
-    -DSCModuleName $Global:DSCModuleName `
-    -DSCResourceName $Global:DSCResourceName `
+    -DSCModuleName $script:dscModuleName `
+    -DSCResourceName $script:dscResourceName `
+    -ResourceType 'Mof' `
     -TestType Unit
-#endregion
+
+#endregion HEADER
 
 # Begin Testing
 try
 {
-
     #region Pester Tests
 
     # The InModuleScope command allows you to perform white-box unit testing on the internal
     # (non-exported) code of a Script Module.
-    InModuleScope $Global:DSCResourceName {
+    InModuleScope $script:DSCResourceName {
 
         #region Pester Test Initialization
-        Import-Module $PSScriptRoot\..\..\Tests\Helpers\ImitateUpdateServicesModule.psm1 -force
+        Import-Module $PSScriptRoot\..\Helpers\ImitateUpdateServicesModule.psm1 -force
 
         $DSCGetValues = @{
-            SQLServer = 'SQLServer'
-            ContentDir = 'C:\WSUSContent\'
-            UpdateImprovementProgram = $true
-            UpstreamServerName = ''
-            UpstreamServerPort = $null
-            UpstreamServerSSL = $null
-            UpstreamServerReplica = $null
-            ProxyServerName = ''
-            ProxyServerPort = $null
-            ProxyServerCredentialUsername = $null
-            ProxyServerBasicAuthentication = $null
-            Languages = '*'
-            Products = '*'
-            Classifications = '*'
-            SynchronizeAutomatically = $true
+            SQLServer                         = 'SQLServer'
+            ContentDir                        = 'C:\WSUSContent\'
+            UpdateImprovementProgram          = $true
+            UpstreamServerName                = ''
+            UpstreamServerPort                = $null
+            UpstreamServerSSL                 = $null
+            UpstreamServerReplica             = $null
+            ProxyServerName                   = ''
+            ProxyServerPort                   = $null
+            ProxyServerCredentialUsername     = $null
+            ProxyServerBasicAuthentication    = $null
+            Languages                         = '*'
+            Products                          = '*'
+            Classifications                   = '*'
+            SynchronizeAutomatically          = $true
             SynchronizeAutomaticallyTimeOfDay = '04:00:00'
-            SynchronizationsPerDay = 24
-            ClientTargetingMode = "Client"
+            SynchronizationsPerDay            = 24
+            ClientTargetingMode               = "Client"
         }
 
         $DSCTestValues = @{
-            SetupCredential = new-object -typename System.Management.Automation.PSCredential -argumentlist 'foo', $('bar' | ConvertTo-SecureString -AsPlainText -Force)
-            SQLServer = 'SQLServer'
-            ContentDir = 'C:\WSUSContent\'
-            UpdateImprovementProgram = $true
-            UpstreamServerName = 'UpstreamServer'
-            UpstreamServerPort = $false
-            UpstreamServerSSL = $false
-            UpstreamServerReplica = $false
-            ProxyServerName = 'ProxyServer'
-            ProxyServerPort = 8080
-            Languages = "*"
-            Products = @("Windows","Office")
-            Classifications = @('E6CF1350-C01B-414D-A61F-263D14D133B4','E0789628-CE08-4437-BE74-2495B842F43B','0FA1201D-4330-4FA8-8AE9-B877473B6441')
-            SynchronizeAutomatically = $true
+            SetupCredential                   = New-Object -typename System.Management.Automation.PSCredential -argumentlist 'foo', $('bar' | ConvertTo-SecureString -AsPlainText -Force)
+            SQLServer                         = 'SQLServer'
+            ContentDir                        = 'C:\WSUSContent\'
+            UpdateImprovementProgram          = $true
+            UpstreamServerName                = 'UpstreamServer'
+            UpstreamServerPort                = $false
+            UpstreamServerSSL                 = $false
+            UpstreamServerReplica             = $false
+            ProxyServerName                   = 'ProxyServer'
+            ProxyServerPort                   = 8080
+            Languages                         = "*"
+            Products                          = @("Windows", "Office")
+            Classifications                   = @('E6CF1350-C01B-414D-A61F-263D14D133B4', 'E0789628-CE08-4437-BE74-2495B842F43B', '0FA1201D-4330-4FA8-8AE9-B877473B6441')
+            SynchronizeAutomatically          = $true
             SynchronizeAutomaticallyTimeOfDay = '04:00:00'
-            SynchronizationsPerDay = 24
-            ClientTargetingMode = "Client"
+            SynchronizationsPerDay            = 24
+            ClientTargetingMode               = "Client"
         }
         #endregion
 
         #region Function Get-TargetResource expecting Ensure Present
-        Describe "$($Global:DSCResourceName)\Get-TargetResource" {
+        Describe "MSFT_UpdateServicesServer\Get-TargetResource" {
 
-            Mock -CommandName Get-ItemProperty -ParameterFilter {$Path -eq 'HKLM:\SOFTWARE\Microsoft\Update Services\Server\Setup' -and $Name -eq 'SQLServerName'} -MockWith {@{SQLServerName = 'SQLServer'}} -Verifiable
-            Mock -CommandName Get-ItemProperty -ParameterFilter {$Path -eq 'HKLM:\SOFTWARE\Microsoft\Update Services\Server\Setup' -and $Name -eq 'ContentDir'} -MockWith {@{ContentDir = 'C:\WSUSContent\'}} -Verifiable
+            Mock -CommandName Get-ItemProperty -ParameterFilter { $Path -eq 'HKLM:\SOFTWARE\Microsoft\Update Services\Server\Setup' -and $Name -eq 'SQLServerName' } -MockWith { @{SQLServerName = 'SQLServer' } } -Verifiable
+            Mock -CommandName Get-ItemProperty -ParameterFilter { $Path -eq 'HKLM:\SOFTWARE\Microsoft\Update Services\Server\Setup' -and $Name -eq 'ContentDir' } -MockWith { @{ContentDir = 'C:\WSUSContent\' } } -Verifiable
 
             Context 'server should be configured.' {
 
-                it 'calling Get should not throw' {
-                    {$Script:resource = Get-TargetResource -Ensure 'Present' -verbose} | should not throw
+                It 'calling Get should not throw' {
+                    { $Script:resource = Get-TargetResource -Ensure 'Present' -verbose } | Should not throw
                 }
 
-                it 'sets the value for Ensure' {
-                    $Script:resource.Ensure | should be 'Present'
+                It 'sets the value for Ensure' {
+                    $Script:resource.Ensure | Should be 'Present'
                 }
 
-                foreach ($setting in $DSCSetValues.Keys) {
-                    it "returns $setting in Get results" {
-                        $Script:resource.$setting | should be $DSCGetReturnValues.$setting
+                foreach ($setting in $DSCSetValues.Keys)
+                {
+                    It "returns $setting in Get results" {
+                        $Script:resource.$setting | Should be $DSCGetReturnValues.$setting
                     }
                 }
 
-                it 'mocks were called' {
+                It 'mocks were called' {
                     Assert-VerifiableMock
                 }
             }
 
-          Context 'server should not be configured.' {
+            Context 'server should not be configured.' {
 
-                it 'calling Get should not throw' {
-                    Mock -CommandName Get-WSUSServer -MockWith {}
-                    {$Script:resource = Get-TargetResource -Ensure 'Absent' -verbose} | should not throw
+                It 'calling Get should not throw' {
+                    Mock -CommandName Get-WSUSServer -MockWith { }
+                    { $Script:resource = Get-TargetResource -Ensure 'Absent' -verbose } | Should not throw
                 }
 
-                it 'sets the value for Ensure' {
-                    $Script:resource.Ensure | should be 'Absent'
+                It 'sets the value for Ensure' {
+                    $Script:resource.Ensure | Should be 'Absent'
                 }
 
-                it 'mocks were called' {
+                It 'mocks were called' {
                     Assert-VerifiableMock
                 }
             }
@@ -123,26 +115,26 @@ try
         #endregion
 
         #region Function Test-TargetResource
-        Describe "$($Global:DSCResourceName)\Test-TargetResource" {
+        Describe "MSFT_UpdateServicesServer\Test-TargetResource" {
 
             Context 'server is in correct state (Ensure=Present)' {
 
                 $DSCTestValues.Remove('Ensure')
-                $DSCTestValues.Add('Ensure','Present')
+                $DSCTestValues.Add('Ensure', 'Present')
 
-                Mock -CommandName Get-TargetResource -MockWith {$DSCTestValues} -Verifiable
+                Mock -CommandName Get-TargetResource -MockWith { $DSCTestValues } -Verifiable
 
                 $script:result = $null
 
-                it 'calling test should not throw' {
-                    {$script:result = Test-TargetResource @DSCTestValues -verbose} | should not throw
+                It 'calling test should not throw' {
+                    { $script:result = Test-TargetResource @DSCTestValues -verbose } | Should not throw
                 }
 
-                it "result should be true" {
-                    $script:result | should be $true
+                It "result should be true" {
+                    $script:result | Should be $true
                 }
 
-                it 'mocks were called' {
+                It 'mocks were called' {
                     Assert-VerifiableMock
                 }
             }
@@ -150,21 +142,21 @@ try
             Context 'server should not be configured (Ensure=Absent)' {
 
                 $DSCTestValues.Remove('Ensure')
-                $DSCTestValues.Add('Ensure','Absent')
+                $DSCTestValues.Add('Ensure', 'Absent')
 
-                Mock -CommandName Get-TargetResource -MockWith {$DSCTestValues} -Verifiable
+                Mock -CommandName Get-TargetResource -MockWith { $DSCTestValues } -Verifiable
 
                 $script:result = $null
 
-                it 'calling test should not throw' {
-                    {$script:result = Test-TargetResource @DSCTestValues -verbose} | should not throw
+                It 'calling test should not throw' {
+                    { $script:result = Test-TargetResource @DSCTestValues -verbose } | Should not throw
                 }
 
-                it "result should be true" {
-                    $script:result | should be $true
+                It "result should be true" {
+                    $script:result | Should be $true
                 }
 
-                it 'mocks were called' {
+                It 'mocks were called' {
                     Assert-VerifiableMock
                 }
             }
@@ -173,19 +165,19 @@ try
 
                 $DSCTestValues.Remove('Ensure')
 
-                Mock -CommandName Get-TargetResource -MockWith {$DSCTestValues} -Verifiable
+                Mock -CommandName Get-TargetResource -MockWith { $DSCTestValues } -Verifiable
 
                 $script:result = $null
 
-                it 'calling test should not throw' {
-                    {$script:result = Test-TargetResource @DSCTestValues -Ensure 'Present' -verbose} | should not throw
+                It 'calling test should not throw' {
+                    { $script:result = Test-TargetResource @DSCTestValues -Ensure 'Present' -verbose } | Should not throw
                 }
 
-                it "result should be false" {
-                    $script:result | should be $false
+                It "result should be false" {
+                    $script:result | Should be $false
                 }
 
-                it 'mocks were called' {
+                It 'mocks were called' {
                     Assert-VerifiableMock
                 }
             }
@@ -193,12 +185,12 @@ try
             Context "setting has drifted" {
 
                 $DSCTestValues.Remove('Ensure')
-                $DSCTestValues.Add('Ensure','Present')
+                $DSCTestValues.Add('Ensure', 'Present')
 
                 # Settings not currently tested: ProxyServerUserName, ProxyServerCredential, ProxyServerBasicAuthentication, 'Languages', 'Products', 'Classifications', 'SynchronizeAutomatically'
                 $settingsList = 'UpdateImprovementProgram', 'UpstreamServerName', 'UpstreamServerPort', 'UpstreamServerSSL', 'UpstreamServerReplica', 'ProxyServerName', 'ProxyServerPort', 'SynchronizeAutomaticallyTimeOfDay', 'SynchronizationsPerDay'
-                foreach ($setting in $settingsList) {
-
+                foreach ($setting in $settingsList)
+                {
                     Mock -CommandName Get-TargetResource -MockWith {
                         $DSCTestValues.Remove("$setting")
                         $DSCTestValues
@@ -206,19 +198,19 @@ try
 
                     $script:result = $null
 
-                    it "calling test with change to $setting should not throw" {
-                        {$script:result = Test-TargetResource @DSCTestValues -verbose} | should not throw
+                    It "calling test with change to $setting should not throw" {
+                        { $script:result = Test-TargetResource @DSCTestValues -verbose } | Should not throw
                     }
 
-                    it "result should be false when $setting has changed" {
-                        $script:result | should be $false
+                    It "result should be false when $setting has changed" {
+                        $script:result | Should be $false
                     }
 
-                    it 'mocks were called' {
+                    It 'mocks were called' {
                         Assert-VerifiableMock
                     }
 
-                    $DSCTestValues.Add("$setting",$true)
+                    $DSCTestValues.Add("$setting", $true)
                 }
             }
 
@@ -226,43 +218,45 @@ try
         #endregion
 
         #region Function Set-TargetResource
-        Describe "$($Global:DSCResourceName)\Set-TargetResource" {
+        Describe "MSFT_UpdateServicesServer\Set-TargetResource" {
 
             $DSCTestValues.Remove('Ensure')
 
-            Mock -CommandName Test-TargetResource -MockWith {$true}
-            Mock -CommandName New-TerminatingError -MockWith {}
-            Mock SaveWsusConfiguration -MockWith {}
+            Mock -CommandName Test-TargetResource -MockWith { $true }
+            Mock -CommandName New-InvalidOperationException -MockWith { }
+            Mock -CommandName New-InvalidResultException -MockWith { }
+            Mock SaveWsusConfiguration -MockWith { }
 
             Context 'resource is idempotent (Ensure=Present)' {
 
-                it 'should not throw when running on a properly configured server' {
-                    {Set-targetResource @DSCTestValues -Ensure Present -verbose} | should not throw
+                It 'should not throw when running on a properly configured server' {
+                    { Set-targetResource @DSCTestValues -Ensure Present -verbose } | Should not throw
                 }
 
-                it "mocks were called" {
+                It "mocks were called" {
                     Assert-MockCalled -CommandName Test-TargetResource -Times 1
                     Assert-MockCalled -CommandName SaveWsusConfiguration -Times 1
                 }
 
-                it "mocks were not called that log errors" {
-                    Assert-MockCalled -CommandName New-TerminatingError -Times 0
+                It "mocks were not called that log errors" {
+                    Assert-MockCalled -CommandName New-InvalidResultException -Times 0
+                    Assert-MockCalled -CommandName New-InvalidOperationException -Times 0
                 }
             }
 
             Context 'resource supports Ensure=Absent' {
 
-                it 'should not throw when running on a properly configured server' {
-                    {Set-targetResource @DSCTestValues -Ensure Absent -verbose} | should not throw
+                It 'should not throw when running on a properly configured server' {
+                    { Set-targetResource @DSCTestValues -Ensure Absent -verbose } | Should not throw
                 }
 
-                it "mocks were called" {
+                It "mocks were called" {
                     Assert-MockCalled -CommandName Test-TargetResource -Times 1
                     Assert-MockCalled -CommandName SaveWsusConfiguration -Times 1
                 }
 
-                it "mocks were not called that log errors" {
-                    Assert-MockCalled -CommandName New-TerminatingError -Times 0
+                It "mocks were not called that log errors" {
+                    Assert-MockCalled -CommandName New-InvalidResultException -Times 0
                 }
             }
         }

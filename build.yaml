@@ -23,6 +23,7 @@ BuildWorkflow:
   '.': # "." is the default Invoke-Build workflow. It is called when no -Tasks is specified to the build.ps1
     - build
     - test
+    - hqrmtest
 
   build:
     - Clean
@@ -42,7 +43,6 @@ BuildWorkflow:
   test:
     - Pester_Tests_Stop_On_Fail
     - Pester_if_Code_Coverage_Under_Threshold
-    - hqrmtest
 
   publish:
     - Publish_release_to_GitHub
@@ -54,9 +54,11 @@ Pester: #Passthru, OutputFile, CodeCoverageOutputFile not supported
   ExcludeFromCodeCoverage:
     - Modules/DscResource.Common
   Script:
-    - tests/Unit/MSFT_UpdateServicesCleanup.tests.ps1
-  # - tests/QA
-  # - tests/Integration
+    # - tests/Unit/MSFT_UpdateServicesCleanup.tests.ps1
+    # - tests/Unit/MSFT_UpdateServicesServer.tests.ps1
+    # - tests/Unit/MSFT_UpdateServicesApprovalRule.tests.ps1
+    # - tests/QA
+    # - tests/Integration
   ExcludeTag:
     - helpQuality
     - FunctionalQuality

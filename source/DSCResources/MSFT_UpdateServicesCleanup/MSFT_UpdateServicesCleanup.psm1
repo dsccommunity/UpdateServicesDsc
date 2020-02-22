@@ -3,7 +3,7 @@
 # Load Common Module
 $script:resourceHelperModulePath = Join-Path -Path $PSScriptRoot -ChildPath '..\..\Modules\DscResource.Common'
 Import-Module -Name $script:resourceHelperModulePath -ErrorAction Stop
-$script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
+$script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US' -FileName MSFT_UpdateServicesCleanup.strings.psd1
 
 
 <#
@@ -31,7 +31,7 @@ function Get-TargetResource
             ($Task.Actions.Execute -eq "$($env:SystemRoot)\System32\WindowsPowerShell\v1.0\powershell.exe")
         )
         {
-            Write-Verbose -Message $script:localizedData.CleanUpTaskEnabled
+            Write-Verbose -Message $script:localizedData.FoundCleanUpTaskEnabled
 
             $Ensure = "Present"
             $Arguments = $Task.Actions.Arguments
