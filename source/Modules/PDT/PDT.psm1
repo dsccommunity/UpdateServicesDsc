@@ -1,54 +1,9 @@
-#region localizeddata
-if (Test-Path -Path "${PSScriptRoot}\${PSUICulture}")
-{
-    Import-LocalizedData `
-        -BindingVariable LocalizedData `
-        -Filename PDT.strings.psd1 `
-        -BaseDirectory "${PSScriptRoot}\${PSUICulture}"
-}
-else
-{
-    #fallback to en-US
-    Import-LocalizedData `
-        -BindingVariable LocalizedData `
-        -Filename PDT.strings.psd1 `
-        -BaseDirectory "${PSScriptRoot}\en-US"
-}
-#endregion
+$script:resourceHelperModulePath = Join-Path -Path $PSScriptRoot -ChildPath '..\..\Modules\DscResource.Common'
+Import-Module -Name $script:resourceHelperModulePath -ErrorAction Stop
+$script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
 
-<#
-    .SYNOPSIS
-    Throws an error exception
-
-    .PARAMETER ErrorId
-    A specific identifier for the error record
-
-    .PARAMETER ErrorMessage
-    The message to include when writing the error
-#>
-function New-InvalidArgumentError
-{
-    [CmdletBinding()]
-    param
-    (
-        [parameter(Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [String]
-        $errorId,
-
-        [parameter(Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [String]
-        $errorMessage
-    )
-
-    $errorCategory = [System.Management.Automation.ErrorCategory]::InvalidArgument
-    $exception = New-Object -TypeName System.ArgumentException -ArgumentList $errorMessage
-    $errorRecord = New-Object -TypeName System.Management.Automation.ErrorRecord `
-        -ArgumentList $exception, $errorId, $errorCategory, $null
-    throw $errorRecord
-}
-
+# New-InvalidArgumentError
+# New-InvalidArgumentException -ArgumentName 'Action' -Message $errorMessage
 <#
     .SYNOPSIS
     Resolves a path and verifies it exists.
@@ -68,40 +23,51 @@ function Invoke-ResolvePath
     )
 
     $Path = [Environment]::ExpandEnvironmentVariables($Path)
-    if(Test-RootedPath -Path $Path)
+    if (Test-RootedPath -Path $Path)
     {
-        if(!(Test-Path -Path $Path -PathType Leaf))
+        if (!(Test-Path -Path $Path -PathType Leaf))
         {
-            New-InvalidArgumentError -ErrorID "CannotFindRootedPath" `
-                -ErrorMessage ($LocalizedData.InvalidArgumentAndMessage `
-                -f ($LocalizedData.InvalidArgument -f "Path",$Path), $LocalizedData.FileNotFound)
+            $errorMessage = (
+                $script:localizedData.InvalidArgument -f @('Path', $Path) +
+                $script:localizedData.FileNotFound
+            )
+            New-InvalidArgumentException -ArgumentName 'Path' -Message $errorMessage
         }
         return $Path
     }
     else
     {
         $Path = (Get-Item -Path $Path -ErrorAction SilentlyContinue).FullName
-        if(!(Test-Path -Path $Path -PathType Leaf))
+        if (!(Test-Path -Path $Path -PathType Leaf))
         {
-            New-InvalidArgumentError -ErrorID "CannotFindRootedPath" `
-                -ErrorMessage ($LocalizedData.InvalidArgumentAndMessage `
-                -f ($LocalizedData.InvalidArgument -f "Path",$Path), $LocalizedData.FileNotFound)
+            $errorMessage = (
+                $script:localizedData.InvalidArgument -f @('Path', $Path) +
+                $script:localizedData.FileNotFound
+            )
+            New-InvalidArgumentException -ArgumentName 'Path' -Message $errorMessage
         }
         return $Path
     }
-    if([string]::IsNullOrEmpty($env:Path))
+
+    if ([string]::IsNullOrEmpty($env:Path))
     {
-        New-InvalidArgumentError -ErrorID "EmptyEnvironmentPath" `
-            -ErrorMessage ($LocalizedData.InvalidArgumentAndMessage `
-            -f ($LocalizedData.InvalidArgument -f "Path",$Path), $LocalizedData.FileNotFound)
+        $errorMessage = (
+            $script:localizedData.InvalidArgument -f @('$Env:Path', $Env:Path) +
+            $script:localizedData.PathVariableEmpty
+        )
+        New-InvalidArgumentException -ArgumentName 'Path' -Message $errorMessage
     }
-    if((Split-Path -Path $Path -Leaf) -ne $Path)
+
+    if ((Split-Path -Path $Path -Leaf) -ne $Path)
     {
-        New-InvalidArgumentError -ErrorID "NotAbsolutePathOrFileName" `
-            -ErrorMessage ($LocalizedData.InvalidArgumentAndMessage `
-            -f ($LocalizedData.InvalidArgument -f "Path",$Path), $LocalizedData.AbsolutePathOrFileName)
+        $errorMessage = (
+            $script:localizedData.InvalidArgument -f @('Path', $Path) +
+            $script:localizedData.AbsolutePathOrFileName
+        )
+        New-InvalidArgumentException -ArgumentName 'Path' -Message $errorMessage
     }
-    foreach($rawSegment in $env:Path.Split(";"))
+
+    foreach ($rawSegment in $env:Path.Split(";"))
     {
         $segment = [Environment]::ExpandEnvironmentVariables($rawSegment)
         $segmentRooted = $false
@@ -109,20 +75,25 @@ function Invoke-ResolvePath
         {
             $segmentRooted = [IO.Path]::IsPathRooted($segment)
         }
-        catch {}
-        if(!$segmentRooted)
+        catch
+        {
+        }
+        if (!$segmentRooted)
         {
             continue
         }
-        $candidate = join-path $segment $Path
-        if(Test-Path -Path $candidate -PathType Leaf)
+        $candidate = Join-Path $segment $Path
+        if (Test-Path -Path $candidate -PathType Leaf)
         {
             return $candidate
         }
     }
-    New-InvalidArgumentError -ErrorID "CannotFindRelativePath" `
-        -ErrorMessage ($LocalizedData.InvalidArgumentAndMessage `
-        -f ($LocalizedData.InvalidArgument -f "Path",$Path), $LocalizedData.FileNotFound)
+
+    $errorMessage = (
+            $script:localizedData.InvalidArgument -f @('Path', $Path) +
+            $script:localizedData.FileNotFound
+        )
+    New-InvalidArgumentException -ArgumentName 'Path' -Message $errorMessage
 }
 
 <#
@@ -148,9 +119,11 @@ function Test-RootedPath
     }
     catch
     {
-        New-InvalidArgumentError -ErrorID "CannotGetIsPathRooted" `
-            -ErrorMessage ($LocalizedData.InvalidArgumentAndMessage `
-            -f ($LocalizedData.InvalidArgument -f "Path",$Path), $_.Exception.Message)
+        $errorMessage = (
+            $script:localizedData.InvalidArgument -f @('Path', $Path) +
+            $_.Exception.Message
+        )
+        New-InvalidArgumentException -ArgumentName 'Path' -Message $errorMessage
     }
 }
 
@@ -182,9 +155,9 @@ function Get-Arguments
         [string[]] $NewArgumentNames
     )
 
-    $returnValue = @{}
+    $returnValue = @{ }
 
-    for ($i=0;$i -lt $ArgumentNames.Count;$i++)
+    for ($i = 0; $i -lt $ArgumentNames.Count; $i++)
     {
         $argumentName = $ArgumentNames[$i]
 
@@ -199,7 +172,7 @@ function Get-Arguments
 
         if ($FunctionBoundParameters.ContainsKey($argumentName))
         {
-            $null = $returnValue.Add($NewArgumentName,$FunctionBoundParameters[$argumentName])
+            $null = $returnValue.Add($NewArgumentName, $FunctionBoundParameters[$argumentName])
         }
     }
 
@@ -627,13 +600,13 @@ function Get-Win32ProcessArgumentsFromCommandLine
     {
         $charToLookfor = [char]' '
     }
-    $endOfCommand = $commandLine.IndexOf($charToLookfor ,1)
+    $endOfCommand = $commandLine.IndexOf($charToLookfor , 1)
     if ($endOfCommand -eq -1)
     {
         return ""
     }
-    return $commandLine.Substring($endOfCommand+1).Trim()
-} # end funcion Get-Win32ProcessArgumentsFromCommandLine
+    return $commandLine.Substring($endOfCommand + 1).Trim()
+} # end function Get-Win32ProcessArgumentsFromCommandLine
 
 <#
     .SYNOPSIS
@@ -661,23 +634,24 @@ function Start-Win32Process
         [PSCredential] $Credential
     )
 
-    $getArguments = Get-Arguments -FunctionBoundParameters $PSBoundParameters -ArgumentNames ("Path","Arguments","Credential")
+    $getArguments = Get-Arguments -FunctionBoundParameters $PSBoundParameters -ArgumentNames ("Path", "Arguments", "Credential")
     $processes = @(Get-Win32Process @getArguments)
     if ($processes.Count -eq 0)
     {
-        if($PSBoundParameters.ContainsKey("Credential"))
+        if ($PSBoundParameters.ContainsKey("Credential"))
         {
             try
             {
                 Initialize-PInvoke
                 [Source.NativeMethods]::CreateProcessAsUser(`
-                    ("$Path " + $Arguments),`
-                    $Credential.GetNetworkCredential().Domain,`
-                    $Credential.GetNetworkCredential().UserName,`
-                    $Credential.GetNetworkCredential().Password)
+                    ("$Path " + $Arguments), `
+                        $Credential.GetNetworkCredential().Domain, `
+                        $Credential.GetNetworkCredential().UserName, `
+                        $Credential.GetNetworkCredential().Password)
             }
             catch
             {
+
                 $exception = New-Object -TypeName System.ArgumentException -ArgumentList $_
                 $errorCategory = [System.Management.Automation.ErrorCategory]::OperationStopped
                 $errorRecord = New-Object -TypeName System.Management.Automation.ErrorRecord `
@@ -688,15 +662,15 @@ function Start-Win32Process
         else
         {
             $startArguments = Get-Arguments -FunctionBoundParameters $PSBoundParameters `
-                    -ArgumentNames ("Path",     "Arguments",    "Credential") `
-                    -NewArgumentNames ("FilePath", "ArgumentList", "Credential")
-            if([string]::IsNullOrEmpty($Arguments))
+                -ArgumentNames ("Path", "Arguments", "Credential") `
+                -NewArgumentNames ("FilePath", "ArgumentList", "Credential")
+            if ([string]::IsNullOrEmpty($Arguments))
             {
                 $null = $startArguments.Remove("ArgumentList")
             }
             $err = Start-Process @StartArguments
         }
-        if($null -ne $err)
+        if ($null -ne $err)
         {
             throw $err
         }
@@ -704,10 +678,10 @@ function Start-Win32Process
     }
     else
     {
-        return ($LocalizedData.ProcessAlreadyStarted -f $Path,$processes.ProcessId)
+        return ($script:localizedData.ProcessAlreadyStarted -f $Path, $processes.ProcessId)
     }
     $processes = @(Get-Win32Process @getArguments)
-    return ($LocalizedData.ProcessStarted -f $Path,$processes.ProcessId)
+    return ($script:localizedData.ProcessStarted -f $Path, $processes.ProcessId)
 } # end function Start-Win32Process
 
 <#
@@ -743,7 +717,7 @@ function Wait-Win32ProcessStart
     )
 
     $start = [DateTime]::Now
-    $getArguments = Get-Arguments -FunctionBoundParameters $PSBoundParameters -ArgumentNames ("Path","Arguments","Credential")
+    $getArguments = Get-Arguments -FunctionBoundParameters $PSBoundParameters -ArgumentNames ("Path", "Arguments", "Credential")
     $started = (@(Get-Win32Process @GetArguments).Count -ge 1)
     While (-not $started -and ([DateTime]::Now - $start).TotalMilliseconds -lt $Timeout)
     {
@@ -787,7 +761,7 @@ function Wait-Win32ProcessStop
     )
 
     $start = [DateTime]::Now
-    $getArguments = Get-Arguments -FunctionBoundParameters $PSBoundParameters -ArgumentNames ("Path","Arguments","Credential")
+    $getArguments = Get-Arguments -FunctionBoundParameters $PSBoundParameters -ArgumentNames ("Path", "Arguments", "Credential")
     $stopped = (@(Get-Win32Process @GetArguments).Count -eq 0)
     While (-not $stopped -and ([DateTime]::Now - $start).TotalMilliseconds -lt $Timeout)
     {
@@ -827,21 +801,24 @@ function Wait-Win32ProcessEnd
         [PSCredential] $Credential
     )
 
-    $getArguments = Get-Arguments -FunctionBoundParameters $PSBoundParameters -ArgumentNames ("Path","Arguments","Credential")
+    $getArguments = Get-Arguments -FunctionBoundParameters $PSBoundParameters -ArgumentNames ("Path", "Arguments", "Credential")
     # Wait for the process to start
     if (-not (Wait-Win32ProcessStart @getArguments))
     {
-        New-InvalidArgumentError `
-            -ErrorId 'ProcessFailedToStartError' `
-            -ErrorMessage ($LocalizedData.ProcessFailedToStartError -f $Path,$Arguments)
+        $errorMessage = (
+            $script:localizedData.ProcessFailedToStartError -f @($Path, $Arguments)
+        )
+        New-InvalidArgumentException -ArgumentName 'Path' -Message $errorMessage
     }
+
     if (-not (Wait-Win32ProcessStop @getArguments))
     {
         # The process did not stop.
-        New-InvalidArgumentError `
-            -ErrorId 'ProcessFailedToStopError' `
-            -ErrorMessage ($LocalizedData.ProcessFailedToStopError -f $Path,$Arguments)
+        $errorMessage = (
+            $script:localizedData.ProcessFailedToStopError -f @($Path, $Arguments)
+        )
+        New-InvalidArgumentException -ArgumentName 'Path' -Message $errorMessage
     }
 } # end function Wait-Win32ProcessEnd
 
-Export-ModuleMember Invoke-ResolvePath,Start-Win32Process,Wait-Win32ProcessStart,Wait-Win32ProcessStop,Wait-Win32ProcessEnd
+Export-ModuleMember Invoke-ResolvePath, Start-Win32Process, Wait-Win32ProcessStart, Wait-Win32ProcessStop, Wait-Win32ProcessEnd

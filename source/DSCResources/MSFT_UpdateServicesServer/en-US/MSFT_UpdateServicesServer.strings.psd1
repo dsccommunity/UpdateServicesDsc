@@ -51,5 +51,22 @@ ConfiguringClassifications= Setting WSUS classifications.
 ClassificationNotFound  = Classification {0} not found.
 ConfiguringSyncSchedule = Setting WSUS synchronization schedule.
 SynchronizingWsus       = Synchronizing WSUS.
-
+EnsureTestFailed        = Ensure test failed.
+ImproveProgramTestFailed= Update Improvement Program test failed.
+UpstreamNameTestFailed  = Upstream Server Name test failed.
+UpstreamPortTestFailed  = Upstream Server Port test failed.
+UpstreamSSLTestFailed   = Upstream Server SSL test failed.
+UpstreamReplicaTestFailed = Upstream Server Replica test failed.
+ProxyNameTestFailed     = Proxy Server Name test failed.
+ProxyPortTestFailed     = Proxy Server Port test failed.
+ProxyCredTestFailed     = Proxy Server Credential test failed - incorrect credential.
+ProxyBasicAuthTestFailed= Proxy Server Basic Authentication test failed.
+ProxyCredSetTestFailed  = Proxy Server Credential test failed - credential set.
+LanguageAsStrTestFailed = Languages test failed (evaluated as single string).
+LanguageSetTestFailed   = Languages test failed.
+ProductTestFailed       = Products test failed.
+ClassificationsTestFailed= Classifications test failed.
+SyncTimeOfDayTestFailed = Synchronize Automatically Time Of Day test failed.
+SynPerDayTestFailed     = Synchronizations Per Day test failed.
+ClientTargetingModeTestFailed = Client Targeting Mode test failed.
 '@

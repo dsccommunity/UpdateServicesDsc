@@ -13,22 +13,11 @@ $Global:DSCModuleName      = 'UpdateServicesDsc' # Example xNetworking
 $Global:DSCResourceName    = 'MSFT_UpdateServicesApprovalRule' # Example MSFT_xFirewall
 
 #region HEADER
-[String] $moduleRoot = Split-Path -Parent (Split-Path -Parent (Split-Path -Parent $Script:MyInvocation.MyCommand.Path))
-if ( (-not (Test-Path -Path (Join-Path -Path $moduleRoot -ChildPath 'DSCResource.Tests'))) -or `
-     (-not (Test-Path -Path (Join-Path -Path $moduleRoot -ChildPath 'DSCResource.Tests\TestHelper.psm1'))) )
-{
-    & git @('clone','https://github.com/PowerShell/DscResource.Tests.git',(Join-Path -Path $moduleRoot -ChildPath '\DSCResource.Tests\'))
-}
-else
-{
-    & git @('-C',(Join-Path -Path $moduleRoot -ChildPath '\DSCResource.Tests\'),'pull')
-}
-Import-Module (Join-Path -Path $moduleRoot -ChildPath 'DSCResource.Tests\TestHelper.psm1') -Force
 
 $TestEnvironment = Initialize-TestEnvironment `
     -DSCModuleName $Global:DSCModuleName `
     -DSCResourceName $Global:DSCResourceName `
-    -TestType Unit 
+    -TestType Unit
 #endregion
 
 
@@ -46,31 +35,31 @@ try
         Import-Module $PSScriptRoot\..\..\Tests\Helpers\ImitateUpdateServicesModule.psm1
 
         $global:WsusServer = [pscustomobject] @{Name = 'ServerName'}
-        
-        $DSCSetValues = 
+
+        $DSCSetValues =
         @{
             Name = $Global:WsusServer.Name
             Classifications = "00000000-0000-0000-0000-0000testguid"
             Products = "Product"
-            ComputerGroups = "Computer Target Group" 
+            ComputerGroups = "Computer Target Group"
             Enabled = $true
         }
 
-        $DSCTestValues = 
+        $DSCTestValues =
         @{
                 Name = $Global:WsusServer.Name
                 Classifications = "00000000-0000-0000-0000-0000testguid"
                 Products = "Product"
-                ComputerGroups = "Computer Target Group" 
+                ComputerGroups = "Computer Target Group"
                 Enabled = $true
         }
         #endregion
-        
+
         #region Function Get-TargetResource expecting Ensure Present
         Describe "$($Global:DSCResourceName)\Get-TargetResource" {
 
             Mock -CommandName New-TerminatingError -MockWith {}
-            
+
             Context 'server should be configured.' {
 
                 it 'calling Get should not throw' {
@@ -79,7 +68,7 @@ try
 
                 it "Ensure" {
                     $Script:resource.Ensure | should be 'Present'
-                } 
+                }
 
                 it "Classifications" {
                     $Script:resource.Classifications | should be $DSCSetValues.Classifications
@@ -112,7 +101,7 @@ try
 
                 it "Ensure" {
                     $Script:resource.Ensure | should be 'Absent'
-                } 
+                }
 
                 it "Classifications" {
                     $Script:resource.Classifications | should BeNullOrEmpty
@@ -147,7 +136,7 @@ try
 
                 it "Ensure" {
                     $Script:resource.Ensure | should be 'Absent'
-                } 
+                }
 
                 it "Classifications" {
                     $Script:resource.Classifications | should be $null
@@ -168,7 +157,7 @@ try
                 it "mocks were not called" {
                     Assert-MockCalled -CommandName New-TerminatingError -Times 0
                 }
-            }    
+            }
         }
         #endregion
 
@@ -178,7 +167,7 @@ try
                 $DSCTestValues.Remove('Ensure')
                 $DSCTestValues.Add('Ensure','Present')
                 $script:result = $null
-                    
+
                 it 'calling test should not throw' {
                     {$script:result = Test-TargetResource @DSCTestValues -verbose} | should not throw
                 }
@@ -189,11 +178,11 @@ try
             }
 
             Context 'server should not be configured (Ensure=Absent) but is' {
-                
+
                 $DSCTestValues.Remove('Ensure')
                 $DSCTestValues.Add('Ensure','Absent')
                 $script:result = $null
-                    
+
                 it 'calling test should not throw' {
                     {$script:result = Test-TargetResource @DSCTestValues -verbose} | should not throw
                 }
@@ -205,15 +194,15 @@ try
 
             Context "setting has drifted" {
                 $DSCTestValues.Remove('Ensure')
-                $DSCTestValues.Add('Ensure','Present')       
+                $DSCTestValues.Add('Ensure','Present')
                 $settingsList = 'Classifications','Products','ComputerGroups'
-                foreach ($setting in $settingsList) 
+                foreach ($setting in $settingsList)
                 {
                     $valueWithoutDrift = $DSCSetValues.$setting
                     $DSCTestValues.Remove("$setting")
                     $DSCTestValues.Add("$setting",'foo')
                     $script:result = $null
-                        
+
                     it 'calling test should not throw' {
                         {$script:result = Test-TargetResource @DSCTestValues -verbose} | should not throw
                     }
@@ -221,7 +210,7 @@ try
                     it "result should be false when $setting has changed" {
                         $script:result | should be $false
                     }
-                    
+
                     $DSCTestValues.Remove("$setting")
                     $DSCTestValues.Add("$setting",$valueWithoutDrift)
                 }
@@ -230,15 +219,15 @@ try
         #endregion
 
         #region Function Set-TargetResource
-        Describe "$($Global:DSCResourceName)\Set-TargetResource" {    
+        Describe "$($Global:DSCResourceName)\Set-TargetResource" {
             $Collection = [pscustomobject]@{}
             $Collection | Add-Member -MemberType ScriptMethod -Name Add -Value {}
 
-            Context 'server is already in a correct state (resource is idempotent)' {    
+            Context 'server is already in a correct state (resource is idempotent)' {
                 Mock New-Object -mockwith {$Collection}
                 Mock Get-WsusProduct -mockwith {}
                 Mock New-TerminatingError -mockwith {}
-                
+
                 it 'should not throw when running on a properly configured server' {
                     {Set-targetResource @DSCSetValues -verbose} | should not throw
                 }
@@ -247,14 +236,14 @@ try
                     Assert-MockCalled -CommandName New-Object -Times 1
                     Assert-MockCalled -CommandName Get-WsusProduct -Times 1
                 }
-                
+
                 it "mocks were not called" {
                     Assert-MockCalled -CommandName New-TerminatingError -Times 0
                 }
             }
 
             Context 'server is not in a correct state (resource takes action)' {
-                
+
                 Mock New-Object -mockwith {$Collection}
                 Mock Get-WsusProduct -mockwith {}
                 Mock New-TerminatingError -mockwith {}
@@ -275,7 +264,7 @@ try
                 }
             }
 
-            Context 'server should not be configured (Ensure=Absent)' {    
+            Context 'server should not be configured (Ensure=Absent)' {
                 Mock New-Object -mockwith {$Collection}
                 Mock Get-WsusProduct -mockwith {}
                 Mock New-TerminatingError -mockwith {}
@@ -288,7 +277,7 @@ try
                 it "mocks were called" {
                     Assert-MockCalled -CommandName Test-TargetResource -Times 1
                 }
-                
+
                 it "mocks were not called" {
                     Assert-MockCalled -CommandName New-Object -Times 0
                     Assert-MockCalled -CommandName Get-WsusProduct -Times 0
@@ -300,7 +289,7 @@ try
                 Mock New-Object -mockwith {$Collection}
                 Mock Get-WsusProduct -mockwith {}
                 Mock New-TerminatingError -mockwith {}
-                
+
                 it 'should not throw when running on a properly configured server' {
                     {Set-targetResource @DSCSetValues -Synchronize $true -verbose} | should not throw
                 }
@@ -309,7 +298,7 @@ try
                     Assert-MockCalled -CommandName New-Object -Times 1
                     Assert-MockCalled -CommandName Get-WsusProduct -Times 1
                 }
-                
+
                 it "mocks were not called" {
                     Assert-MockCalled -CommandName New-TerminatingError -Times 0
                 }

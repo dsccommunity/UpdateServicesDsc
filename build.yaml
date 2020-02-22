@@ -54,15 +54,15 @@ Pester: #Passthru, OutputFile, CodeCoverageOutputFile not supported
   ExcludeFromCodeCoverage:
     - Modules/DscResource.Common
   Script:
+    - tests/Unit/MSFT_UpdateServicesCleanup.tests.ps1
   # - tests/QA
-  # - tests/Unit
   # - tests/Integration
   ExcludeTag:
     - helpQuality
     - FunctionalQuality
     - TestQuality
   Tag:
-  CodeCoverageThreshold: 85 # Set to 0 to bypass
+  CodeCoverageThreshold: 0 # Set to 0 to bypass
   # CodeCoverageOutputFile: JaCoCo_$OsShortName.xml
   # CodeCoverageOutputFileEncoding: ascii
   # CodeCoverageMergedOutputFile: JaCoCo_Merged.xml

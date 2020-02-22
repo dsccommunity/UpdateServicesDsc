@@ -785,7 +785,7 @@ function Test-TargetResource
     # Test Ensure
     if ($Wsus.Ensure -ne $Ensure)
     {
-        Write-Verbose -Message "Ensure test failed"
+        Write-Verbose -Message $script:localizedData.EnsureTestFailed
         $result = $false
     }
     if ($result -and ($Wsus.Ensure -eq "Present"))
@@ -793,13 +793,13 @@ function Test-TargetResource
         # Test Update Improvement Program
         if ($Wsus.UpdateImprovementProgram -ne $UpdateImprovementProgram)
         {
-            Write-Verbose -Message "UpdateImprovementProgram test failed"
+            Write-Verbose -Message $script:localizedData.ImproveProgramTestFailed
             $result = $false
         }
         # Test Upstream Server
         if ($Wsus.UpstreamServerName -ne $UpstreamServerName)
         {
-            Write-Verbose -Message "UpstreamServerName test failed"
+            Write-Verbose -Message $script:localizedData.UpstreamNameTestFailed
             $result = $false
         }
 
@@ -807,17 +807,17 @@ function Test-TargetResource
         {
             if ($Wsus.UpstreamServerPort -ne $UpstreamServerPort)
             {
-                Write-Verbose -Message "UpstreamServerPort test failed"
+                Write-Verbose -Message $script:localizedData.UpstreamPortTestFailed
                 $result = $false
             }
             if ($Wsus.UpstreamServerSSL -ne $UpstreamServerSSL)
             {
-                Write-Verbose -Message "UpstreamServerSSL test failed"
+                Write-Verbose -Message $script:localizedData.UpstreamSSLTestFailed
                 $result = $false
             }
             if ($Wsus.UpstreamServerReplica -ne $UpstreamServerReplica)
             {
-                Write-Verbose -Message "UpstreamServerReplica test failed"
+                Write-Verbose -Message $script:localizedData.UpstreamReplicaTestFailed
                 $result = $false
             }
         }
@@ -825,14 +825,14 @@ function Test-TargetResource
         # Test Proxy Server
         if ($Wsus.ProxyServerName -ne $ProxyServerName)
         {
-            Write-Verbose -Message "ProxyServerName test failed"
+            Write-Verbose -Message $script:localizedData.ProxyNameTestFailed
             $result = $false
         }
         if ($PSBoundParameters.ContainsKey('ProxyServerName'))
         {
             if ($Wsus.ProxyServerPort -ne $ProxyServerPort)
             {
-                Write-Verbose -Message "ProxyServerPort test failed"
+                Write-Verbose -Message $script:localizedData.ProxyPortTestFailed
                 $result = $false
             }
             if ($PSBoundParameters.ContainsKey('ProxyServerCredential'))
@@ -842,12 +842,12 @@ function Test-TargetResource
                     ($Wsus.ProxyServerCredentialUserName -ne $ProxyServerCredential.UserName)
                 )
                 {
-                    Write-Verbose -Message "ProxyServerCredential test failed - incorrect credential"
+                    Write-Verbose -Message $script:localizedData.ProxyCredTestFailed
                     $result = $false
                 }
                 if ($Wsus.ProxyServerBasicAuthentication -ne $ProxyServerBasicAuthentication)
                 {
-                    Write-Verbose -Message "ProxyServerBasicAuthentication test failed"
+                    Write-Verbose -Message $script:localizedData.ProxyBasicAuthTestFailed
                     $result = $false
                 }
             }
@@ -855,7 +855,7 @@ function Test-TargetResource
             {
                 if ($null -ne $Wsus.ProxyServerCredentialUserName)
                 {
-                    Write-Verbose -Message "ProxyServerCredential test failed - credential set"
+                    Write-Verbose -Message $script:localizedData.ProxyCredSetTestFailed
                     $result = $false
                 }
             }
@@ -865,7 +865,7 @@ function Test-TargetResource
         {
             if ($Wsus.Languages -notmatch $Languages)
             {
-                Write-Verbose -Message "Languages test failed (evaluated as single string)"
+                Write-Verbose -Message $script:localizedData.LanguageAsStrTestFailed
                 $result = $false
             }
         }
@@ -873,7 +873,7 @@ function Test-TargetResource
             if ($null -ne (Compare-Object -ReferenceObject ($Wsus.Languages | Sort-Object -Unique) `
                         -DifferenceObject ($Languages | Sort-Object -Unique) -SyncWindow 0))
             {
-                Write-Verbose -Message "Languages test failed"
+                Write-Verbose -Message $script:localizedData.LanguageSetTestFailed
                 $result = $false
             }
         }
@@ -881,14 +881,14 @@ function Test-TargetResource
         if ($null -ne (Compare-Object -ReferenceObject ($Wsus.Products | Sort-Object -Unique) `
                     -DifferenceObject ($Products | Sort-Object -Unique) -SyncWindow 0))
         {
-            Write-Verbose -Message "Products test failed"
+            Write-Verbose -Message $script:localizedData.ProductTestFailed
             $result = $false
         }
         # Test Classifications
         if ($null -ne (Compare-Object -ReferenceObject ($Wsus.Classifications | Sort-Object -Unique) `
                     -DifferenceObject ($Classifications | Sort-Object -Unique) -SyncWindow 0))
         {
-            Write-Verbose -Message "Classifications test failed"
+            Write-Verbose -Message $script:localizedData.ClassificationsTestFailed
             $result = $false
         }
         # Test Synchronization Schedule
@@ -898,13 +898,13 @@ function Test-TargetResource
             {
                 if ($Wsus.SynchronizeAutomaticallyTimeOfDay -ne $SynchronizeAutomaticallyTimeOfDay)
                 {
-                    Write-Verbose -Message "SynchronizeAutomaticallyTimeOfDay test failed"
+                    Write-Verbose -Message $script:localizedData.SyncTimeOfDayTestFailed
                     $result = $false
                 }
             }
             if ($Wsus.SynchronizationsPerDay -ne $SynchronizationsPerDay)
             {
-                Write-Verbose -Message "SynchronizationsPerDay test failed"
+                Write-Verbose -Message $script:localizedData.SyncPerDayTestFailed
                 $result = $false
             }
         }
@@ -916,7 +916,7 @@ function Test-TargetResource
             {
                 if ($Wsus.ClientTargetingMode -ne $ClientTargetingMode)
                 {
-                    Write-Verbose -Message "ClientTargetingMode test failed"
+                    Write-Verbose -Message $script:localizedData.ClientTargetingModeTestFailed
                     $result = $false
                 }
             }
