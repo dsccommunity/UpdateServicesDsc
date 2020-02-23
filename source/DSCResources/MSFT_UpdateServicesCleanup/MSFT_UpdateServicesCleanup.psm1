@@ -8,9 +8,11 @@ $script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US' -FileName MS
 
 <#
     .SYNOPSIS
-    Returns the current CleanUp Task
+        Returns the current CleanUp Task
+
     .PARAMETER Ensure
-    Determines if the task should be added or removed
+        Determines if the task should be added or removed
+
 #>
 function Get-TargetResource
 {
@@ -19,37 +21,38 @@ function Get-TargetResource
     param
     (
         [Parameter(Mandatory = $true)]
-        [ValidateSet("Present","Absent")]
+        [ValidateSet('Present', 'Absent')]
         [System.String]
         $Ensure
     )
 
-    if ($Task = Get-ScheduledTask -TaskName "WSUS Cleanup" -ErrorAction SilentlyContinue)
+    if ($Task = Get-ScheduledTask -TaskName 'WSUS Cleanup' -ErrorAction SilentlyContinue)
     {
         if (
-            ($Task.State -ne "Disabled") -and
+            ($Task.State -ne 'Disabled') -and
             ($Task.Actions.Execute -eq "$($env:SystemRoot)\System32\WindowsPowerShell\v1.0\powershell.exe")
         )
         {
             Write-Verbose -Message $script:localizedData.FoundCleanUpTaskEnabled
 
-            $Ensure = "Present"
+            $Ensure = 'Present'
             $Arguments = $Task.Actions.Arguments
             if ($Arguments)
-                {
+            {
                 $Arguments = $Arguments.Split('"')
                 if ($Arguments.Count -ge 1)
                 {
-                    $Arguments = $Arguments[1].Split(";")
+                    $Arguments = $Arguments[1].Split(';')
                     $ArgumentNames = @(
-                        "DeclineSupersededUpdates",
-                        "DeclineExpiredUpdates",
-                        "CleanupObsoleteUpdates",
-                        "CompressUpdates",
-                        "CleanupObsoleteComputers",
-                        "CleanupUnneededContentFiles",
-                        "CleanupLocalPublishedContentFiles"
+                        'DeclineSupersededUpdates',
+                        'DeclineExpiredUpdates',
+                        'CleanupObsoleteUpdates',
+                        'CompressUpdates',
+                        'CleanupObsoleteComputers',
+                        'CleanupUnneededContentFiles',
+                        'CleanupLocalPublishedContentFiles'
                     )
+
                     foreach ($Var in $Arguments)
                     {
                         $regex = [regex]'^\$(?<name>.*)\s=\s\$(?<value>.*)$'
@@ -58,7 +61,7 @@ function Get-TargetResource
                         $VarValueString = $groups['value'].value.Trim()
                         if ($VarName -in $ArgumentNames)
                         {
-                            Set-variable -Name $VarName -Value $ExecutionContext.InvokeCommand.ExpandString($VarValueString)
+                            Set-Variable -Name $VarName -Value $ExecutionContext.InvokeCommand.ExpandString($VarValueString)
                         }
                     }
                 }
@@ -67,12 +70,12 @@ function Get-TargetResource
         }
         else
         {
-            $Ensure = "Absent"
+            $Ensure = 'Absent'
         }
     }
     else
     {
-        $Ensure = "Absent"
+        $Ensure = 'Absent'
     }
 
     $returnValue = @{
@@ -92,26 +95,35 @@ function Get-TargetResource
 
 <#
     .SYNOPSIS
-    Creates and configures cleanup tasks
+        Creates and configures cleanup tasks
+
     .PARAMETER Ensure
-    Determines if the task should be created or removed.
-    Accepts 'Present'(default) or 'Absent'.
+        Determines if the task should be created or removed.
+        Accepts 'Present'(default) or 'Absent'.
+
     .PARAMETER DeclineSupersededUpdates
-    Decline superseded updates
+        Decline superseded updates
+
     .PARAMETER DeclineExpiredUpdates
-    Decline expired updates
+        Decline expired updates
+
     .PARAMETER CleanupObsoleteUpdates
-    Cleanup obsolete updates
+        Cleanup obsolete updates
+
     .PARAMETER CompressUpdates
-    The name of the computer group to apply the rule to or All Computers
+        The name of the computer group to apply the rule to or All Computers
+
     .PARAMETER CleanupObsoleteComputers
-    Clean up obsolete computers
+        Clean up obsolete computers
+
     .PARAMETER CleanupUnneededContentFiles
-    Clean up unneeded content files
+        Clean up unneeded content files
+
     .PARAMETER CleanupLocalPublishedContentFiles
-    Clean up local published content files
+        Clean up local published content files
+
     .PARAMETER TimeOfDay
-    The time of day when the task should run
+        The time of day when the task should run
 #>
 function Set-TargetResource
 {
@@ -119,7 +131,7 @@ function Set-TargetResource
     param
     (
         [Parameter(Mandatory = $true)]
-        [ValidateSet("Present","Absent")]
+        [ValidateSet('Present', 'Absent')]
         [System.String]
         $Ensure,
 
@@ -153,16 +165,16 @@ function Set-TargetResource
 
         [Parameter()]
         [System.String]
-        $TimeOfDay = "04:00:00"
+        $TimeOfDay = '04:00:00'
     )
 
-    if (Get-ScheduledTask -TaskName "WSUS Cleanup" -ErrorAction SilentlyContinue)
+    if (Get-ScheduledTask -TaskName 'WSUS Cleanup' -ErrorAction SilentlyContinue)
     {
         Write-Verbose -Message $script:localizedData.RemovingCleanupSchedTask
-        Unregister-ScheduledTask -TaskName "WSUS Cleanup" -Confirm:$false
+        Unregister-ScheduledTask -TaskName 'WSUS Cleanup' -Confirm:$false
     }
 
-    if ($Ensure -eq "Present")
+    if ($Ensure -eq 'Present')
     {
         $Command = "$($env:SystemRoot)\System32\WindowsPowerShell\v1.0\powershell.exe"
 
@@ -170,13 +182,13 @@ function Set-TargetResource
         $Argument += "'Starting WSUS Cleanup...' | Out-File `
             (Join-Path -Path ([IO.Path]::GetTempPath()) -ChildPath 'WsusCleanup.txt');"
         foreach ($Var in @(
-            "DeclineSupersededUpdates",
-            "DeclineExpiredUpdates",
-            "CleanupObsoleteUpdates",
-            "CompressUpdates",
-            "CleanupObsoleteComputers",
-            "CleanupUnneededContentFiles",
-            "CleanupLocalPublishedContentFiles"
+                'DeclineSupersededUpdates',
+                'DeclineExpiredUpdates',
+                'CleanupObsoleteUpdates',
+                'CompressUpdates',
+                'CleanupObsoleteComputers',
+                'CleanupUnneededContentFiles',
+                'CleanupLocalPublishedContentFiles'
             ))
         {
             if ((Get-Variable -Name $Var).Value)
@@ -188,6 +200,7 @@ function Set-TargetResource
                 $Argument += "`$$Var = `$false;"
             }
         }
+
         $Argument += @"
 `$WsusServer = Get-WsusServer
 if(`$WsusServer)
@@ -211,10 +224,10 @@ if(`$WsusServer)
 
         $Action = New-ScheduledTaskAction -Execute $Command -Argument $Argument
         $Trigger = New-ScheduledTaskTrigger -Daily -At $TimeOfDay
-        Register-ScheduledTask -TaskName "WSUS Cleanup" -Action $Action -Trigger $Trigger -RunLevel Highest -User "SYSTEM"
+        Register-ScheduledTask -TaskName 'WSUS Cleanup' -Action $Action -Trigger $Trigger -RunLevel Highest -User 'SYSTEM'
     }
 
-    if (!(Test-TargetResource @PSBoundParameters))
+    if (-not (Test-TargetResource @PSBoundParameters))
     {
         throw New-TerminatingError -ErrorType TestFailedAfterSet -ErrorCategory InvalidResult
     }
@@ -222,26 +235,36 @@ if(`$WsusServer)
 
 <#
     .SYNOPSIS
-    Creates and configures cleanup tasks
+        Creates and configures cleanup tasks
+
     .PARAMETER Ensure
-    Determines if the task should be created or removed.
-    Accepts 'Present'(default) or 'Absent'.
+        Determines if the task should be created or removed.
+        Accepts 'Present'(default) or 'Absent'.
+
     .PARAMETER DeclineSupersededUpdates
-    Decline superseded updates
+        Decline superseded updates
+
     .PARAMETER DeclineExpiredUpdates
-    Decline expired updates
+        Decline expired updates
+
     .PARAMETER CleanupObsoleteUpdates
-    Cleanup obsolete updates
+        Cleanup obsolete updates
+
     .PARAMETER CompressUpdates
-    The name of the computer group to apply the rule to or All Computers
+        The name of the computer group to apply the rule to or All Computers
+
     .PARAMETER CleanupObsoleteComputers
-    Clean up obsolete computers
+        Clean up obsolete computers
+
     .PARAMETER CleanupUnneededContentFiles
-    Clean up unneeded content files
+        Clean up unneeded content files
+
     .PARAMETER CleanupLocalPublishedContentFiles
-    Clean up local published content files
+        Clean up local published content files
+
     .PARAMETER TimeOfDay
-    The time of day when the task should run
+        The time of day when the task should run
+
 #>
 function Test-TargetResource
 {
@@ -250,7 +273,7 @@ function Test-TargetResource
     param
     (
         [Parameter(Mandatory = $true)]
-        [ValidateSet("Present","Absent")]
+        [ValidateSet('Present', 'Absent')]
         [System.String]
         $Ensure,
 
@@ -284,7 +307,7 @@ function Test-TargetResource
 
         [Parameter()]
         [System.String]
-        $TimeOfDay = "04:00:00"
+        $TimeOfDay = '04:00:00'
     )
 
     $result = $true
@@ -296,7 +319,8 @@ function Test-TargetResource
         Write-Verbose -Message $script:localizedData.EnsureTestFailed
         $result = $false
     }
-    if ($result -and ($CleanupTask.Ensure -eq "Present"))
+
+    if ($result -and ($CleanupTask.Ensure -eq 'Present'))
     {
         if ($CleanupTask.DeclineSupersededUpdates -ne $DeclineSupersededUpdates)
         {

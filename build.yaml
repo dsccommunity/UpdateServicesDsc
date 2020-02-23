@@ -39,7 +39,6 @@ BuildWorkflow:
   hqrmtest:
     - DscResource_Tests_Stop_On_Fail
 
-
   test:
     - Pester_Tests_Stop_On_Fail
     - Pester_if_Code_Coverage_Under_Threshold
@@ -64,7 +63,7 @@ Pester: #Passthru, OutputFile, CodeCoverageOutputFile not supported
     - FunctionalQuality
     - TestQuality
   Tag:
-  CodeCoverageThreshold: 0 # Set to 0 to bypass
+  CodeCoverageThreshold: 50 # Set to 0 to bypass
   # CodeCoverageOutputFile: JaCoCo_$OsShortName.xml
   # CodeCoverageOutputFileEncoding: ascii
   # CodeCoverageMergedOutputFile: JaCoCo_Merged.xml

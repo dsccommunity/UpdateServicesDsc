@@ -1,6 +1,6 @@
 ConvertFrom-StringData @'
     FileNotFound              = File not found in the environment path.
-    PathVariableEmpty         = The $Env:Path variable is empty
+    PathVariableEmpty         = The $Env:Path variable is empty.
     AbsolutePathOrFileName    = Absolute path or file name expected.
     InvalidArgument           = Invalid argument: '{0}' with value: '{1}'.
     ProcessFailedToStartError = The process '{0}' with arguments '{1}' failed to start within the specified timeout.

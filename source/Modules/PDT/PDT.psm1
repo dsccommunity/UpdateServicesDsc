@@ -6,10 +6,11 @@ $script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US' -FileName 'P
 # New-InvalidArgumentException -ArgumentName 'Action' -Message $errorMessage
 <#
     .SYNOPSIS
-    Resolves a path and verifies it exists.
+        Resolves a path and verifies it exists.
 
     .PARAMETER Path
-    Path to resolve
+        Path to resolve
+
 #>
 function Invoke-ResolvePath
 {
@@ -25,7 +26,7 @@ function Invoke-ResolvePath
     $Path = [Environment]::ExpandEnvironmentVariables($Path)
     if (Test-RootedPath -Path $Path)
     {
-        if (!(Test-Path -Path $Path -PathType Leaf))
+        if (-not (Test-Path -Path $Path -PathType Leaf))
         {
             $errorMessage = (
                 $script:localizedData.InvalidArgument -f @('Path', $Path) +
@@ -33,12 +34,13 @@ function Invoke-ResolvePath
             )
             New-InvalidArgumentException -ArgumentName 'Path' -Message $errorMessage
         }
+
         return $Path
     }
     else
     {
         $Path = (Get-Item -Path $Path -ErrorAction SilentlyContinue).FullName
-        if (!(Test-Path -Path $Path -PathType Leaf))
+        if (-not (Test-Path -Path $Path -PathType Leaf))
         {
             $errorMessage = (
                 $script:localizedData.InvalidArgument -f @('Path', $Path) +
@@ -46,6 +48,7 @@ function Invoke-ResolvePath
             )
             New-InvalidArgumentException -ArgumentName 'Path' -Message $errorMessage
         }
+
         return $Path
     }
 
@@ -67,7 +70,7 @@ function Invoke-ResolvePath
         New-InvalidArgumentException -ArgumentName 'Path' -Message $errorMessage
     }
 
-    foreach ($rawSegment in $env:Path.Split(";"))
+    foreach ($rawSegment in $env:Path.Split(';'))
     {
         $segment = [Environment]::ExpandEnvironmentVariables($rawSegment)
         $segmentRooted = $false
@@ -77,11 +80,14 @@ function Invoke-ResolvePath
         }
         catch
         {
+            Write-Debug ("Path '{0}' not rooted" -f $segment)
         }
-        if (!$segmentRooted)
+
+        if (-not $segmentRooted)
         {
             continue
         }
+
         $candidate = Join-Path $segment $Path
         if (Test-Path -Path $candidate -PathType Leaf)
         {
@@ -98,10 +104,11 @@ function Invoke-ResolvePath
 
 <#
     .SYNOPSIS
-    Gets a value indicating whether the specified path string contains a root.
+        Gets a value indicating whether the specified path string contains a root.
 
     .PARAMETER Path
-    Path to verify
+        Path to verify
+
 #>
 function Test-RootedPath
 {
@@ -129,17 +136,18 @@ function Test-RootedPath
 
 <#
     .SYNOPSIS
-    Extracts an array of arguments that were found in the Arguments list passed in.
-    It also optionally maps the arguments to a new name.
+        Extracts an array of arguments that were found in the Arguments list passed in.
+        It also optionally maps the arguments to a new name.
 
     .PARAMETER FunctionBoundParameters
-    The parameters that were passed to the calling function.
+        The parameters that were passed to the calling function.
 
     .PARAMETER ArgumentNames
-    The array of arguments that should be extracted.
+        The array of arguments that should be extracted.
 
     .PARAMETER NewArgumentNames
-    An array of argument names to rename each argument to.
+        An array of argument names to rename each argument to.
+
 #>
 function Get-Arguments
 {
@@ -182,7 +190,7 @@ function Get-Arguments
 
 <#
     .SYNOPSIS
-    Initialize the Win32 PInvoke wrapper.
+        Initialize the Win32 PInvoke wrapper.
 #>
 function Initialize-PInvoke
 {
@@ -473,21 +481,22 @@ namespace Source
 }
 
 "@
-    Add-Type -TypeDefinition $ProgramSource -ReferencedAssemblies "System.ServiceProcess"
+    Add-Type -TypeDefinition $ProgramSource -ReferencedAssemblies 'System.ServiceProcess'
 } # end function Initialize-PInvoke
 
 <#
     .SYNOPSIS
-    Gets a Win32 process that matches the path, arguments and is user.
+        Gets a Win32 process that matches the path, arguments and is user.
 
     .PARAMETER Path
-    The path to the executable running the process.
+        The path to the executable running the process.
 
     .PARAMETER Arguments
-    The arguments of the running process to find.
+        The arguments of the running process to find.
 
     .PARAMETER Credential
-    The credentials of the account that the process is running under.
+        The credentials of the account that the process is running under.
+
 #>
 function Get-Win32Process
 {
@@ -517,10 +526,11 @@ function Get-Win32Process
             }
             catch
             {
-                Write-Debug "WMI error"
+                Write-Debug 'WMI error'
             }
         }
     }
+
     if ($PSBoundParameters.ContainsKey('Credential'))
     {
         $processes = $processes |
@@ -528,10 +538,12 @@ function Get-Win32Process
                 (Get-Win32ProcessOwner $_) -eq $Credential.UserName
             }
     }
+
     if ($null -eq $Arguments)
     {
-        $Arguments = ""
+        $Arguments = ''
     }
+
     $processes = $processes |
         Where-Object -FilterScript {
             (Get-Win32ProcessArgumentsFromCommandLine $_.CommandLine) -eq $Arguments
@@ -542,10 +554,11 @@ function Get-Win32Process
 
 <#
     .SYNOPSIS
-    Returns the Owner of a Win32 Process.
+        Returns the Owner of a Win32 Process.
 
     .PARAMETER Process
-    The Win32 WMI process to get the owner for.
+        The Win32 WMI process to get the owner for.
+
 #>
 function Get-Win32ProcessOwner
 {
@@ -562,11 +575,12 @@ function Get-Win32ProcessOwner
     }
     catch
     {
-        Write-Debug "Getting Process owner failed."
+        Write-Debug 'Getting Process owner failed.'
     }
+
     if ($null -ne $owner.Domain)
     {
-        return $owner.Domain + "\" + $owner.User
+        return $owner.Domain + '\' + $owner.User
     }
     else
     {
@@ -576,10 +590,11 @@ function Get-Win32ProcessOwner
 
 <#
     .SYNOPSIS
-    Extracts the arguments from a complete command line
+        Extracts the arguments from a complete command line
 
     .PARAMETER CommandLine
-    The complete command line to extract the arguments from.
+        The complete command line to extract the arguments from.
+
 #>
 function Get-Win32ProcessArgumentsFromCommandLine
 {
@@ -591,13 +606,15 @@ function Get-Win32ProcessArgumentsFromCommandLine
 
     if ($null -eq $commandLine)
     {
-        return ""
+        return ''
     }
+
     $commandLine = $commandLine.Trim()
     if ($commandLine.Length -eq 0)
     {
-        return ""
+        return ''
     }
+
     if ($commandLine[0] -eq '"')
     {
         $charToLookfor = [char]'"'
@@ -606,26 +623,28 @@ function Get-Win32ProcessArgumentsFromCommandLine
     {
         $charToLookfor = [char]' '
     }
+
     $endOfCommand = $commandLine.IndexOf($charToLookfor , 1)
     if ($endOfCommand -eq -1)
     {
-        return ""
+        return ''
     }
     return $commandLine.Substring($endOfCommand + 1).Trim()
 } # end function Get-Win32ProcessArgumentsFromCommandLine
 
 <#
     .SYNOPSIS
-    Starts a Win32 Process using PInvoke.
+        Starts a Win32 Process using PInvoke.
 
     .PARAMETER Path
-    The full path to the executable to start the process with.
+        The full path to the executable to start the process with.
 
     .PARAMETER Arguments
-    The arguments to pass to the executable when starting the process.
+        The arguments to pass to the executable when starting the process.
 
     .PARAMETER Credential
-    The user account to start the process under.
+        The user account to start the process under.
+
 #>
 function Start-Win32Process
 {
@@ -642,11 +661,11 @@ function Start-Win32Process
         [PSCredential] $Credential
     )
 
-    $getArguments = Get-Arguments -FunctionBoundParameters $PSBoundParameters -ArgumentNames ("Path", "Arguments", "Credential")
+    $getArguments = Get-Arguments -FunctionBoundParameters $PSBoundParameters -ArgumentNames ('Path', 'Arguments', 'Credential')
     $processes = @(Get-Win32Process @getArguments)
     if ($processes.Count -eq 0)
     {
-        if ($PSBoundParameters.ContainsKey("Credential"))
+        if ($PSBoundParameters.ContainsKey('Credential'))
         {
             try
             {
@@ -662,21 +681,22 @@ function Start-Win32Process
                 $exception = New-Object -TypeName System.ArgumentException -ArgumentList $_
                 $errorCategory = [System.Management.Automation.ErrorCategory]::OperationStopped
                 $errorRecord = New-Object -TypeName System.Management.Automation.ErrorRecord `
-                    -ArgumentList $exception, "Win32Exception", $errorCategory, $null
+                    -ArgumentList $exception, 'Win32Exception', $errorCategory, $null
                 $err = $errorRecord
             }
         }
         else
         {
             $startArguments = Get-Arguments -FunctionBoundParameters $PSBoundParameters `
-                -ArgumentNames ("Path", "Arguments", "Credential") `
-                -NewArgumentNames ("FilePath", "ArgumentList", "Credential")
+                -ArgumentNames ('Path', 'Arguments', 'Credential') `
+                -NewArgumentNames ('FilePath', 'ArgumentList', 'Credential')
             if ([string]::IsNullOrEmpty($Arguments))
             {
-                $null = $startArguments.Remove("ArgumentList")
+                $null = $startArguments.Remove('ArgumentList')
             }
             $err = Start-Process @StartArguments
         }
+
         if ($null -ne $err)
         {
             throw $err
@@ -687,25 +707,27 @@ function Start-Win32Process
     {
         return ($script:localizedData.ProcessAlreadyStarted -f $Path, $processes.ProcessId)
     }
+
     $processes = @(Get-Win32Process @getArguments)
     return ($script:localizedData.ProcessStarted -f $Path, $processes.ProcessId)
 } # end function Start-Win32Process
 
 <#
     .SYNOPSIS
-    Wait for a Win32 process to start.
+        Wait for a Win32 process to start.
 
     .PARAMETER Path
-    The full path to the executable of the process to wait for.
+        The full path to the executable of the process to wait for.
 
     .PARAMETER Arguments
-    The arguments passed to the executable of the process to wait for.
+        The arguments passed to the executable of the process to wait for.
 
     .PARAMETER Credential
-    The user account the process will be running under.
+        The user account the process will be running under.
 
     .PARAMETER Timeout
-    The milliseconds to wait for the process to start.
+        The milliseconds to wait for the process to start.
+
 #>
 function Wait-Win32ProcessStart
 {
@@ -727,32 +749,33 @@ function Wait-Win32ProcessStart
     )
 
     $start = [DateTime]::Now
-    $getArguments = Get-Arguments -FunctionBoundParameters $PSBoundParameters -ArgumentNames ("Path", "Arguments", "Credential")
+    $getArguments = Get-Arguments -FunctionBoundParameters $PSBoundParameters -ArgumentNames ('Path', 'Arguments', 'Credential')
     $started = (@(Get-Win32Process @GetArguments).Count -ge 1)
     while (-not $started -and ([DateTime]::Now - $start).TotalMilliseconds -lt $Timeout)
     {
         Start-Sleep -Seconds 1
         $started = @(Get-Win32Process @GetArguments).Count -ge 1
     }
+
     return $started
 } # end function Wait-Win32ProcessStart
 
 <#
     .SYNOPSIS
-    Wait for a Win32 process to stop. This assumes the process was aleady confirmed to have been started by first
-    calling Wait-Win32ProcessStart.
+        Wait for a Win32 process to stop. This assumes the process was aleady confirmed to have been started by first
+        calling Wait-Win32ProcessStart.
 
     .PARAMETER Path
-    The full path to the executable of the process to wait for.
+        The full path to the executable of the process to wait for.
 
     .PARAMETER Arguments
-    The arguments passed to the executable of the process to wait for.
+        The arguments passed to the executable of the process to wait for.
 
     .PARAMETER Credential
-    The user account the process will be running under.
+        The user account the process will be running under.
 
     .PARAMETER Timeout
-    The milliseconds to wait for the process to stop.
+        The milliseconds to wait for the process to stop.
 #>
 function Wait-Win32ProcessStop
 {
@@ -774,31 +797,33 @@ function Wait-Win32ProcessStop
     )
 
     $start = [DateTime]::Now
-    $getArguments = Get-Arguments -FunctionBoundParameters $PSBoundParameters -ArgumentNames ("Path", "Arguments", "Credential")
+    $getArguments = Get-Arguments -FunctionBoundParameters $PSBoundParameters -ArgumentNames ('Path', 'Arguments', 'Credential')
     $stopped = (@(Get-Win32Process @GetArguments).Count -eq 0)
     while (-not $stopped -and ([DateTime]::Now - $start).TotalMilliseconds -lt $Timeout)
     {
         Start-Sleep -Seconds 1
         $stopped = (@(Get-Win32Process @GetArguments).Count -eq 0)
     }
+
     return $stopped
 } # end function Wait-Win32ProcessStop
 
 <#
     .SYNOPSIS
-    Wait for a Win32 process to complete.
+        Wait for a Win32 process to complete.
 
     .PARAMETER Path
-    The full path to the executable of the process to wait for.
+        The full path to the executable of the process to wait for.
 
     .PARAMETER Arguments
-    The arguments passed to the executable of the process to wait for.
+        The arguments passed to the executable of the process to wait for.
 
     .PARAMETER Credential
-    The user account the process will be running under.
+        The user account the process will be running under.
 
     .PARAMETER Timeout
-    The amount of time to wait for the process to end.
+        The amount of time to wait for the process to end.
+
 #>
 function Wait-Win32ProcessEnd
 {
@@ -816,7 +841,7 @@ function Wait-Win32ProcessEnd
         [PSCredential] $Credential
     )
 
-    $getArguments = Get-Arguments -FunctionBoundParameters $PSBoundParameters -ArgumentNames ("Path", "Arguments", "Credential")
+    $getArguments = Get-Arguments -FunctionBoundParameters $PSBoundParameters -ArgumentNames ('Path', 'Arguments', 'Credential')
     # Wait for the process to start
     if (-not (Wait-Win32ProcessStart @getArguments))
     {

@@ -2,7 +2,7 @@ TOPIC
     about_UpdateServicesDsc
 
 SHORT DESCRIPTION
-    DSC Resources to manage Update Services (WSUS)
+    DSC Resources to manage Update Services (WSUS).
 
 LONG DESCRIPTION
     The **UpdateServicesDsc** module contains DSC resources
