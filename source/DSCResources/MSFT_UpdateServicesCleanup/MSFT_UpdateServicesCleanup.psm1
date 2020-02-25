@@ -1,16 +1,18 @@
 # DSC resource to manage WSUS Cleanup task.
 
-$currentPath = Split-Path -Parent $MyInvocation.MyCommand.Path
-Write-Debug -Message "CurrentPath: $currentPath"
+# Load Common Module
+$script:resourceHelperModulePath = Join-Path -Path $PSScriptRoot -ChildPath '..\..\Modules\DscResource.Common'
+Import-Module -Name $script:resourceHelperModulePath -ErrorAction Stop
+$script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US' -FileName MSFT_UpdateServicesCleanup.strings.psd1
 
-# Load Common Code
-Import-Module $currentPath\..\..\UpdateServicesHelper.psm1 -Verbose:$false -ErrorAction Stop
 
 <#
     .SYNOPSIS
-    Returns the current CleanUp Task
+        Returns the current CleanUp Task
+
     .PARAMETER Ensure
-    Determines if the task should be added or removed
+        Determines if the task should be added or removed
+
 #>
 function Get-TargetResource
 {
@@ -19,46 +21,47 @@ function Get-TargetResource
     param
     (
         [Parameter(Mandatory = $true)]
-        [ValidateSet("Present","Absent")]
+        [ValidateSet('Present', 'Absent')]
         [System.String]
         $Ensure
     )
 
-    if($Task = Get-ScheduledTask -TaskName "WSUS Cleanup" -ErrorAction SilentlyContinue)
+    if ($Task = Get-ScheduledTask -TaskName 'WSUS Cleanup' -ErrorAction SilentlyContinue)
     {
-        if(
-            ($Task.State -ne "Disabled") -and
+        if (
+            ($Task.State -ne 'Disabled') -and
             ($Task.Actions.Execute -eq "$($env:SystemRoot)\System32\WindowsPowerShell\v1.0\powershell.exe")
         )
         {
-            Write-Verbose "Identified enabled scheduled task for cleanup rule"
+            Write-Verbose -Message $script:localizedData.FoundCleanUpTaskEnabled
 
-            $Ensure = "Present"
+            $Ensure = 'Present'
             $Arguments = $Task.Actions.Arguments
-            if($Arguments)
-                {
+            if ($Arguments)
+            {
                 $Arguments = $Arguments.Split('"')
-                if($Arguments.Count -ge 1)
+                if ($Arguments.Count -ge 1)
                 {
-                    $Arguments = $Arguments[1].Split(";")
+                    $Arguments = $Arguments[1].Split(';')
                     $ArgumentNames = @(
-                        "DeclineSupersededUpdates",
-                        "DeclineExpiredUpdates",
-                        "CleanupObsoleteUpdates",
-                        "CompressUpdates",
-                        "CleanupObsoleteComputers",
-                        "CleanupUnneededContentFiles",
-                        "CleanupLocalPublishedContentFiles"
+                        'DeclineSupersededUpdates',
+                        'DeclineExpiredUpdates',
+                        'CleanupObsoleteUpdates',
+                        'CompressUpdates',
+                        'CleanupObsoleteComputers',
+                        'CleanupUnneededContentFiles',
+                        'CleanupLocalPublishedContentFiles'
                     )
+
                     foreach ($Var in $Arguments)
                     {
                         $regex = [regex]'^\$(?<name>.*)\s=\s\$(?<value>.*)$'
                         $groups = $regex.Match($Var).Groups
                         $VarName = $groups['name'].value.Trim()
                         $VarValueString = $groups['value'].value.Trim()
-                        if($VarName -in $ArgumentNames)
+                        if ($VarName -in $ArgumentNames)
                         {
-                            Set-variable -Name $VarName -Value $ExecutionContext.InvokeCommand.ExpandString($VarValueString)
+                            Set-Variable -Name $VarName -Value $ExecutionContext.InvokeCommand.ExpandString($VarValueString)
                         }
                     }
                 }
@@ -67,12 +70,12 @@ function Get-TargetResource
         }
         else
         {
-            $Ensure = "Absent"
+            $Ensure = 'Absent'
         }
     }
     else
     {
-        $Ensure = "Absent"
+        $Ensure = 'Absent'
     }
 
     $returnValue = @{
@@ -92,26 +95,35 @@ function Get-TargetResource
 
 <#
     .SYNOPSIS
-    Creates and configures cleanup tasks
+        Creates and configures cleanup tasks
+
     .PARAMETER Ensure
-    Determines if the task should be created or removed.
-    Accepts 'Present'(default) or 'Absent'.
+        Determines if the task should be created or removed.
+        Accepts 'Present'(default) or 'Absent'.
+
     .PARAMETER DeclineSupersededUpdates
-    Decline superseded updates
+        Decline superseded updates
+
     .PARAMETER DeclineExpiredUpdates
-    Decline expired updates
+        Decline expired updates
+
     .PARAMETER CleanupObsoleteUpdates
-    Cleanup obsolete updates
+        Cleanup obsolete updates
+
     .PARAMETER CompressUpdates
-    The name of the computer group to apply the rule to or All Computers
+        The name of the computer group to apply the rule to or All Computers
+
     .PARAMETER CleanupObsoleteComputers
-    Clean up obsolete computers
+        Clean up obsolete computers
+
     .PARAMETER CleanupUnneededContentFiles
-    Clean up unneeded content files
+        Clean up unneeded content files
+
     .PARAMETER CleanupLocalPublishedContentFiles
-    Clean up local published content files
+        Clean up local published content files
+
     .PARAMETER TimeOfDay
-    The time of day when the task should run
+        The time of day when the task should run
 #>
 function Set-TargetResource
 {
@@ -119,7 +131,7 @@ function Set-TargetResource
     param
     (
         [Parameter(Mandatory = $true)]
-        [ValidateSet("Present","Absent")]
+        [ValidateSet('Present', 'Absent')]
         [System.String]
         $Ensure,
 
@@ -153,33 +165,33 @@ function Set-TargetResource
 
         [Parameter()]
         [System.String]
-        $TimeOfDay = "04:00:00"
+        $TimeOfDay = '04:00:00'
     )
 
-    if(Get-ScheduledTask -TaskName "WSUS Cleanup" -ErrorAction SilentlyContinue)
+    if (Get-ScheduledTask -TaskName 'WSUS Cleanup' -ErrorAction SilentlyContinue)
     {
-        Write-Verbose "Removing existing schedued task for WSUS cleanup"
-        Unregister-ScheduledTask -TaskName "WSUS Cleanup" -Confirm:$false
+        Write-Verbose -Message $script:localizedData.RemovingCleanupSchedTask
+        Unregister-ScheduledTask -TaskName 'WSUS Cleanup' -Confirm:$false
     }
 
-    if($Ensure -eq "Present")
+    if ($Ensure -eq 'Present')
     {
         $Command = "$($env:SystemRoot)\System32\WindowsPowerShell\v1.0\powershell.exe"
 
         $Argument = "-Command `""
         $Argument += "'Starting WSUS Cleanup...' | Out-File `
             (Join-Path -Path ([IO.Path]::GetTempPath()) -ChildPath 'WsusCleanup.txt');"
-        foreach($Var in @(
-            "DeclineSupersededUpdates",
-            "DeclineExpiredUpdates",
-            "CleanupObsoleteUpdates",
-            "CompressUpdates",
-            "CleanupObsoleteComputers",
-            "CleanupUnneededContentFiles",
-            "CleanupLocalPublishedContentFiles"
+        foreach ($Var in @(
+                'DeclineSupersededUpdates',
+                'DeclineExpiredUpdates',
+                'CleanupObsoleteUpdates',
+                'CompressUpdates',
+                'CleanupObsoleteComputers',
+                'CleanupUnneededContentFiles',
+                'CleanupLocalPublishedContentFiles'
             ))
         {
-            if((Get-Variable -Name $Var).Value)
+            if ((Get-Variable -Name $Var).Value)
             {
                 $Argument += "`$$Var = `$true;"
             }
@@ -188,6 +200,7 @@ function Set-TargetResource
                 $Argument += "`$$Var = `$false;"
             }
         }
+
         $Argument += @"
 `$WsusServer = Get-WsusServer
 if(`$WsusServer)
@@ -207,14 +220,14 @@ if(`$WsusServer)
 }
 "@
 
-        Write-Verbose "Creating new scheduled task for WSUS cleanup rule"
+        Write-Verbose -Message $script:localizedData.CreatingCleanupSchedTask
 
         $Action = New-ScheduledTaskAction -Execute $Command -Argument $Argument
         $Trigger = New-ScheduledTaskTrigger -Daily -At $TimeOfDay
-        Register-ScheduledTask -TaskName "WSUS Cleanup" -Action $Action -Trigger $Trigger -RunLevel Highest -User "SYSTEM"
+        Register-ScheduledTask -TaskName 'WSUS Cleanup' -Action $Action -Trigger $Trigger -RunLevel Highest -User 'SYSTEM'
     }
 
-    if(!(Test-TargetResource @PSBoundParameters))
+    if (-not (Test-TargetResource @PSBoundParameters))
     {
         throw New-TerminatingError -ErrorType TestFailedAfterSet -ErrorCategory InvalidResult
     }
@@ -222,26 +235,36 @@ if(`$WsusServer)
 
 <#
     .SYNOPSIS
-    Creates and configures cleanup tasks
+        Creates and configures cleanup tasks
+
     .PARAMETER Ensure
-    Determines if the task should be created or removed.
-    Accepts 'Present'(default) or 'Absent'.
+        Determines if the task should be created or removed.
+        Accepts 'Present'(default) or 'Absent'.
+
     .PARAMETER DeclineSupersededUpdates
-    Decline superseded updates
+        Decline superseded updates
+
     .PARAMETER DeclineExpiredUpdates
-    Decline expired updates
+        Decline expired updates
+
     .PARAMETER CleanupObsoleteUpdates
-    Cleanup obsolete updates
+        Cleanup obsolete updates
+
     .PARAMETER CompressUpdates
-    The name of the computer group to apply the rule to or All Computers
+        The name of the computer group to apply the rule to or All Computers
+
     .PARAMETER CleanupObsoleteComputers
-    Clean up obsolete computers
+        Clean up obsolete computers
+
     .PARAMETER CleanupUnneededContentFiles
-    Clean up unneeded content files
+        Clean up unneeded content files
+
     .PARAMETER CleanupLocalPublishedContentFiles
-    Clean up local published content files
+        Clean up local published content files
+
     .PARAMETER TimeOfDay
-    The time of day when the task should run
+        The time of day when the task should run
+
 #>
 function Test-TargetResource
 {
@@ -250,7 +273,7 @@ function Test-TargetResource
     param
     (
         [Parameter(Mandatory = $true)]
-        [ValidateSet("Present","Absent")]
+        [ValidateSet('Present', 'Absent')]
         [System.String]
         $Ensure,
 
@@ -284,59 +307,65 @@ function Test-TargetResource
 
         [Parameter()]
         [System.String]
-        $TimeOfDay = "04:00:00"
+        $TimeOfDay = '04:00:00'
     )
 
     $result = $true
 
     $CleanupTask = Get-TargetResource -Ensure $Ensure
 
-    if($CleanupTask.Ensure -ne $Ensure)
+    if ($CleanupTask.Ensure -ne $Ensure)
     {
-        Write-Verbose -Message "Ensure test failed"
+        Write-Verbose -Message $script:localizedData.EnsureTestFailed
         $result = $false
     }
-    if($result -and ($CleanupTask.Ensure -eq "Present"))
+
+    if ($result -and ($CleanupTask.Ensure -eq 'Present'))
     {
-        if($CleanupTask.DeclineSupersededUpdates -ne $DeclineSupersededUpdates)
+        if ($CleanupTask.DeclineSupersededUpdates -ne $DeclineSupersededUpdates)
         {
-            Write-Verbose -Message "DeclineSupersededUpdates test failed"
+            Write-Verbose -Message $script:localizedData.DeclineSupersededTestFailed
             $result = $false
         }
-        if($CleanupTask.DeclineExpiredUpdates -ne $DeclineExpiredUpdates)
+
+        if ($CleanupTask.DeclineExpiredUpdates -ne $DeclineExpiredUpdates)
         {
-            Write-Verbose -Message "DeclineExpiredUpdates test failed"
+            Write-Verbose -Message $script:localizedData.DeclineExpiredTestFailed
             $result = $false
         }
-        if($CleanupTask.CleanupObsoleteUpdates -ne $CleanupObsoleteUpdates)
+
+        if ($CleanupTask.CleanupObsoleteUpdates -ne $CleanupObsoleteUpdates)
         {
-            Write-Verbose -Message "CleanupObsoleteUpdates test failed"
+            Write-Verbose -Message $script:localizedData.CleanupObsoleteTestFailed
             $result = $false
         }
-        if($CleanupTask.CompressUpdates -ne $CompressUpdates)
+
+        if ($CleanupTask.CompressUpdates -ne $CompressUpdates)
         {
-            Write-Verbose -Message "CompressUpdates test failed"
+            Write-Verbose -Message $script:localizedData.CompressTestFailed
             $result = $false
         }
-        if($CleanupTask.CleanupObsoleteComputers -ne $CleanupObsoleteComputers)
+
+        if ($CleanupTask.CleanupObsoleteComputers -ne $CleanupObsoleteComputers)
         {
-            Write-Verbose -Message "CleanupObsoleteComputers test failed"
+            Write-Verbose -Message $script:localizedData.CleanupObsoleteCptTestFailed
             $result = $false
         }
-        if($CleanupTask.CleanupUnneededContentFiles -ne $CleanupUnneededContentFiles)
+
+        if ($CleanupTask.CleanupUnneededContentFiles -ne $CleanupUnneededContentFiles)
         {
-            Write-Verbose -Message "CleanupUnneededContentFiles test failed"
+            Write-Verbose -Message $script:localizedData.CleanupContentTestFailed
             $result = $false
         }
-        if($CleanupTask.CleanupLocalPublishedContentFiles -ne $CleanupLocalPublishedContentFiles)
+
+        if ($CleanupTask.CleanupLocalPublishedContentFiles -ne $CleanupLocalPublishedContentFiles)
         {
-            Write-Verbose -Message "CleanupLocalPublishedContentFiles test failed"
+            Write-Verbose -Message $script:localizedData.CleanupPublishedTestFailed
             $result = $false
         }
     }
 
     $result
 }
-
 
 Export-ModuleMember -Function *-TargetResource

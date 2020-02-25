@@ -26,7 +26,7 @@ Configuration UpdateServicesConfig
                 )
                 Ensure = 'Present'
                 ContentDir = 'C:\WSUS'
-                Languages = 'en'
+                Languages = @('en','fr','es')
                 Products = @(
                     'Forefront Endpoint Protection 2010',
                     'Windows Server 2012 R2'

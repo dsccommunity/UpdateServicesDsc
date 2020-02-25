@@ -1,0 +1,25 @@
+TOPIC
+    about_UpdateServicesDsc
+
+SHORT DESCRIPTION
+    DSC Resources to manage Update Services (WSUS).
+
+LONG DESCRIPTION
+    The **UpdateServicesDsc** module contains DSC resources
+    for deployment and configuration of Windows Server Update Services.
+
+
+EXAMPLES
+    PS C:\> Get-DscResource -Module UpdateServicesDsc
+
+NOTE:
+    Thank you to all those who contributed to this module, by writing code, sharing opinions, and provided feedback.
+
+TROUBLESHOOTING NOTE:
+    Look out on the Github repository for issues and new releases.
+
+SEE ALSO
+  - https://github.com/dsccommunity/UpdateServicesDsc
+
+KEYWORDS
+      WSUS, DSC, Resource, ResourceKit

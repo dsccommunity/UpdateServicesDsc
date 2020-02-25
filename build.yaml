@@ -1,0 +1,104 @@
+---
+
+CopyDirectories:
+  - en-US
+  - DSCResources
+  - Modules
+Encoding: UTF8 # With BOM in WinPS, noBOM in PSCore.
+
+VersionedOutputDirectory: true
+
+####################################################
+#      ModuleBuilder Submodules Configuration      #
+####################################################
+
+NestedModule:
+  DscResource.Common:
+    CopyOnly: true
+    Path: ./output/RequiredModules/DscResource.Common
+    AddToManifest: false
+    Exclude: PSGetModuleInfo.xml
+
+BuildWorkflow:
+  '.': # "." is the default Invoke-Build workflow. It is called when no -Tasks is specified to the build.ps1
+    - build
+    - test
+    - hqrmtest
+
+  build:
+    - Clean
+    - Build_Module_ModuleBuilder
+    - Build_NestedModules_ModuleBuilder
+    - Create_changelog_release_output
+    - Generate_Conceptual_Help
+
+  pack:
+    - build
+    - package_module_nupkg
+
+  hqrmtest:
+    - DscResource_Tests_Stop_On_Fail
+
+  test:
+    - Pester_Tests_Stop_On_Fail
+    - Pester_if_Code_Coverage_Under_Threshold
+
+  publish:
+    - Publish_release_to_GitHub
+    - publish_module_to_gallery # runs if nuget is not available
+
+
+Pester: #Passthru, OutputFile, CodeCoverageOutputFile not supported
+  OutputFormat: NUnitXML
+  ExcludeFromCodeCoverage:
+    - Modules/DscResource.Common
+  Script:
+    # - tests/Unit/MSFT_UpdateServicesCleanup.tests.ps1
+    # - tests/Unit/MSFT_UpdateServicesServer.tests.ps1
+    # - tests/Unit/MSFT_UpdateServicesApprovalRule.tests.ps1
+    # - tests/QA
+    # - tests/Integration
+  ExcludeTag:
+    - helpQuality
+    - FunctionalQuality
+    - TestQuality
+  Tag:
+  CodeCoverageThreshold: 50 # Set to 0 to bypass
+  # CodeCoverageOutputFile: JaCoCo_$OsShortName.xml
+  # CodeCoverageOutputFileEncoding: ascii
+  # CodeCoverageMergedOutputFile: JaCoCo_Merged.xml
+
+DscTest:
+  ExcludeTag:
+    - "Common Tests - New Error-Level Script Analyzer Rules"
+  Tag:
+  ExcludeSourceFile:
+    - output
+  ExcludeModuleFile:
+    - Modules/DscResource.Common
+
+
+ModuleBuildTasks:
+  Sampler:
+    - '*.build.Sampler.ib.tasks' # this means: import (dot source) all aliases ending with .ib.tasks exported by sampler module
+  DscResource.DocGenerator:
+    - 'Task.*'
+
+
+# Invoke-Build Header to be used to 'decorate' the terminal output of the tasks.
+TaskHeader: |
+  param($Path)
+  ""
+  "=" * 79
+  Write-Build Cyan "`t`t`t$($Task.Name.replace("_"," ").ToUpper())"
+  Write-Build DarkGray  "$(Get-BuildSynopsis $Task)"
+  "-" * 79
+  Write-Build DarkGray "  $Path"
+  Write-Build DarkGray "  $($Task.InvocationInfo.ScriptName):$($Task.InvocationInfo.ScriptLineNumber)"
+  ""
+GitHubConfig:
+  GitHubFilesToAdd:
+    - 'CHANGELOG.md'
+  GitHubConfigUserName: dscbot
+  GitHubConfigUserEmail: dsccommunity@outlook.com
+  UpdateChangelogOnPrerelease: false
