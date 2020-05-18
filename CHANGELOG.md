@@ -5,13 +5,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Updated inital offline package sync WSUS.cab.
+
 ## [1.2.0] - 2020-05-18
 
 ### Changed
 
 - Update for HQRM standard
 - Changing to new CI pipeline
-- Updated inital offline package sync WSUS.cab
 
 ## [1.1.0.0] - 2019-06-20
 
