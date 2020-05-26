@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Updated inital offline package sync WSUS.cab.
+- Added IGNORE option for UpstreamServerName to prevent it being changed when SCCM is managing the upstream source
 
 ## [1.2.0] - 2020-05-18
 

@@ -93,7 +93,7 @@ Windows Server 2008 R2 SP1, Windows Server 2012 and Windows Server 2012 R2.
 * **SQLServer**: SQL Server for the WSUS database, omit for Windows Internal Database.
 * **ContentDir**: Folder for WSUS update files.
 * **UpdateImprovementProgram**: Join the Microsoft Update Improvement Program.
-* **UpstreamServerName**: Upstream WSUS server, omit for Microsoft Update.
+* **UpstreamServerName**: Upstream WSUS server, omit for Microsoft Update. Set to 'IGNORE' to prevent changes being made, for example in a SCCM environment
 * **UpstreamServerPort**: Port of upstream WSUS server.
 * **UpstreamServerSSL**: Use SSL with upstream WSUS server.
 * **UpstreamServerReplica**: Replica of upstream WSUS server.

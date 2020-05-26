@@ -214,7 +214,36 @@ try
                 }
             }
 
-        }
+            Context "upstream server difference is ignored" {
+
+                $DSCTestValues.Remove('UpstreamServerName')
+                $DSCTestValues.Add('UpstreamServerName', 'IGNORE')
+
+                Mock -CommandName Get-TargetResource -MockWith {
+                    $GetValues = $DSCTestValues
+                    $GetValues.Remove('UpstreamServerName')
+                    $GetValues.Add('UpstreamServerName', 'SomeOtherServer')
+                    $GetValues
+                } -Verifiable
+
+                $script:result = $null
+
+                It "calling test with change to UpstreamServerName should not throw" {
+                    { $script:result = Test-TargetResource @DSCTestValues -verbose } | Should not throw
+                }
+
+                It "result should be true, even when UpstreamServerName is different" {
+                    $script:result | Should be $true
+                }
+
+                It 'mocks were called' {
+                    Assert-VerifiableMock
+                }
+
+                $DSCTestValues.Remove('UpstreamServerName')
+                $DSCTestValues.Add('UpstreamServerName', 'UpstreamServer')
+                }
+            }
         #endregion
 
         #region Function Set-TargetResource
