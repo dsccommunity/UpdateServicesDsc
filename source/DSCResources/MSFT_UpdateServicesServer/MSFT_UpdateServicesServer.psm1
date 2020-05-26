@@ -850,7 +850,7 @@ function Test-TargetResource
 
         # Test Upstream Server
 
-		if ($Wsus.UpstreamServerName -ne $UpstreamServerName -and $UpstreamServerName -ne "IGNORE")
+        if ($Wsus.UpstreamServerName -ne $UpstreamServerName -and $UpstreamServerName -ne "IGNORE")
         {
             Write-Verbose -Message $script:localizedData.UpstreamNameTestFailed
             $result = $false

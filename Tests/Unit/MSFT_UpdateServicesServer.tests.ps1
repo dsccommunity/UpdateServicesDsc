@@ -221,27 +221,27 @@ try
 
                 Mock -CommandName Get-TargetResource -MockWith {
                     $GetValues = $DSCTestValues
-					$GetValues.Remove('UpstreamServerName')
-					$GetValues.Add('UpstreamServerName', 'SomeOtherServer')
-					$GetValues
+                    $GetValues.Remove('UpstreamServerName')
+                    $GetValues.Add('UpstreamServerName', 'SomeOtherServer')
+                    $GetValues
                 } -Verifiable
 
                 $script:result = $null
 
-				It "calling test with change to UpstreamServerName should not throw" {
-					{ $script:result = Test-TargetResource @DSCTestValues -verbose } | Should not throw
-				}
+                It "calling test with change to UpstreamServerName should not throw" {
+                    { $script:result = Test-TargetResource @DSCTestValues -verbose } | Should not throw
+                }
 
-				It "result should be true, even when UpstreamServerName is different" {
-					$script:result | Should be $true
-				}
+                It "result should be true, even when UpstreamServerName is different" {
+                    $script:result | Should be $true
+                }
 
-				It 'mocks were called' {
-					Assert-VerifiableMock
-				}
+                It 'mocks were called' {
+                    Assert-VerifiableMock
+                }
 
-				$DSCTestValues.Remove('UpstreamServerName')
-				$DSCTestValues.Add('UpstreamServerName', 'UpstreamServer')
+                $DSCTestValues.Remove('UpstreamServerName')
+                $DSCTestValues.Add('UpstreamServerName', 'UpstreamServer')
                 }
             }
         #endregion
