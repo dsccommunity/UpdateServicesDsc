@@ -5,9 +5,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added UpdateServicesComputerTargetGroup Resource including:
+  - Resource
+  - Unit Tests
+  - Example
+  - Update to ReadMe File
+  
 ### Changed
 
 - Updated inital offline package sync WSUS.cab.
+- Updated ImitateUpdateServicesModule Module to meet style guidelines
+
+### Fixed
+
+- Changed RequiredModules / Pester module version to '4.10.1' - as existing tests are incompatible with pester 5.
 
 ## [1.2.0] - 2020-05-18
 
