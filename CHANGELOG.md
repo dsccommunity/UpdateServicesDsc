@@ -5,6 +5,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added UpdateServicesComputerTargetGroup Resource including:
+  - Resource
+  - Unit Tests
+  - Example
+  - Update to ReadMe File
+  
 ### Changed
 
 - Updated inital offline package sync WSUS.cab.
@@ -14,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changed default timeout in Wait-Win32ProcessStart function for cab installation.
 - Updated pester test to support pester v5
 - Updated ReadMe.md to removed `RunRuleNow` parameter.
+- Updated ImitateUpdateServicesModule Module to meet style guidelines
 
 ### Added
 

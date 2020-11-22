@@ -2,7 +2,7 @@ function Get-WsusServerTemplate
 {
     $WsusServer = [pscustomobject] @{
         Name = 'ServerName'
-        }
+    }
 
     $ApprovalRule = [scriptblock]{
         $ApprovalRule = [pscustomobject]@{
@@ -52,6 +52,127 @@ function Get-WsusServerTemplate
         return $ApprovalRule
     }
 
+    $ComputerTargetGroups = [scriptblock]{
+        $ComputerTargetGroups = @(
+            [pscustomobject] @{
+                Name = 'All Computers'
+                Id = [pscustomobject] @{
+                    GUID = '4be27a8d-b969-4a8a-9cae-ec6b3a282b0b'
+                }
+            },
+            [pscustomobject] @{
+                Name = 'Servers'
+                Id = [pscustomobject] @{
+                    GUID = '14adceba-ddf3-4299-9c1a-e4cf8bd56c47'
+                }
+                ParentTargetGroup = [pscustomobject] @{
+                    Name = 'All Computers'
+                    Id = [pscustomobject] @{
+                        GUID = '4be27a8d-b969-4a8a-9cae-ec6b3a282b0b'
+                    }
+                }
+                ChildTargetGroup = [pscustomobject] @{
+                    Name = 'Web'
+                    Id = [pscustomobject] @{
+                        GUID = 'f4aa59c7-e6a0-4e6d-97b0-293d00a0dc60'
+                    }
+                }
+            },
+            [pscustomobject] @{
+                Name = 'Web'
+                Id = [pscustomobject] @{
+                    GUID = 'f4aa59c7-e6a0-4e6d-97b0-293d00a0dc60'
+                }
+                ParentTargetGroup = [pscustomobject] @{
+                    Name = 'Servers'
+                    Id = [pscustomobject] @{
+                        GUID = '14adceba-ddf3-4299-9c1a-e4cf8bd56c47'
+                    }
+                    ParentTargetGroup = [pscustomobject] @{
+                        Name = 'All Computers'
+                        Id = [pscustomobject] @{
+                            GUID = '4be27a8d-b969-4a8a-9cae-ec6b3a282b0b'
+                        }
+                    }
+                }
+            },
+            [pscustomobject] @{
+                Name = 'Workstations'
+                Id = [pscustomobject] @{
+                    GUID = '31742fd8-df6f-4836-82b4-b2e52ee4ba1b'
+                }
+                ParentTargetGroup = [pscustomobject] @{
+                    Name = 'All Computers'
+                    Id = [pscustomobject] @{
+                        GUID = '4be27a8d-b969-4a8a-9cae-ec6b3a282b0b'
+                    }
+                }
+            },
+            [pscustomobject] @{
+                Name = 'Desktops'
+                Id = [pscustomobject] @{
+                    GUID = '2b77a9ce-f320-41c7-bec7-9b22f67ae5b1'
+                }
+                ParentTargetGroup = [pscustomobject] @{
+                    Name = 'Workstations'
+                    Id = [pscustomobject] @{
+                        GUID = '31742fd8-df6f-4836-82b4-b2e52ee4ba1b'
+                    }
+                    ParentTargetGroup = [pscustomobject] @{
+                        Name = 'All Computers'
+                        Id = [pscustomobject] @{
+                            GUID = '4be27a8d-b969-4a8a-9cae-ec6b3a282b0b'
+                        }
+                    }
+                }
+            }
+        )
+
+        foreach ($ComputerTargetGroup in $ComputerTargetGroups)
+        {
+            Add-Member -InputObject $ComputerTargetGroup -MemberType ScriptMethod -Name Delete -Value {}
+
+            Add-Member -InputObject $ComputerTargetGroup -MemberType ScriptMethod -Name GetParentTargetGroup -Value {
+                return $this.ParentTargetGroup
+            }
+
+            if ($null -ne $ComputerTargetGroup.ParentTargetGroup)
+            {
+                Add-Member -InputObject $ComputerTargetGroup.ParentTargetGroup -MemberType ScriptMethod -Name GetParentTargetGroup -Value {
+                    return $this.ParentTargetGroup
+                }
+            }
+
+            if ($null -ne $ComputerTargetGroup.ChildTargetGroup)
+            {
+                Add-Member -InputObject $ComputerTargetGroup -MemberType ScriptMethod -Name GetChildTargetGroups -Value {
+                    return $this.ChildTargetGroup
+                }
+
+                Add-Member -InputOBject $ComputerTargetGroup.ChildTargetGroup -MemberType ScriptMethod -Name Delete -Value {}
+            }
+        }
+
+        return $ComputerTargetGroups
+    }
+
+    $WsusServer | Add-Member -MemberType ScriptMethod -Name CreateComputerTargetGroup -Value {
+        param
+        (
+            [Parameter(Mandatory = $true)]
+            [string]
+            $Name,
+
+            [Parameter(Mandatory = $true)]
+            [object]
+            $ComputerTargetGroup
+        )
+        {
+            Write-Output $Name
+            Write-Output $ComputerTargetGroup
+        }
+    }
+
     $WsusServer | Add-Member -MemberType ScriptMethod -Name GetInstallApprovalRules -Value $ApprovalRule
 
     $WsusServer | Add-Member -MemberType ScriptMethod -Name CreateInstallApprovalRule -Value $ApprovalRule
@@ -59,6 +180,8 @@ function Get-WsusServerTemplate
     $WsusServer | Add-Member -MemberType ScriptMethod -Name GetUpdateClassification -Value {}
 
     $WsusServer | Add-Member -MemberType ScriptMethod -Name GetComputerTargetGroups -Value {}
+
+    $WsusServer | Add-Member -MemberType ScriptMethod -Name GetComputerTargetGroups -Value $ComputerTargetGroups
 
     $WsusServer | Add-Member -MemberType ScriptMethod -Name DeleteInstallApprovalRule -Value {}
 
