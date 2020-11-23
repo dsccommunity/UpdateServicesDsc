@@ -29,6 +29,12 @@ try
         Describe "MSFT_UpdateServicesComputerTargetGroup\Get-ComputerTargetGroupPath." {
             $WsusServer = Get-WsusServer
 
+            Context "The Function returns expected path for the 'All Computers' ComputerTargetGroup." {
+                $ComputerTargetGroup = $WsusServer.GetComputerTargetGroups() | Where-Object -FilterScript { $_.Name -eq 'All Computers' }
+                $result = Get-ComputerTargetGroupPath -ComputerTargetGroup $ComputerTargetGroup
+                $result | Should -Be 'All Computers'
+            }
+
             Context "The Function returns expected path for the 'Desktops' ComputerTargetGroup." {
                 $ComputerTargetGroup = $WsusServer.GetComputerTargetGroups() | Where-Object -FilterScript { $_.Name -eq 'Desktops' }
                 $result = Get-ComputerTargetGroupPath -ComputerTargetGroup $ComputerTargetGroup
@@ -233,6 +239,17 @@ try
                     Assert-MockCalled -CommandName Write-Warning -ParameterFilter {
                         $message -eq ($script:localizedData.NotFoundParentComputerTargetGroup -f 'Desktops', `
                         'All Computers', 'Win10')
+                    }
+                }
+            }
+
+            Context 'The new Computer Target Group (at Root Level) is successfully created.' {
+                It 'Calling Set where Computer Target Group (at Root Level) does not exist and Ensure is "Present" creates the required group.' {
+                    # { $script:resource = Set-TargetResource -Name 'Virtual Servers' -Path 'All Computers'} | Should -Not -Throw
+                    $script:resource = Set-TargetResource -Name 'Member Servers' -Path 'All Computers'
+                    Assert-MockCalled Write-Verbose -ParameterFilter {
+                        $message -eq ($script:localizedData.CreateComputerTargetGroupSuccess -f 'Member Servers', `
+                        'All Computers')
                     }
                 }
             }
