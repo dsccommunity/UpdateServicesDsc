@@ -265,6 +265,11 @@ function Get-ComputerTargetGroupPath
         $ComputerTargetGroup
     )
 
+    if ($ComputerTargetGroup.Name -eq 'All Computers')
+    {
+        return "All Computers"
+    }
+
     $computerTargetGroupPath = ""
     $computerTargetGroupParents = @()
     $moreParentContainers = $true
