@@ -4,6 +4,7 @@ GetWsusServerFailed                 = Get-WsusServer failed to return a WSUS Ser
 WSUSConfigurationFailed             = WSUS Computer Target Group configuration failed.
 GetWsusServerSucceeded              = WSUS Server information has been successfully retrieved from server '{0}'.
 NotFoundComputerTargetGroup         = A Computer Target Group with Name '{0}' was not found at Path '{1}'.
+DuplicateComputerTargetGroup        = A Computer Target Group with Name '{0}' already exists at Path '{1}'.
 FoundComputerTargetGroup            = Successfully located Computer Target Group with Name '{0}' at Path '{1}' with ID '{2}'.
 ResourceInDesiredState              = The Computer Target Group '{0}' at Path '{1}' is '{2}' which is the desired state.
 ResourceNotInDesiredState           = The Computer Target Group '{0}' at Path '{1}' is '{2}' which is NOT the desired state.

@@ -44,19 +44,21 @@ function Get-TargetResource
         if ($null -ne $WsusServer)
         {
             Write-Verbose -Message ($script:localizedData.GetWsusServerSucceeded -f $WsusServer.Name)
-            $ComputerTargetGroups = $WsusServer.GetComputerTargetGroups() | Where-Object -FilterScript { $_.Name -eq $Name }
+            $ComputerTargetGroup = $WsusServer.GetComputerTargetGroups() | Where-Object -FilterScript { $_.Name -eq $Name }
 
-            if ($null -ne $ComputerTargetGroups)
+            if ($null -ne $ComputerTargetGroup)
             {
-                foreach ($ComputerTargetGroup in $ComputerTargetGroups)
+                $ComputerTargetGroupPath = Get-ComputerTargetGroupPath -ComputerTargetGroup $ComputerTargetGroup
+                if ($Path -eq $ComputerTargetGroupPath)
                 {
-                    $ComputerTargetGroupPath = Get-ComputerTargetGroupPath -ComputerTargetGroup $ComputerTargetGroup
-                    if ($Path -eq $ComputerTargetGroupPath)
-                    {
-                        $Ensure = 'Present'
-                        $Id = $ComputerTargetGroup.Id.Guid
-                        Write-Verbose -Message ($script:localizedData.FoundComputerTargetGroup -f $Name, $Path, $Id)
-                    }
+                    $Ensure = 'Present'
+                    $Id = $ComputerTargetGroup.Id.Guid
+                    Write-Verbose -Message ($script:localizedData.FoundComputerTargetGroup -f $Name, $Path, $Id)
+                }
+                else
+                {
+                    # ComputerTargetGroup Names must be unique within the overall hierarchy
+                    New-InvalidOperationException -Message ($script:localizedData.DuplicateComputerTargetGroup -f $ComputerTargetGroup.Name, $ComputerTargetGroupPath)
                 }
             }
         }
@@ -184,7 +186,7 @@ function Set-TargetResource
                 }
             }
 
-            Write-Warning -Message ($script:localizedData.NotFoundParentComputerTargetGroup -f $ParentComputerTargetGroupName, `
+            New-InvalidOperationException -Message ($script:localizedData.NotFoundParentComputerTargetGroup -f $ParentComputerTargetGroupName, `
             $ParentComputerTargetGroupPath, $Name)
         }
         else

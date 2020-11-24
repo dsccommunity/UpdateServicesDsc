@@ -51,8 +51,11 @@ try
 
         #region Function Get-TargetResource
         Describe "MSFT_UpdateServicesComputerTargetGroup\Get-TargetResource." {
+            BeforeEach {
+                if (Test-Path -Path variable:script:resource) { Remove-Variable -Scope 'script' -Name 'resource' }
+            }
+
             Mock -CommandName Write-Verbose -MockWith {}
-            if (Test-Path -Path variable:script:resource) { Remove-Variable -Scope 'script' -Name 'resource' }
 
             Context 'An error occurs retrieving WSUS Server configuration information.' {
                 Mock -CommandName Get-WsusServer -MockWith { throw 'An error occurred.' }
@@ -94,12 +97,10 @@ try
             }
 
             Context 'The Computer Target Group is not in the desired state (specified name exists but not at the desired path).' {
-                It 'Calling Get should return absent when Computer Target Group does not exist at the specified path.' {
-                    $resource = Get-TargetResource -Name 'Desktops' -Path 'All Computers/Servers'
-                    $resource.Ensure | Should -Be 'Absent'
-                    Assert-MockCalled -CommandName Write-Verbose -ParameterFilter {
-                        $message -eq ($script:localizedData.NotFoundComputerTargetGroup -f 'Desktops', 'All Computers/Servers')
-                    }
+                It 'Calling Get should throw when Computer Target Group does not exist at the specified path.' {
+                    { $script:resource = Get-TargetResource -Name 'Desktops' -Path 'All Computers/Servers' } | Should -Throw `
+                    ($script:localizedData.DuplicateComputerTargetGroup -f 'Desktops',  'All Computers/Workstations')
+                    $script:resource | Should -Be $null
                 }
             }
 
@@ -206,8 +207,11 @@ try
 
         #region Function Set-TargetResource
         Describe "MSFT_UpdateServicesComputerTargetGroup\Set-TargetResource" {
+            BeforeEach {
+                if (Test-Path -Path variable:script:resource) { Remove-Variable -Scope 'script' -Name 'resource' }
+            }
+
             Mock -CommandName Write-Verbose -MockWith {}
-            if (Test-Path -Path variable:script:resource) { Remove-Variable -Scope 'script' -Name 'resource' }
 
             Context 'An error occurs retrieving WSUS Server configuration information.' {
                 Mock -CommandName Get-WsusServer -MockWith { throw 'An error occurred.' }
@@ -234,19 +238,16 @@ try
             Context 'The Parent of the Computer Target Group is not present and therefore the new group cannot be created.' {
                 Mock -CommandName Write-Warning -MockWith {}
 
-                It 'Calling Set where the Parent of the Computer Target Group does not exist generates a warning message.' {
-                    { $script:resource = Set-TargetResource -Name 'Win10' -Path 'All Computers/Desktops'} | Should -Not -Throw
-                    Assert-MockCalled -CommandName Write-Warning -ParameterFilter {
-                        $message -eq ($script:localizedData.NotFoundParentComputerTargetGroup -f 'Desktops', `
+                It 'Calling Set where the Parent of the Computer Target Group does not exist throws an exception.' {
+                    { $script:resource = Set-TargetResource -Name 'Win10' -Path 'All Computers/Desktops'} | Should -Throw `
+                        ($script:localizedData.NotFoundParentComputerTargetGroup -f 'Desktops', `
                         'All Computers', 'Win10')
-                    }
                 }
             }
 
             Context 'The new Computer Target Group (at Root Level) is successfully created.' {
                 It 'Calling Set where Computer Target Group (at Root Level) does not exist and Ensure is "Present" creates the required group.' {
-                    # { $script:resource = Set-TargetResource -Name 'Virtual Servers' -Path 'All Computers'} | Should -Not -Throw
-                    $script:resource = Set-TargetResource -Name 'Member Servers' -Path 'All Computers'
+                    { $script:resource = Set-TargetResource -Name 'Member Servers' -Path 'All Computers'} | Should -Not -Throw
                     Assert-MockCalled Write-Verbose -ParameterFilter {
                         $message -eq ($script:localizedData.CreateComputerTargetGroupSuccess -f 'Member Servers', `
                         'All Computers')
