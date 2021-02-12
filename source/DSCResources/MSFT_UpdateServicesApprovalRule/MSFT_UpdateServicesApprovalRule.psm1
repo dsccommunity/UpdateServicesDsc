@@ -52,7 +52,7 @@ function Get-TargetResource
 
         if ($null -ne $WsusServer)
         {
-            Write-Verbose -Message ('Identified WSUS server information: {0}' -f $WsusServer)
+            Write-Verbose -Message ('Identified WSUS server information: {0}' -f $WsusServer.Name)
 
             $ApprovalRule = $WsusServer.GetInstallApprovalRules() | Where-Object -FilterScript { $_.Name -eq $Name }
 
