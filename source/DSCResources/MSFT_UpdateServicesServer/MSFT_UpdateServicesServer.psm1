@@ -141,9 +141,9 @@ function Get-TargetResource
 
         Write-Verbose -Message ($script:localizedData.WsusClassifications -f $Classifications)
         Write-Verbose -Message $script:localizedData.GettingWsusProducts
-        if ($Products = @($WsusSubscription.GetUpdateCategories().Title))
+        if ($Products = (@($WsusSubscription.GetUpdateCategories().Title) | Sort-Object -Unique))
         {
-            if ($null -eq (Compare-Object -ReferenceObject ($Products | Sort-Object -Unique) -DifferenceObject `
+            if ($null -eq (Compare-Object -ReferenceObject $Products -DifferenceObject `
                     (($WsusServer.GetUpdateCategories().Title) | Sort-Object -Unique) -SyncWindow 0))
             {
                 $Products = @('*')
@@ -154,7 +154,7 @@ function Get-TargetResource
             $Products = @('*')
         }
 
-        Write-Verbose -Message ($script:localizedData.WsusProducts -f $Products)
+        Write-Verbose -Message ($script:localizedData.WsusProducts -f ($Products -join ', '))
         Write-Verbose -Message $script:localizedData.GettingWsusSyncConfig
         $SynchronizeAutomatically = $WsusSubscription.SynchronizeAutomatically
         Write-Verbose -Message ($script:localizedData.WsusSyncAuto -f $SynchronizeAutomatically)
@@ -579,7 +579,7 @@ if ($WsusConfiguration.OobeInitialized)
     {
         foreach ($Product in $AllWsusProducts)
         {
-            $null = $ProductCollection.Add($WsusServer.GetUpdateCategory($Product.Id))
+            $null = $ProductCollection.Add($Product)
         }
     }
     else
@@ -588,7 +588,9 @@ if ($WsusConfiguration.OobeInitialized)
         {
             if ($WsusProduct = $AllWsusProducts | Where-Object -FilterScript { $_.Title -eq $Product })
             {
-                $null = $ProductCollection.Add($WsusServer.GetUpdateCategory($WsusProduct.Id))
+                $WsusProduct | Foreach-Object -Process {
+                    $null = $ProductCollection.Add($_)
+                }
             }
         }
     }
