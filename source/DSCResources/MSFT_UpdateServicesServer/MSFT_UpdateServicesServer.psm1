@@ -121,7 +121,7 @@ function Get-TargetResource
         }
         else
         {
-            $Languages = $WsusConfiguration.GetEnabledUpdateLanguages()
+            $Languages = ($WsusConfiguration.GetEnabledUpdateLanguages()) -join ','
         }
 
         Write-Verbose -Message ($script:localizedData.WsusLanguages -f $Languages)
