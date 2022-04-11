@@ -7,6 +7,7 @@ CopyDirectories:
 Encoding: UTF8 # With BOM in WinPS, noBOM in PSCore.
 
 VersionedOutputDirectory: true
+BuiltModuleSubdirectory: module
 
 ####################################################
 #      ModuleBuilder Submodules Configuration      #
@@ -30,7 +31,7 @@ BuildWorkflow:
     - Build_Module_ModuleBuilder
     - Build_NestedModules_ModuleBuilder
     - Create_changelog_release_output
-    - Generate_Conceptual_Help
+    #- Generate_Conceptual_Help
 
   pack:
     - build
