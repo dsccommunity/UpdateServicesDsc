@@ -57,7 +57,8 @@ Pester: #Passthru, OutputFile, CodeCoverageOutputFile not supported
     # - tests/Unit/MSFT_UpdateServicesCleanup.tests.ps1
     # - tests/Unit/MSFT_UpdateServicesServer.tests.ps1
     # - tests/Unit/MSFT_UpdateServicesApprovalRule.tests.ps1
-    # - tests/QA
+    - tests/Unit
+    - tests/QA
     # - tests/Integration
   ExcludeTag:
     - helpQuality
