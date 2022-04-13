@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Updated inital offline package sync WSUS.cab.
+- Updated build.ps1 script and build.yaml.
+- Changed default timeout in Wait-Win32ProcessStart function for cab installation.
+
+### Added
+
+- Added TestKitchen files for integration tests
 
 ## [1.2.0] - 2020-05-18
 
