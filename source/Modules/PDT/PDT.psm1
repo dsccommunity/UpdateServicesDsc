@@ -158,10 +158,12 @@ function Get-Arguments
         $FunctionBoundParameters,
 
         [Parameter(Mandatory = $true)]
-        [string[]] $ArgumentNames,
+        [string[]]
+        $ArgumentNames,
 
         [Parameter()]
-        [string[]] $NewArgumentNames
+        [string[]]
+        $NewArgumentNames
     )
 
     $returnValue = @{ }
@@ -505,13 +507,16 @@ function Get-Win32Process
     (
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [String] $Path,
+        [String]
+        $Path,
 
         [Parameter()]
-        [String] $Arguments,
+        [String]
+        $Arguments,
 
         [Parameter()]
-        [PSCredential] $Credential
+        [PSCredential]
+        $Credential
     )
 
     $fileName = [io.path]::GetFileNameWithoutExtension($Path)
@@ -601,7 +606,8 @@ function Get-Win32ProcessArgumentsFromCommandLine
     param
     (
         [Parameter()]
-        [String] $CommandLine
+        [String]
+        $CommandLine
     )
 
     if ($null -eq $commandLine)
@@ -652,13 +658,16 @@ function Start-Win32Process
     (
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [String] $Path,
+        [String]
+        $Path,
 
         [Parameter()]
-        [String] $Arguments,
+        [String]
+        $Arguments,
 
         [Parameter()]
-        [PSCredential] $Credential
+        [PSCredential]
+        $Credential
     )
 
     $getArguments = Get-Arguments -FunctionBoundParameters $PSBoundParameters -ArgumentNames ('Path', 'Arguments', 'Credential')
@@ -736,16 +745,20 @@ function Wait-Win32ProcessStart
     (
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [String] $Path,
+        [String]
+        $Path,
 
         [Parameter()]
-        [String] $Arguments,
+        [String]
+        $Arguments,
 
         [Parameter()]
-        [PSCredential] $Credential,
+        [PSCredential]
+        $Credential,
 
         [Parameter()]
-        [Int] $Timeout = 60000
+        [Int]
+        $Timeout = 120000
     )
 
     $start = [DateTime]::Now
@@ -784,16 +797,20 @@ function Wait-Win32ProcessStop
     (
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [String] $Path,
+        [String]
+        $Path,
 
         [Parameter()]
-        [String] $Arguments,
+        [String]
+        $Arguments,
 
         [Parameter()]
-        [PSCredential] $Credential,
+        [PSCredential]
+        $Credential,
 
         [Parameter()]
-        [Int] $Timeout = 180000
+        [Int]
+        $Timeout = 180000
     )
 
     $start = [DateTime]::Now
@@ -832,13 +849,16 @@ function Wait-Win32ProcessEnd
     (
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [String] $Path,
+        [String]
+        $Path,
 
         [Parameter()]
-        [String] $Arguments,
+        [String]
+        $Arguments,
 
         [Parameter()]
-        [PSCredential] $Credential
+        [PSCredential]
+        $Credential
     )
 
     $getArguments = Get-Arguments -FunctionBoundParameters $PSBoundParameters -ArgumentNames ('Path', 'Arguments', 'Credential')
