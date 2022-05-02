@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Updated inital offline package sync WSUS.cab.
+- Changed azurepipeline, use latest version of ubuntu and change the management 
+  of pipeline artifact
 - Updated build.ps1 script and build.yaml.
 - Changed default timeout in Wait-Win32ProcessStart function for cab installation.
 
