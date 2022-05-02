@@ -11,11 +11,11 @@ trigger:
     exclude:
     - "*-*"
 
-    variables:
-      buildFolderName: output
-      buildArtifactName: output
-      testResultFolderName: testResults
-      defaultBranch: master
+variables:
+  buildFolderName: output
+  buildArtifactName: output
+  testResultFolderName: testResults
+  defaultBranch: master
 
 stages:
   - stage: Build
