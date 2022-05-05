@@ -13,7 +13,7 @@
     PSScriptAnalyzer            = 'latest'
     Pester                      = '4.10.1'
     Plaster                     = 'latest'
-    ModuleBuilder               = 'latest'
+    ModuleBuilder               = '1.0.0'
     ChangelogManagement         = 'latest'
     Sampler                     = 'latest'
     'Sampler.GitHubTasks'       = 'latest'
