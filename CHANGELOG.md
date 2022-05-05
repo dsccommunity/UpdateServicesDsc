@@ -16,6 +16,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Added TestKitchen files for integration tests
+- Added requiredmodules Sampler.GitHubTasks, powershell-yaml
+
+### Fix
+
+- Fix deploy job in AzurePipeline, Added Sampler.GithubTasks in build.yaml
 
 ## [1.2.0] - 2020-05-18
 
