@@ -19,7 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fix
 
-- Fix deploy job in AzurePipeline, Removed Publish_release_to_GitHub task in build.yaml
+- Fix deploy job in AzurePipeline, Added Sampler.GithubTasks in build.yaml
 
 ## [1.2.0] - 2020-05-18
 

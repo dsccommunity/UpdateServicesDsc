@@ -45,7 +45,9 @@ BuildWorkflow:
     - Pester_if_Code_Coverage_Under_Threshold
 
   publish:
+    - Publish_release_to_GitHub
     - publish_module_to_gallery # runs if nuget is not available
+    - Create_ChangeLog_GitHub_PR
 
 
 Pester: #Passthru, OutputFile, CodeCoverageOutputFile not supported
@@ -82,6 +84,8 @@ DscTest:
 ModuleBuildTasks:
   Sampler:
     - '*.build.Sampler.ib.tasks' # this means: import (dot source) all aliases ending with .ib.tasks exported by sampler module
+  Sampler.GitHubTasks:
+    - '*.ib.tasks'
   DscResource.DocGenerator:
     - 'Task.*'
 
