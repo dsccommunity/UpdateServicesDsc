@@ -13,10 +13,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated build.ps1 script and build.yaml.
 - Changed default timeout in Wait-Win32ProcessStart function for cab installation.
 
+
 ### Added
 
 - Added TestKitchen files for integration tests
 - Added requiredmodules Sampler.GitHubTasks, powershell-yaml
+- Added wildcard support in Products parameter of UpdatesServicesServer resource.
+ Fix issue #61, #67, #66, #58, #57, #13
 
 ### Fix
 
