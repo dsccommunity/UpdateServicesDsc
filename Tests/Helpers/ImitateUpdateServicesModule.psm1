@@ -1,20 +1,21 @@
-function Get-WsusServer {
+function Get-WsusServerTemplate
+{
     $WsusServer = [pscustomobject] @{
         Name = 'ServerName'
         }
 
     $ApprovalRule = [scriptblock]{
         $ApprovalRule = [pscustomobject]@{
-                Name = 'ServerName'
-                Enabled = $true
+            Name = 'ServerName'
+            Enabled = $true
         }
-    
+
         $ApprovalRule | Add-Member -MemberType ScriptMethod -Name GetUpdateClassifications -Value {
         $UpdateClassification = [pscustomobject]@{
-                Name = 'Update Classification'
-                ID = [pscustomobject]@{
-                    GUID = '00000000-0000-0000-0000-0000testguid'
-                }
+            Name = 'Update Classification'
+            ID = [pscustomobject]@{
+                GUID = '00000000-0000-0000-0000-0000testguid'
+            }
         }
         return $UpdateClassification
     }
@@ -51,11 +52,11 @@ function Get-WsusServer {
     $WsusServer | Add-Member -MemberType ScriptMethod -Name CreateInstallApprovalRule -Value $ApprovalRule
 
     $WsusServer | Add-Member -MemberType ScriptMethod -Name GetUpdateClassification -Value {}
-    
+
     $WsusServer | Add-Member -MemberType ScriptMethod -Name GetComputerTargetGroups -Value {}
 
     $WsusServer | Add-Member -MemberType ScriptMethod -Name DeleteInstallApprovalRule -Value {}
-    
+
     $WsusServer | Add-Member -MemberType ScriptMethod -Name GetSubscription -Value {
             $Subscription = [pscustomobject]@{
                 SynchronizeAutomaticallyTimeOfDay = '04:00:00'
@@ -65,16 +66,19 @@ function Get-WsusServer {
             $Subscription | Add-Member -MemberType ScriptMethod -Name StartSynchronization -Value {}
             $Subscription | Add-Member -MemberType ScriptMethod -Name GetUpdateClassifications -Value {
                 $UpdateClassification = [pscustomobject]@{
-                        Name = 'Update Classification'
-                        ID = [pscustomobject]@{
-                            GUID = '00000000-0000-0000-0000-0000testguid'
-                        }
+                    Name = 'Update Classification'
+                    ID = [pscustomobject]@{
+                        GUID = '00000000-0000-0000-0000-0000testguid'
+                    }
                 }
                 return $UpdateClassification
             }
             $Subscription | Add-Member -MemberType ScriptMethod -Name GetUpdateCategories -Value {
                 $Categories = [pscustomobject]@{
-                    Title = 'Category'
+                    Title = 'Windows'
+                },
+                [pscustomobject]@{
+                    Title = 'Office'
                 }
                 return $Categories
             }
@@ -93,22 +97,43 @@ function Get-WsusServer {
             AllUpdateLanguagesEnabled = $true
         }
         $Configuration | Add-Member -MemberType ScriptMethod -Name GetEnabledUpdateLanguages -Value {}
-        return $Configuration        
+        return $Configuration
     }
 
     $WsusServer | Add-Member -MemberType ScriptMethod -Name GetUpdateClassifications -Value {
         $UpdateClassification = [pscustomobject]@{
-                Name = 'Update Classification'
-                ID = [pscustomobject]@{
-                    GUID = '00000000-0000-0000-0000-0000testguid'
-                }
+            Name = 'Update Classification'
+            ID = [pscustomobject]@{
+                GUID = '00000000-0000-0000-0000-0000testguid'
+            }
         }
         return $UpdateClassification
     }
 
-    $WsusServer  | Add-Member -MemberType ScriptMethod -Name GetUpdateCategories -Value {
+    $WsusServer | Add-Member -MemberType ScriptMethod -Name GetUpdateCategories -Value {
         $Categories = [pscustomobject]@{
-            Title = 'Category'
+            Title = 'Windows'
+        },
+        [pscustomobject]@{
+            Title = 'Office'
+        },
+        [pscustomobject]@{
+            Title = 'Windows Server 2003'
+        },
+        [pscustomobject]@{
+            Title = 'Windows Server 2008'
+        },
+        [pscustomobject]@{
+            Title = 'Windows Server 2008R2'
+        },
+        [pscustomobject]@{
+            Title = 'Windows Server 2012'
+        },
+        [pscustomobject]@{
+            Title = 'Windows Server 2016'
+        },
+        [pscustomobject]@{
+            Title = 'Windows Server 2019'
         }
         return $Categories
     }
@@ -116,7 +141,89 @@ function Get-WsusServer {
     return $WsusServer
 }
 
-function Get-WsusClassification {
+function Get-WsusServer
+{
+    return $(Get-WsusServerTemplate)
+}
+
+function Get-WsusServerMockWildCardPrdt
+{
+    $wsusServer = Get-WsusServerTemplate
+
+    # Override GetSubscription method
+    $WsusServer | Add-Member -Force -MemberType ScriptMethod -Name GetSubscription -Value {
+        $Subscription = [pscustomobject]@{
+            SynchronizeAutomaticallyTimeOfDay = '04:00:00'
+            NumberOfSynchronizationsPerDay = 24
+            SynchronizeAutomatically = $true
+        }
+        $Subscription | Add-Member -MemberType ScriptMethod -Name StartSynchronization -Value {}
+        $Subscription | Add-Member -MemberType ScriptMethod -Name GetUpdateClassifications -Value {
+            $UpdateClassification = [pscustomobject]@{
+                Name = 'Update Classification'
+                ID = [pscustomobject]@{
+                    GUID = '00000000-0000-0000-0000-0000testguid'
+                }
+            }
+            return $UpdateClassification
+        }
+        $Subscription | Add-Member -Force -MemberType ScriptMethod -Name GetUpdateCategories -Value {
+            $Categories = [pscustomobject]@{
+                Title = 'Windows Server 2003'
+            },
+            [pscustomobject]@{
+                Title = 'Windows Server 2008'
+            },
+            [pscustomobject]@{
+                Title = 'Windows Server 2008R2'
+            },
+            [pscustomobject]@{
+                Title = 'Windows Server 2012'
+            },
+            [pscustomobject]@{
+                Title = 'Windows Server 2016'
+            },
+            [pscustomobject]@{
+                Title = 'Windows Server 2019'
+            }
+            return $Categories
+        }
+        return $Subscription
+    }
+
+    # Override GetUpdateCategories method
+    $WsusServer | Add-Member -Force -MemberType ScriptMethod -Name GetUpdateCategories -Value {
+        $Categories = [pscustomobject]@{
+            Title = 'Windows'
+        },
+        [pscustomobject]@{
+            Title = 'Office'
+        },
+        [pscustomobject]@{
+            Title = 'Windows Server 2003'
+        },
+        [pscustomobject]@{
+            Title = 'Windows Server 2008'
+        },
+        [pscustomobject]@{
+            Title = 'Windows Server 2008R2'
+        },
+        [pscustomobject]@{
+            Title = 'Windows Server 2012'
+        },
+        [pscustomobject]@{
+            Title = 'Windows Server 2016'
+        },
+        [pscustomobject]@{
+            Title = 'Windows Server 2019'
+        }
+        return $Categories
+    }
+
+    return $WsusServer
+}
+function Get-WsusClassification
+{
     $WsusClassification = [pscustomobject]@{
         Classification = [pscustomobject]@{
             ID = [pscustomobject]@{
