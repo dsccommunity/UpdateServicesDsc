@@ -20,7 +20,7 @@ Describe "Basic tests" {
         }
 
         It "Should product are correctly configured" {
-            $AllProductsServer = $script:wuServer.GetUpdateCategories().Title | Where-Object {$_ -like 'Windows Server *'}
+            $AllProductsServer = $script:wuServer.GetUpdateCategories().Title | Where-Object {$_ -like 'Windows Server*'}
 
             ($AllProductsServer | Measure-Object).Count | Should -Be ($script:wuServer.GetSubscription().GetUpdateCategories().Title | Measure-Object ).Count
 
