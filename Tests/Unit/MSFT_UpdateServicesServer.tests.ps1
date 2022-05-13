@@ -111,6 +111,35 @@ try
                     Assert-VerifiableMock
                 }
             }
+
+            Context 'Products property contains wildcard' {
+                BeforeAll {
+                    Mock -CommandName Get-WsusServer -Verifiable -MockWith {
+                        #Function presents in Tests\Helpers\ImitateUpdateServicesModule.psm1
+                        return $(Get-WsusServerMockWildCardPrdt)
+                    }
+
+                    $script:result = $null
+                }
+
+                It 'calling test should not throw' {
+                    { $script:result = Get-TargetResource -Ensure 'Present' -verbose } | Should not throw
+                }
+
+                It "Products should contain right value" {
+                    $DesiredProducts = @('Windows Server 2003','Windows Server 2008','Windows Server 2008R2','Windows Server 2012','Windows Server 2016','Windows Server 2019')
+
+                    ($script:result.Products |Measure-Object).Count | Should -Be $DesiredProducts.Count
+
+                    $DesiredProducts | ForEach-Object {
+                        $script:result.Products | Should -Contain $_
+                    }
+                }
+
+                It 'mocks were called' {
+                    Assert-VerifiableMock
+                }
+            }
         }
         #endregion
 
@@ -214,6 +243,72 @@ try
                 }
             }
 
+            Context 'Products property contains wildcard' {
+                BeforeAll {
+                    Mock -CommandName Get-WsusServer -Verifiable -MockWith {
+                        return $(Get-WsusServerMockWildCardPrdt)
+                    }
+
+                    $DSCGetValues = @{
+                        Ensure                            = 'Present'
+                        SetupCredential                   = New-Object -typename System.Management.Automation.PSCredential -argumentlist 'foo', $('bar' | ConvertTo-SecureString -AsPlainText -Force)
+                        SQLServer                         = 'SQLServer'
+                        ContentDir                        = 'C:\WSUSContent\'
+                        UpdateImprovementProgram          = $true
+                        UpstreamServerName                = 'UpstreamServer'
+                        UpstreamServerPort                = $false
+                        UpstreamServerSSL                 = $false
+                        UpstreamServerReplica             = $false
+                        ProxyServerName                   = 'ProxyServer'
+                        ProxyServerPort                   = 8080
+                        Languages                         = "*"
+                        Products                          = @('Windows Server 2003','Windows Server 2008','Windows Server 2008R2','Windows Server 2012','Windows Server 2016','Windows Server 2019')
+                        Classifications                   = @('E6CF1350-C01B-414D-A61F-263D14D133B4', 'E0789628-CE08-4437-BE74-2495B842F43B', '0FA1201D-4330-4FA8-8AE9-B877473B6441')
+                        SynchronizeAutomatically          = $true
+                        SynchronizeAutomaticallyTimeOfDay = '04:00:00'
+                        SynchronizationsPerDay            = 24
+                        ClientTargetingMode               = "Client"
+                    }
+
+                    $DSCTestValues = @{
+                        SetupCredential                   = New-Object -typename System.Management.Automation.PSCredential -argumentlist 'foo', $('bar' | ConvertTo-SecureString -AsPlainText -Force)
+                        SQLServer                         = 'SQLServer'
+                        ContentDir                        = 'C:\WSUSContent\'
+                        UpdateImprovementProgram          = $true
+                        UpstreamServerName                = 'UpstreamServer'
+                        UpstreamServerPort                = $false
+                        UpstreamServerSSL                 = $false
+                        UpstreamServerReplica             = $false
+                        ProxyServerName                   = 'ProxyServer'
+                        ProxyServerPort                   = 8080
+                        Languages                         = "*"
+                        Products                          = 'Windows Server*'
+                        Classifications                   = @('E6CF1350-C01B-414D-A61F-263D14D133B4', 'E0789628-CE08-4437-BE74-2495B842F43B', '0FA1201D-4330-4FA8-8AE9-B877473B6441')
+                        SynchronizeAutomatically          = $true
+                        SynchronizeAutomaticallyTimeOfDay = '04:00:00'
+                        SynchronizationsPerDay            = 24
+                        ClientTargetingMode               = "Client"
+                    }
+
+                    $DSCTestValues.Remove('Ensure')
+
+                    Mock -CommandName Get-TargetResource -MockWith { $DSCGetValues } -Verifiable
+
+                    $script:result = $null
+                }
+
+                It 'calling test should not throw' {
+                    { $script:result = Test-TargetResource @DSCTestValues -Ensure 'Present' -verbose } | Should not throw
+                }
+
+                It "result should be true" {
+                    $script:result | Should be $true
+                }
+
+                It 'mocks were called' {
+                    Assert-VerifiableMock
+                }
+            }
         }
         #endregion
 
@@ -261,6 +356,7 @@ try
             }
         }
         #endregion
+
     }
 }
 

@@ -154,7 +154,7 @@ function Get-TargetResource
             $Products = @('*')
         }
 
-        Write-Verbose -Message ($script:localizedData.WsusProducts -f ($Products -join ', '))
+        Write-Verbose -Message ($script:localizedData.WsusProducts -f $($Products -join '; '))
         Write-Verbose -Message $script:localizedData.GettingWsusSyncConfig
         $SynchronizeAutomatically = $WsusSubscription.SynchronizeAutomatically
         Write-Verbose -Message ($script:localizedData.WsusSyncAuto -f $SynchronizeAutomatically)
@@ -569,32 +569,70 @@ function Set-TargetResource
 # Configure WSUS subscription
 if ($WsusConfiguration.OobeInitialized)
 {
-    $WsusSubscription = $WsusServer.GetSubscription()
+    $wsusSubscription = $WsusServer.GetSubscription()
 
     # Products
     Write-Verbose -Message $script:localizedData.ConfiguringProducts
-    $ProductCollection = New-Object Microsoft.UpdateServices.Administration.UpdateCategoryCollection
-    $AllWsusProducts = $WsusServer.GetUpdateCategories()
-    if ($Products -eq '*')
+    $productCollection = New-Object Microsoft.UpdateServices.Administration.UpdateCategoryCollection
+    $allWsusProducts = $WsusServer.GetUpdateCategories()
+
+    switch ($Products)
     {
-        foreach ($Product in $AllWsusProducts)
-        {
-            $null = $ProductCollection.Add($Product)
-        }
-    }
-    else
-    {
-        foreach ($Product in $Products)
-        {
-            if ($WsusProduct = $AllWsusProducts | Where-Object -FilterScript { $_.Title -eq $Product })
+        # All Products
+        '*' {
+            Write-Verbose -Message $script:localizedData.ConfiguringAllProducts
+            foreach ($Prdct in $AllWsusProducts)
             {
-                $WsusProduct | Foreach-Object -Process {
-                    $null = $ProductCollection.Add($_)
+                $null = $productCollection.Add($WsusServer.GetUpdateCategory($Prdct.Id))
+            }
+            continue
+        }
+        # if Products property contains wildcard like "Windows*"
+        {[System.Management.Automation.WildcardPattern]::ContainsWildcardCharacters($_)} {
+            $wildcardPrdct = $_
+            Write-Verbose -Message $($script:localizedData.ConfiguringWildcardProducts -f $wildcardPrdct)
+            if ($wsusProduct = $allWsusProducts | Where-Object -FilterScript { $_.Title -like $wildcardPrdct })
+            {
+                foreach ($prdct in $wsusProduct)
+                {
+                    $null = $productCollection.Add($WsusServer.GetUpdateCategory($prdct.Id))
                 }
+            }
+            else
+            {
+                Write-Verbose -Message $script:localizedData.NoWildcardProductFound
+            }
+            continue
+        }
+
+        <#
+            We can try to add GUID support for product with :
+
+            $StringGuid ="077e4982-4dd1-4d1f-ba18-d36e419971c1"
+            $ObjectGuid = [System.Guid]::New($StringGuid)
+            $IsEmptyGUID = $ObjectGuid -eq [System.Guid]::empty
+
+            Maybe with function
+        #>
+
+        default {
+            Write-Verbose -Message $($script:localizedData.ConfiguringNameProduct -f $_)
+            $prdct = $_
+            if ($WsusProduct = $allWsusProducts | Where-Object -FilterScript { $_.Title -eq $prdct })
+            {
+                foreach ($pdt in $WsusProduct)
+                {
+                    $null = $productCollection.Add($WsusServer.GetUpdateCategory($pdt.Id))
+                }
+            }
+            else
+            {
+                Write-Verbose -Message $script:localizedData.NoNameProductFound
             }
         }
     }
-    $WsusSubscription.SetUpdateCategories($ProductCollection)
+
+    $wsusSubscription.SetUpdateCategories($ProductCollection)
 
     # Classifications
     Write-Verbose -Message $script:localizedData.ConfiguringClassifications
@@ -662,7 +700,7 @@ if ($WsusConfiguration.OobeInitialized)
 if (-not (Test-TargetResource @PSBoundParameters))
 {
     $errorMessage = $script:localizedData.TestFailedAfterSet
-    New-InvalidResultException -Message $errorMessage -ErrorRecord $_
+    New-InvalidResultException -Message $errorMessage
 }
 }
 
@@ -830,163 +868,227 @@ function Test-TargetResource
         $ClientTargetingMode
     )
 
-    $result = $true
-
     $Wsus = Get-TargetResource -Ensure $Ensure
 
     # Test Ensure
     if ($Wsus.Ensure -ne $Ensure)
     {
         Write-Verbose -Message $script:localizedData.EnsureTestFailed
-        $result = $false
+        return $false
     }
 
-    if ($result -and ($Wsus.Ensure -eq 'Present'))
+    # Test Update Improvement Program
+    if ($Wsus.UpdateImprovementProgram -ne $UpdateImprovementProgram)
     {
-        # Test Update Improvement Program
-        if ($Wsus.UpdateImprovementProgram -ne $UpdateImprovementProgram)
+        Write-Verbose -Message $script:localizedData.ImproveProgramTestFailed
+        return $false
+    }
+
+    # Test Upstream Server
+    if ($Wsus.UpstreamServerName -ne $UpstreamServerName)
+    {
+        Write-Verbose -Message $script:localizedData.UpstreamNameTestFailed
+        return $false
+    }
+
+    if ($PSBoundParameters.ContainsKey('UpstreamServerName'))
+    {
+        if ($Wsus.UpstreamServerPort -ne $UpstreamServerPort)
         {
-            Write-Verbose -Message $script:localizedData.ImproveProgramTestFailed
-            $result = $false
+            Write-Verbose -Message $script:localizedData.UpstreamPortTestFailed
+            return $false
         }
 
-        # Test Upstream Server
-        if ($Wsus.UpstreamServerName -ne $UpstreamServerName)
+        if ($Wsus.UpstreamServerSSL -ne $UpstreamServerSSL)
         {
-            Write-Verbose -Message $script:localizedData.UpstreamNameTestFailed
-            $result = $false
+            Write-Verbose -Message $script:localizedData.UpstreamSSLTestFailed
+            return $false
         }
 
-        if ($PSBoundParameters.ContainsKey('UpstreamServerName'))
+        if ($Wsus.UpstreamServerReplica -ne $UpstreamServerReplica)
         {
-            if ($Wsus.UpstreamServerPort -ne $UpstreamServerPort)
-            {
-                Write-Verbose -Message $script:localizedData.UpstreamPortTestFailed
-                $result = $false
-            }
+            Write-Verbose -Message $script:localizedData.UpstreamReplicaTestFailed
+            return $false
+        }
+    }
 
-            if ($Wsus.UpstreamServerSSL -ne $UpstreamServerSSL)
-            {
-                Write-Verbose -Message $script:localizedData.UpstreamSSLTestFailed
-                $result = $false
-            }
+    # Test Proxy Server
+    if ($Wsus.ProxyServerName -ne $ProxyServerName)
+    {
+        Write-Verbose -Message $script:localizedData.ProxyNameTestFailed
+        return $false
+    }
 
-            if ($Wsus.UpstreamServerReplica -ne $UpstreamServerReplica)
-            {
-                Write-Verbose -Message $script:localizedData.UpstreamReplicaTestFailed
-                $result = $false
-            }
+    if ($PSBoundParameters.ContainsKey('ProxyServerName'))
+    {
+        if ($Wsus.ProxyServerPort -ne $ProxyServerPort)
+        {
+            Write-Verbose -Message $script:localizedData.ProxyPortTestFailed
+            return $false
         }
 
-        # Test Proxy Server
-        if ($Wsus.ProxyServerName -ne $ProxyServerName)
+        if ($PSBoundParameters.ContainsKey('ProxyServerCredential'))
         {
-            Write-Verbose -Message $script:localizedData.ProxyNameTestFailed
-            $result = $false
-        }
-
-        if ($PSBoundParameters.ContainsKey('ProxyServerName'))
-        {
-            if ($Wsus.ProxyServerPort -ne $ProxyServerPort)
+            if (
+                ($null -eq $Wsus.ProxyServerCredentialUserName) -or
+                ($Wsus.ProxyServerCredentialUserName -ne $ProxyServerCredential.UserName)
+            )
             {
-                Write-Verbose -Message $script:localizedData.ProxyPortTestFailed
-                $result = $false
+                Write-Verbose -Message $script:localizedData.ProxyCredTestFailed
+                return $false
             }
 
-            if ($PSBoundParameters.ContainsKey('ProxyServerCredential'))
+            if ($Wsus.ProxyServerBasicAuthentication -ne $ProxyServerBasicAuthentication)
             {
-                if (
-                    ($null -eq $Wsus.ProxyServerCredentialUserName) -or
-                    ($Wsus.ProxyServerCredentialUserName -ne $ProxyServerCredential.UserName)
-                )
-                {
-                    Write-Verbose -Message $script:localizedData.ProxyCredTestFailed
-                    $result = $false
-                }
-
-                if ($Wsus.ProxyServerBasicAuthentication -ne $ProxyServerBasicAuthentication)
-                {
-                    Write-Verbose -Message $script:localizedData.ProxyBasicAuthTestFailed
-                    $result = $false
-                }
-            }
-            else
-            {
-                if ($null -ne $Wsus.ProxyServerCredentialUserName)
-                {
-                    Write-Verbose -Message $script:localizedData.ProxyCredSetTestFailed
-                    $result = $false
-                }
-            }
-        }
-        # Test Languages
-        if ($Wsus.Languages.count -le 1 -and $Languages.count -le 1 -and $Languages -ne '*')
-        {
-            if ($Wsus.Languages -notmatch $Languages)
-            {
-                Write-Verbose -Message $script:localizedData.LanguageAsStrTestFailed
-                $result = $false
+                Write-Verbose -Message $script:localizedData.ProxyBasicAuthTestFailed
+                return $false
             }
         }
         else
         {
-            if ($null -ne (Compare-Object -ReferenceObject ($Wsus.Languages | Sort-Object -Unique) `
-                        -DifferenceObject ($Languages | Sort-Object -Unique) -SyncWindow 0))
+            if ($null -ne $Wsus.ProxyServerCredentialUserName)
             {
-                Write-Verbose -Message $script:localizedData.LanguageSetTestFailed
-                $result = $false
+                Write-Verbose -Message $script:localizedData.ProxyCredSetTestFailed
+                return $false
             }
         }
-        # Test Products
-        if ($null -ne (Compare-Object -ReferenceObject ($Wsus.Products | Sort-Object -Unique) `
-                    -DifferenceObject ($Products | Sort-Object -Unique) -SyncWindow 0))
+    }
+    # Test Languages
+    if ($Wsus.Languages.count -le 1 -and $Languages.count -le 1 -and $Languages -ne '*')
+    {
+        if ($Wsus.Languages -notmatch $Languages)
         {
-            Write-Verbose -Message $script:localizedData.ProductTestFailed
-            $result = $false
+            Write-Verbose -Message $script:localizedData.LanguageAsStrTestFailed
+            return $false
         }
-
-        # Test Classifications
-        if ($null -ne (Compare-Object -ReferenceObject ($Wsus.Classifications | Sort-Object -Unique) `
-                    -DifferenceObject ($Classifications | Sort-Object -Unique) -SyncWindow 0))
+    }
+    else
+    {
+        if ($null -ne (Compare-Object -ReferenceObject ($Wsus.Languages | Sort-Object -Unique) `
+                    -DifferenceObject ($Languages | Sort-Object -Unique) -SyncWindow 0))
         {
-            Write-Verbose -Message $script:localizedData.ClassificationsTestFailed
-            $result = $false
+            Write-Verbose -Message $script:localizedData.LanguageSetTestFailed
+            return $false
         }
+    }
+    # Test Products
+    try
+    {
+        $wsusServer = Get-WsusServer -ErrorAction Stop
+    }
+    catch
+    {
+        Write-Verbose -Message $script:localizedData.TestGetWsusServer
+        return $false
+    }
+    $allWsusProducts = $wsusServer.GetUpdateCategories()
+    [System.Collections.ArrayList]$productCollection = @()
 
-        # Test Synchronization Schedule
-        if ($SynchronizeAutomatically)
-        {
-            if ($PSBoundParameters.ContainsKey('SynchronizeAutomaticallyTimeOfDay'))
+    switch ($Products)
+    {
+        # All Products
+        '*' {
+            Write-Verbose -Message $script:localizedData.GetAllProductForTest
+            foreach ($prdct in $allWsusProducts)
             {
-                if ($Wsus.SynchronizeAutomaticallyTimeOfDay -ne $SynchronizeAutomaticallyTimeOfDay)
+                $null = $productCollection.Add($prdct.Title)
+            }
+            continue
+        }
+        # if Products property contains wild card like "Windows*"
+        {[System.Management.Automation.WildcardPattern]::ContainsWildcardCharacters($_)} {
+            $wildcardPrdct = $_
+            Write-Verbose -Message $($script:localizedData.GetWildCardProductForTest -f $wildcardPrdct)
+            if ($wsusProduct = $allWsusProducts | Where-Object -FilterScript { $_.Title -like $wildcardPrdct })
+            {
+                foreach ($pdt in $wsusProduct)
                 {
-                    Write-Verbose -Message $script:localizedData.SyncTimeOfDayTestFailed
-                    $result = $false
+                    $null = $productCollection.Add($pdt.Title)
                 }
             }
-
-            if ($Wsus.SynchronizationsPerDay -ne $SynchronizationsPerDay)
+            else
             {
-                Write-Verbose -Message $script:localizedData.SyncPerDayTestFailed
-                $result = $false
+                Write-Verbose -Message $script:localizedData.NoWildcardProductFound
             }
+            continue
         }
 
-        # Test Client Targeting Mode
-        if ($ClientTargetingMode)
-        {
-            if ($PSBoundParameters.ContainsKey('ClientTargetingMode'))
+        <#
+            We can try to add GUID support for product with :
+
+            $StringGuid ="077e4982-4dd1-4d1f-ba18-d36e419971c1"
+            $ObjectGuid = [System.Guid]::New($StringGuid)
+            $IsEmptyGUID = $ObjectGuid -eq [System.Guid]::empty
+
+            Maybe with function
+        #>
+
+        default {
+            $prdct = $_
+            Write-Verbose -Message $($script:localizedData.GetNameProductForTest -f $prdct)
+            if ($wsusProduct = $allWsusProducts | Where-Object -FilterScript { $_.Title -eq $prdct })
             {
-                if ($Wsus.ClientTargetingMode -ne $ClientTargetingMode)
+                foreach ($pdt in $wsusProduct)
                 {
-                    Write-Verbose -Message $script:localizedData.ClientTargetingModeTestFailed
-                    $result = $false
+                    $null = $ProductCollection.Add($pdt.Title)
                 }
+            }
+            else
+            {
+                Write-Verbose -Message $script:localizedData.NoNameProductFound
             }
         }
     }
 
-    $result
+
+    if ($null -ne (Compare-Object -ReferenceObject ($Wsus.Products | Sort-Object -Unique) `
+                -DifferenceObject ($productCollection | Sort-Object -Unique) -SyncWindow 0))
+    {
+        Write-Verbose -Message $script:localizedData.ProductTestFailed
+        return $false
+    }
+
+    # Test Classifications
+    if ($null -ne (Compare-Object -ReferenceObject ($Wsus.Classifications | Sort-Object -Unique) `
+                -DifferenceObject ($Classifications | Sort-Object -Unique) -SyncWindow 0))
+    {
+        Write-Verbose -Message $script:localizedData.ClassificationsTestFailed
+        return $false
+    }
+
+    # Test Synchronization Schedule
+    if ($SynchronizeAutomatically)
+    {
+        if ($PSBoundParameters.ContainsKey('SynchronizeAutomaticallyTimeOfDay'))
+        {
+            if ($Wsus.SynchronizeAutomaticallyTimeOfDay -ne $SynchronizeAutomaticallyTimeOfDay)
+            {
+                Write-Verbose -Message $script:localizedData.SyncTimeOfDayTestFailed
+                return $false
+            }
+        }
+
+        if ($Wsus.SynchronizationsPerDay -ne $SynchronizationsPerDay)
+        {
+            Write-Verbose -Message $script:localizedData.SyncPerDayTestFailed
+            return $false
+        }
+    }
+
+    # Test Client Targeting Mode
+    if ($ClientTargetingMode)
+    {
+        if ($PSBoundParameters.ContainsKey('ClientTargetingMode'))
+        {
+            if ($Wsus.ClientTargetingMode -ne $ClientTargetingMode)
+            {
+                Write-Verbose -Message $script:localizedData.ClientTargetingModeTestFailed
+                return $false
+            }
+        }
+    }
+
+    return $true
 }
 
 <#

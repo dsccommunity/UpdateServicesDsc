@@ -7,6 +7,7 @@ CopyDirectories:
 Encoding: UTF8 # With BOM in WinPS, noBOM in PSCore.
 
 VersionedOutputDirectory: true
+BuiltModuleSubdirectory: module
 
 ####################################################
 #      ModuleBuilder Submodules Configuration      #
@@ -30,7 +31,7 @@ BuildWorkflow:
     - Build_Module_ModuleBuilder
     - Build_NestedModules_ModuleBuilder
     - Create_changelog_release_output
-    - Generate_Conceptual_Help
+    #- Generate_Conceptual_Help
 
   pack:
     - build
@@ -46,6 +47,7 @@ BuildWorkflow:
   publish:
     - Publish_release_to_GitHub
     - publish_module_to_gallery # runs if nuget is not available
+    - Create_ChangeLog_GitHub_PR
 
 
 Pester: #Passthru, OutputFile, CodeCoverageOutputFile not supported
@@ -56,7 +58,8 @@ Pester: #Passthru, OutputFile, CodeCoverageOutputFile not supported
     # - tests/Unit/MSFT_UpdateServicesCleanup.tests.ps1
     # - tests/Unit/MSFT_UpdateServicesServer.tests.ps1
     # - tests/Unit/MSFT_UpdateServicesApprovalRule.tests.ps1
-    # - tests/QA
+    - tests/Unit
+    - tests/QA
     # - tests/Integration
   ExcludeTag:
     - helpQuality
@@ -81,6 +84,8 @@ DscTest:
 ModuleBuildTasks:
   Sampler:
     - '*.build.Sampler.ib.tasks' # this means: import (dot source) all aliases ending with .ib.tasks exported by sampler module
+  Sampler.GitHubTasks:
+    - '*.ib.tasks'
   DscResource.DocGenerator:
     - 'Task.*'
 

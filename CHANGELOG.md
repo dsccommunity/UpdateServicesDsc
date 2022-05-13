@@ -16,6 +16,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Updated inital offline package sync WSUS.cab.
+- Changed azurepipeline, use latest version of ubuntu and change the management 
+  of pipeline artifact
+- Updated build.ps1 script and build.yaml.
+- Changed default timeout in Wait-Win32ProcessStart function for cab installation.
+
+### Added
+
+- Added TestKitchen files for integration tests
+- Added requiredmodules Sampler.GitHubTasks, powershell-yaml
+- Added wildcard support in Products parameter of UpdatesServicesServer resource.
+ (issue #13)
+
+### Fixed
+
+- Fix deploy job in AzurePipeline, Added Sampler.GithubTasks in build.yaml
+- Fix issue #61 and #67, with add a foreach loop when `Set-TargetRessource` found 
+multiple products dor the same `Title`.
+- Fix issue #58 and #66, with removed `-ErrorRecord` parameter on `New-InvalidResultException`
+ because `$_` not contain an exception.
 
 ## [1.2.0] - 2020-05-18
 
