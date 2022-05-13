@@ -17,6 +17,7 @@ function Get-WsusServerTemplate
                 GUID = '00000000-0000-0000-0000-0000testguid'
             }
         }
+
         return $UpdateClassification
     }
 
@@ -24,7 +25,9 @@ function Get-WsusServerTemplate
             $Products = [pscustomobject]@{
                 Title = 'Product'
             }
+
             $Products | Add-Member -MemberType ScriptMethod -Name Add -Value {}
+
             return $Products
         }
 
@@ -32,7 +35,9 @@ function Get-WsusServerTemplate
             $ComputerTargetGroups = [pscustomobject]@{
                 Name = 'Computer Target Group'
             }
+
             $ComputerTargetGroups | Add-Member -MemberType ScriptMethod -Name Add -Value {}
+
             return $ComputerTargetGroups
         }
 
@@ -63,6 +68,7 @@ function Get-WsusServerTemplate
                 NumberOfSynchronizationsPerDay = 24
                 SynchronizeAutomatically = $true
             }
+
             $Subscription | Add-Member -MemberType ScriptMethod -Name StartSynchronization -Value {}
             $Subscription | Add-Member -MemberType ScriptMethod -Name GetUpdateClassifications -Value {
                 $UpdateClassification = [pscustomobject]@{
@@ -71,8 +77,10 @@ function Get-WsusServerTemplate
                         GUID = '00000000-0000-0000-0000-0000testguid'
                     }
                 }
+
                 return $UpdateClassification
             }
+
             $Subscription | Add-Member -MemberType ScriptMethod -Name GetUpdateCategories -Value {
                 $Categories = [pscustomobject]@{
                     Title = 'Windows'
@@ -80,8 +88,10 @@ function Get-WsusServerTemplate
                 [pscustomobject]@{
                     Title = 'Office'
                 }
+
                 return $Categories
             }
+
             return $Subscription
     }
 
@@ -97,6 +107,7 @@ function Get-WsusServerTemplate
             AllUpdateLanguagesEnabled = $true
         }
         $Configuration | Add-Member -MemberType ScriptMethod -Name GetEnabledUpdateLanguages -Value {}
+
         return $Configuration
     }
 
@@ -107,6 +118,7 @@ function Get-WsusServerTemplate
                 GUID = '00000000-0000-0000-0000-0000testguid'
             }
         }
+
         return $UpdateClassification
     }
 
@@ -135,6 +147,7 @@ function Get-WsusServerTemplate
         [pscustomobject]@{
             Title = 'Windows Server 2019'
         }
+
         return $Categories
     }
 
@@ -157,6 +170,7 @@ function Get-WsusServerMockWildCardPrdt
             NumberOfSynchronizationsPerDay = 24
             SynchronizeAutomatically = $true
         }
+
         $Subscription | Add-Member -MemberType ScriptMethod -Name StartSynchronization -Value {}
         $Subscription | Add-Member -MemberType ScriptMethod -Name GetUpdateClassifications -Value {
             $UpdateClassification = [pscustomobject]@{
@@ -165,8 +179,10 @@ function Get-WsusServerMockWildCardPrdt
                     GUID = '00000000-0000-0000-0000-0000testguid'
                 }
             }
+
             return $UpdateClassification
         }
+
         $Subscription | Add-Member -Force -MemberType ScriptMethod -Name GetUpdateCategories -Value {
             $Categories = [pscustomobject]@{
                 Title = 'Windows Server 2003'
@@ -186,8 +202,10 @@ function Get-WsusServerMockWildCardPrdt
             [pscustomobject]@{
                 Title = 'Windows Server 2019'
             }
+
             return $Categories
         }
+
         return $Subscription
     }
 
@@ -217,6 +235,7 @@ function Get-WsusServerMockWildCardPrdt
         [pscustomobject]@{
             Title = 'Windows Server 2019'
         }
+
         return $Categories
     }
 
@@ -231,6 +250,7 @@ function Get-WsusClassification
             }
         }
     }
+
     return $WsusClassification
 }
 
