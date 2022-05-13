@@ -13,7 +13,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated build.ps1 script and build.yaml.
 - Changed default timeout in Wait-Win32ProcessStart function for cab installation.
 
-
 ### Added
 
 - Added TestKitchen files for integration tests
@@ -21,7 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added wildcard support in Products parameter of UpdatesServicesServer resource.
  (issue #13)
 
-### Fix
+### Fixed
 
 - Fix deploy job in AzurePipeline, Added Sampler.GithubTasks in build.yaml
 - Fix issue #61 and #67, with add a foreach loop when `Set-TargetRessource` found 
