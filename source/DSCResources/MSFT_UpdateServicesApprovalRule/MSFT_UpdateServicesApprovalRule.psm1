@@ -52,7 +52,7 @@ function Get-TargetResource
 
         if ($null -ne $WsusServer)
         {
-            Write-Verbose -Message ('Identified WSUS server information: {0}' -f $WsusServer)
+            Write-Verbose -Message ('Identified WSUS server information: {0}' -f $WsusServer.Name)
 
             $ApprovalRule = $WsusServer.GetInstallApprovalRules() | Where-Object -FilterScript { $_.Name -eq $Name }
 
@@ -215,11 +215,14 @@ function Set-TargetResource
                         $ApprovalRule.Save()
 
                         $ProductCollection = New-Object -TypeName Microsoft.UpdateServices.Administration.UpdateCategoryCollection
+                        $AllWsusProducts = $WsusServer.GetUpdateCategories()
                         foreach ($Product in $Products)
                         {
-                            if ($WsusProduct = Get-WsusProduct | Where-Object -FilterScript { $_.Product.Title -eq $Product })
+                            if ($WsusProduct = $AllWsusProducts | Where-Object -FilterScript { $_.Title -eq $Product })
                             {
-                                $ProductCollection.Add($WsusServer.GetUpdateCategory($WsusProduct.Product.Id))
+                                $WsusProduct | Foreach-Object {
+                                    $ProductCollection.Add($_)
+                                }
                             }
                         }
 

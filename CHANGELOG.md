@@ -5,6 +5,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed `UpdateServicesServer` and `UpdateServicesApprovalRule`
+  - Process multiple product categories with the same name correctly (e.g. "Windows Admin Center")
+  - Verbose output of Products only displayed one product
+- Fixed verbose output of Languages in `UpdateServiceServer`
+- Fixed verbose output of WSUS server in `UpdateServicesApprovalRule`
+
 ### Changed
 
 - Updated inital offline package sync WSUS.cab.
