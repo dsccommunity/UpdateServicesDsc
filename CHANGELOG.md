@@ -27,6 +27,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 multiple products dor the same `Title`.
 - Fix issue #58 and #66, with removed `-ErrorRecord` parameter on `New-InvalidResultException`
  because `$_` not contain an exception.
+- Fix issue [#62](https://github.com/dsccommunity/UpdateServicesDsc/issues/62),
+ Fixed verbose output of Languages in UpdateServiceServer
+- Fix issue [#63](https://github.com/dsccommunity/UpdateServicesDsc/issues/63),
+ Fixed verbose output of WSUS server in UpdateServicesApprovalRule
 
 ## [1.2.0] - 2020-05-18
 

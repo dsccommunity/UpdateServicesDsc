@@ -121,7 +121,7 @@ function Get-TargetResource
         }
         else
         {
-            $Languages = $WsusConfiguration.GetEnabledUpdateLanguages()
+            $Languages = ($WsusConfiguration.GetEnabledUpdateLanguages()) -join ','
         }
 
         Write-Verbose -Message ($script:localizedData.WsusLanguages -f $Languages)
@@ -141,9 +141,9 @@ function Get-TargetResource
 
         Write-Verbose -Message ($script:localizedData.WsusClassifications -f $Classifications)
         Write-Verbose -Message $script:localizedData.GettingWsusProducts
-        if ($Products = @($WsusSubscription.GetUpdateCategories().Title))
+        if ($Products = @($WsusSubscription.GetUpdateCategories().Title) | Sort-Object -Unique)
         {
-            if ($null -eq (Compare-Object -ReferenceObject ($Products | Sort-Object -Unique) -DifferenceObject `
+            if ($null -eq (Compare-Object -ReferenceObject $Products -DifferenceObject `
                     (($WsusServer.GetUpdateCategories().Title) | Sort-Object -Unique) -SyncWindow 0))
             {
                 $Products = @('*')
@@ -581,9 +581,9 @@ if ($WsusConfiguration.OobeInitialized)
         # All Products
         '*' {
             Write-Verbose -Message $script:localizedData.ConfiguringAllProducts
-            foreach ($Prdct in $AllWsusProducts)
+            foreach ($prdct in $AllWsusProducts)
             {
-                $null = $productCollection.Add($WsusServer.GetUpdateCategory($Prdct.Id))
+                $null = $productCollection.Add($WsusServer.GetUpdateCategory($prdct.Id))
             }
             continue
         }
