@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   of pipeline artifact
 - Updated build.ps1 script and build.yaml.
 - Changed default timeout in Wait-Win32ProcessStart function for cab installation.
+- Updated ReadMe.md to removed `RunRuleNow` parameter.
 
 ### Added
 
