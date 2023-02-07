@@ -109,7 +109,6 @@ Windows Server 2008 R2 SP1, Windows Server 2012 and Windows Server 2012 R2.
 * **SynchronizeAutomaticallyTimeOfDay**: First synchronization.
 * **SynchronizationsPerDay**: Synchronizations per day.
 * **Synchronize**: Begin initial synchronization.
-* **RunRuleNow**: Run Approval Rule on existing content.
 * **ClientTargetingMode**: An enumerated value that describes if how the Target Groups are populated.
 
 ## Versions
