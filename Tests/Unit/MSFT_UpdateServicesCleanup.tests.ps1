@@ -23,121 +23,132 @@ try
     # The InModuleScope command allows you to perform white-box unit testing on the internal
     # (non-exported) code of a Script Module.
     InModuleScope $script:DSCResourceName {
-        $DSCSetValues =
-        @{
-            DeclineSupersededUpdates = $true
-            DeclineExpiredUpdates = $true
-            CleanupObsoleteUpdates = $true
-            CompressUpdates = $true
-            CleanupObsoleteComputers = $true
-            CleanupUnneededContentFiles = $true
-            CleanupLocalPublishedContentFiles = $true
-            TimeOfDay = "04:00:00"
-        }
+        BeforeAll {
+            $DSCSetValues =
+            @{
+                DeclineSupersededUpdates = $true
+                DeclineExpiredUpdates = $true
+                CleanupObsoleteUpdates = $true
+                CompressUpdates = $true
+                CleanupObsoleteComputers = $true
+                CleanupUnneededContentFiles = $true
+                CleanupLocalPublishedContentFiles = $true
+                TimeOfDay = "04:00:00"
+            }
 
-        $DSCTestValues =
-        @{
-            DeclineSupersededUpdates = $true
-            DeclineExpiredUpdates = $true
-            CleanupObsoleteUpdates = $true
-            CompressUpdates = $true
-            CleanupObsoleteComputers = $true
-            CleanupUnneededContentFiles = $true
-            CleanupLocalPublishedContentFiles = $true
-            TimeOfDay = "04:00:00"
+            $DSCTestValues =
+            @{
+                DeclineSupersededUpdates = $true
+                DeclineExpiredUpdates = $true
+                CleanupObsoleteUpdates = $true
+                CompressUpdates = $true
+                CleanupObsoleteComputers = $true
+                CleanupUnneededContentFiles = $true
+                CleanupLocalPublishedContentFiles = $true
+                TimeOfDay = "04:00:00"
+            }
         }
         #endregion
 
         #region Function Get-TargetResource expecting Ensure Present
         Describe "MSFT_UpdateServicesCleanup\Get-TargetResource" {
-            $Arguments = 'foo"$DeclineSupersededUpdates = $True;$DeclineExpiredUpdates = $True;$CleanupObsoleteUpdates = $True;$CompressUpdates = $True;$CleanupObsoleteComputers = $True;$CleanupUnneededContentFiles = $True;$CleanupLocalPublishedContentFiles = $True'
-            $Execute = "$($env:SystemRoot)\System32\WindowsPowerShell\v1.0\powershell.exe"
-            $StartBoundary = '20160101T04:00:00'
+            BeforeAll {
+                $Arguments = 'foo"$DeclineSupersededUpdates = $True;$DeclineExpiredUpdates = $True;$CleanupObsoleteUpdates = $True;$CompressUpdates = $True;$CleanupObsoleteComputers = $True;$CleanupUnneededContentFiles = $True;$CleanupLocalPublishedContentFiles = $True'
+                $Execute = "$($env:SystemRoot)\System32\WindowsPowerShell\v1.0\powershell.exe"
+                $StartBoundary = '20160101T04:00:00'
+            }
 
             Context 'server is configured.' {
-                Mock -CommandName Get-ScheduledTask -mockwith {
-                    @{
-                        State = 'Enabled'
-                        Actions =
+                BeforeAll {
+                    Mock -CommandName Get-ScheduledTask -mockwith {
                         @{
-                            Execute = $Execute
-                            Arguments = $Arguments
+                            State = 'Enabled'
+                            Actions =
+                            @{
+                                Execute = $Execute
+                                Arguments = $Arguments
+                            }
+                            Triggers =
+                            @{
+                                StartBoundary = $StartBoundary
+                            }
                         }
-                        Triggers =
-                        @{
-                            StartBoundary = $StartBoundary
-                        }
-                    }
-                } -Verifiable
+                    } -Verifiable
+                }
 
                 it 'calling Get should not throw' {
-                    {$Script:resource = Get-TargetResource -Ensure "Present" -verbose} | should not throw
+                    {$Script:resource = Get-TargetResource -Ensure "Present" -verbose} | Should -Not -Throw
+
+                    Should -Invoke Get-ScheduledTask -Exactly 1
                 }
 
                 it 'Ensure' {
-                        $Script:resource.Ensure | should be 'Present'
+                        $Script:resource.Ensure | should -Be 'Present'
                 }
 
-                $settingsList = 'DeclineSupersededUpdates','DeclineExpiredUpdates','CleanupObsoleteUpdates','CompressUpdates','CleanupObsoleteComputers','CleanupUnneededContentFiles','CleanupLocalPublishedContentFiles'
-                foreach ($setting in $settingsList)
-                {
-                    it "$setting should be true" {
-                        $Script:resource.$setting | Should Be 'True'
+                $settingsList = @(
+                    'DeclineSupersededUpdates'
+                    'DeclineExpiredUpdates'
+                    'CleanupObsoleteUpdates'
+                    'CompressUpdates'
+                    'CleanupObsoleteComputers'
+                    'CleanupUnneededContentFiles'
+                    'CleanupLocalPublishedContentFiles'
+                )
+
+                Context 'When <_> property is valid' -Foreach $settingsList {
+                    it '<_> should be true' {
+                        $Script:resource.$_ | Should -BeTrue
                     }
                 }
 
                 it 'TimeOfDay' {
-                    $Script:resource.TimeOfDay | Should Be $StartBoundary.Split('T')[1]
-                }
-
-                it 'mocks were called' {
-                    Assert-VerifiableMock
+                    $Script:resource.TimeOfDay | Should -Be $StartBoundary.Split('T')[1]
                 }
             }
 
             Context 'server is not configured.' {
-                Mock Get-ScheduledTask -mockwith {} -Verifiable
+                BeforeAll {
+                    Mock Get-ScheduledTask -mockwith {} -Verifiable
+                }
 
                 it 'calling Get should not throw' {
-                    {$Script:resource = Get-TargetResource -Ensure 'Absent' -verbose} | should not throw
+                    {$Script:resource = Get-TargetResource -Ensure 'Absent' -verbose} | should -Not -Throw
+
+                    Should -Invoke Get-ScheduledTask -Exactly 1
                 }
 
                 it 'Ensure' {
-                    $Script:resource.Ensure | should be 'Absent'
-                }
-
-                it 'mocks were called' {
-                    Assert-VerifiableMock
+                    $Script:resource.Ensure | should -Be 'Absent'
                 }
             }
 
             Context 'server is configured in an unexpected way.' {
-
-                Mock Get-ScheduledTask -mockwith {
-                    @{
-                        State = 'Disabled'
-                        Actions =
+                BeforeAll {
+                    Mock Get-ScheduledTask -mockwith {
                         @{
-                            Execute = $Execute
-                            Arguments = $Arguments
+                            State = 'Disabled'
+                            Actions =
+                            @{
+                                Execute = $Execute
+                                Arguments = $Arguments
                             }
-                    Triggers =
-                    @{
-                            StartBoundary = $StartBoundary
+                            Triggers =
+                            @{
+                                StartBoundary = $StartBoundary
+                            }
                         }
                     }
-                } -Verifiable
+                }
 
                 it 'calling Get should not throw' {
-                    {$Script:resource = Get-TargetResource -Ensure 'Present' -verbose} | should not throw
+                    {$Script:resource = Get-TargetResource -Ensure 'Present' -verbose} | should -Not -Throw
+
+                    Should -Invoke Get-ScheduledTask -Exactly 1
                 }
 
                 it 'Ensure' {
-                    $Script:resource.Ensure | should be 'Absent'
-                }
-
-                it 'mocks were called' {
-                    Assert-VerifiableMock
+                    $Script:resource.Ensure | should -Be 'Absent'
                 }
             }
         }
@@ -147,89 +158,102 @@ try
         #region Function Test-TargetResource
         Describe "MSFT_UpdateServicesCleanup\Test-TargetResource" {
             Context 'server is in correct state (Ensure=Present)' {
-                $DSCTestValues.Remove('Ensure')
-                $DSCTestValues.Add('Ensure','Present')
-                Mock -CommandName Get-TargetResource -MockWith {$DSCTestValues} -Verifiable
-                $script:result = $null
+                BeforeAll {
+                    $DSCTestValues.Remove('Ensure')
+                    $DSCTestValues.Add('Ensure','Present')
+                    Mock -CommandName Get-TargetResource -MockWith {$DSCTestValues} -Verifiable
+                    $script:result = $null
+                }
 
                 it 'calling test should not throw' {
-                    {$script:result = Test-TargetResource @DSCTestValues -verbose} | should not throw
+                    {$script:result = Test-TargetResource @DSCTestValues -verbose} | should -Not -Throw
+
+                    Should -Invoke Get-TargetResource -Exactly 1
                 }
 
                 it "result should be true" {
-                    $script:result | should be $true
-                }
-
-                it 'mocks were called' {
-                    Assert-VerifiableMock
+                    $script:result | should -BeTrue
                 }
             }
 
             Context 'server should not be configured (Ensure=Absent)' {
-
-                $DSCTestValues.Remove('Ensure')
-                $DSCTestValues.Add('Ensure','Absent')
-                Mock -CommandName Get-TargetResource -MockWith {$DSCTestValues} -Verifiable
-                $script:result = $null
+                BeforeAll {
+                    $DSCTestValues.Remove('Ensure')
+                    $DSCTestValues.Add('Ensure','Absent')
+                    Mock -CommandName Get-TargetResource -MockWith {$DSCTestValues} -Verifiable
+                    $script:result = $null
+                }
 
                 it 'calling test should not throw' {
-                    {$script:result = Test-TargetResource @DSCTestValues -verbose} | should not throw
+                    {$script:result = Test-TargetResource @DSCTestValues -verbose} | should -Not -Throw
+
+                    Should -Invoke Get-TargetResource -Exactly 1
                 }
 
                 it "result should be true" {
-                    $script:result | should be $true
-                }
-
-                it 'mocks were called' {
-                    Assert-VerifiableMock
+                    $script:result | should -BeTrue
                 }
             }
 
             Context 'server should be configured correctly but is not' {
-
-                $DSCTestValues.Remove('Ensure')
-                Mock -CommandName Get-TargetResource -MockWith {$DSCTestValues} -Verifiable
-                $script:result = $null
+                BeforeAll {
+                    $DSCTestValues.Remove('Ensure')
+                    Mock -CommandName Get-TargetResource -MockWith {$DSCTestValues} -Verifiable
+                    $script:result = $null
+                }
 
                 it 'calling test should not throw' {
-                    {$script:result = Test-TargetResource @DSCTestValues -Ensure 'Present' -verbose} | should not throw
+                    {$script:result = Test-TargetResource @DSCTestValues -Ensure 'Present' -verbose} | should -Not -Throw
+
+                    Should -Invoke Get-TargetResource -Exactly 1
                 }
 
                 it "result should be false" {
-                    $script:result | should be $false
-                }
-
-                it 'mocks were called' {
-                    Assert-VerifiableMock
+                    $script:result | should -BeFalse
                 }
             }
 
             Context "setting has drifted" {
-                $DSCTestValues.Remove('Ensure')
-                $DSCTestValues.Add('Ensure','Present')
-                $settingsList = 'DeclineSupersededUpdates','DeclineExpiredUpdates','CleanupObsoleteUpdates','CompressUpdates','CleanupObsoleteComputers','CleanupUnneededContentFiles','CleanupLocalPublishedContentFiles'
-                foreach ($setting in $settingsList)
-                {
-                    Mock -CommandName Get-TargetResource -MockWith {
-                        $DSCTestValues.Remove("$setting")
-                        $DSCTestValues
-                    } -Verifiable
+                BeforeAll {
+                    $DSCTestValues.Remove('Ensure')
+                    $DSCTestValues.Add('Ensure','Present')
+                }
 
-                    $script:result = $null
+                $settingsList = @(
+                    'DeclineSupersededUpdates'
+                    'DeclineExpiredUpdates'
+                    'CleanupObsoleteUpdates'
+                    'CompressUpdates'
+                    'CleanupObsoleteComputers'
+                    'CleanupUnneededContentFiles'
+                    'CleanupLocalPublishedContentFiles'
+                )
+
+                Context 'When <_> property is invalid' -Foreach $settingsList {
+                    BeforeAll {
+                        $setting = $_
+                        Mock -CommandName Get-TargetResource -MockWith {
+                            $DSCTestValuesClone = $DSCTestValues.Clone()
+                            $DSCTestValuesClone.Remove("$setting")
+                            $DSCTestValuesClone
+                        }
+
+                        $script:result = $null
+                    }
 
                     it 'calling test should not throw' {
-                        {$script:result = Test-TargetResource @DSCTestValues -verbose} | should not throw
+                        {$script:result = Test-TargetResource @DSCTestValues -verbose} | should -Not -Throw
+
+                        Should -Invoke Get-TargetResource -Exactly 1
                     }
 
-                    it "result should be false when $setting has changed" {
-                        $script:result | should be $false
+                    it "result should be false when <_> has changed" {
+                        $script:result | should -BeFalse
                     }
 
-                    it 'mocks were called' {
-                        Assert-VerifiableMock
+                    AfterAll {
+                        #$DSCTestValues.Add("$setting",$true)
                     }
-
-                    $DSCTestValues.Add("$setting",$true)
                 }
             }
         }
@@ -237,79 +261,78 @@ try
 
         #region Function Set-TargetResource
         Describe "MSFT_UpdateServicesCleanup\Set-TargetResource" {
-            $Arguments = 'foo"$DeclineSupersededUpdates = $True;$DeclineExpiredUpdates = $True;$CleanupObsoleteUpdates = $True;$CompressUpdates = $True;$CleanupObsoleteComputers = $True;$CleanupUnneededContentFiles = $True;$CleanupLocalPublishedContentFiles = $True'
-            $Execute = "$($env:SystemRoot)\System32\WindowsPowerShell\v1.0\powershell.exe"
-            $StartBoundary = '20160101T04:00:00'
-            Mock -CommandName Unregister-ScheduledTask -MockWith {}
-            Mock -CommandName Register-ScheduledTask -MockWith {}
-            Mock -CommandName Test-TargetResource -MockWith {$true}
-            Mock -CommandName New-InvalidResultException -MockWith {}
+            BeforeAll {
+                $Arguments = 'foo"$DeclineSupersededUpdates = $True;$DeclineExpiredUpdates = $True;$CleanupObsoleteUpdates = $True;$CompressUpdates = $True;$CleanupObsoleteComputers = $True;$CleanupUnneededContentFiles = $True;$CleanupLocalPublishedContentFiles = $True'
+                $Execute = "$($env:SystemRoot)\System32\WindowsPowerShell\v1.0\powershell.exe"
+                $StartBoundary = '20160101T04:00:00'
+                Mock -CommandName Unregister-ScheduledTask -MockWith {}
+                Mock -CommandName Register-ScheduledTask -MockWith {}
+                Mock -CommandName Test-TargetResource -MockWith {$true}
+                Mock -CommandName New-InvalidResultException -MockWith {}
+            }
 
             Context 'resource is idempotent (Ensure=Present)' {
-               Mock -CommandName Get-ScheduledTask -MockWith {$true}
+                BeforeAll {
+                    Mock -CommandName Get-ScheduledTask -MockWith {$true}
+                }
 
                it 'should not throw when running on a properly configured server' {
-                    {Set-targetResource @DSCSetValues -Ensure Present -verbose} | should not throw
-                }
+                    {Set-targetResource @DSCSetValues -Ensure Present -verbose} | should -Not -Throw
 
-                it "mocks were called for commands that gather information" {
-                    Assert-MockCalled -CommandName Get-ScheduledTask -Times 1
-                    Assert-MockCalled -CommandName Unregister-ScheduledTask -Times 1
-                    Assert-MockCalled -CommandName Register-ScheduledTask -Times 1
-                    Assert-MockCalled -CommandName Test-TargetResource -Times 1
-                }
+                    #mocks were called for commands that gather information
+                    Should -Invoke Get-ScheduledTask -Exactly 1
+                    Should -Invoke Unregister-ScheduledTask -Exactly 1
+                    Should -Invoke Register-ScheduledTask -Exactly 1
+                    Should -Invoke Test-TargetResource -Exactly 1
 
-                it "mocks were called that register a task to run WSUS cleanup" {
-                    Assert-MockCalled -CommandName Register-ScheduledTask -Times 1
-                }
+                    #mocks were called that register a task to run WSUS cleanup
+                    Should -Invoke Register-ScheduledTask -Exactly 1
 
-                it "mocks were not called that remove tasks or log errors" {
-                    Assert-MockCalled -CommandName New-InvalidResultException -Times 0
+                    #mocks were not called that remove tasks or log errors
+                    Should -Invoke New-InvalidResultException -Exactly 0
                 }
             }
 
             Context 'resource processes Set tasks to register Cleanup task (Ensure=Present)' {
-               Mock -CommandName Get-ScheduledTask -MockWith {}
+                BeforeAll {
+                    Mock -CommandName Get-ScheduledTask -MockWith {}
+                }
 
                it 'should not throw when running on a properly configured server' {
-                    {Set-targetResource @DSCSetValues -Ensure Present -verbose} | should not throw
-                }
+                    {Set-targetResource @DSCSetValues -Ensure Present -verbose} | should -Not -Throw
 
-                it "mocks were called for commands that gather information" {
-                    Assert-MockCalled -CommandName Get-ScheduledTask -Times 1
-                    Assert-MockCalled -CommandName Register-ScheduledTask -Times 1
-                    Assert-MockCalled -CommandName Test-TargetResource -Times 1
-                }
+                    #mocks were called for commands that gather information
+                    Should -Invoke Get-ScheduledTask -Exactly 1
+                    Should -Invoke Register-ScheduledTask -Exactly 1
+                    Should -Invoke Test-TargetResource -Exactly 1
 
-                it "mocks were called that register a task to run WSUS cleanup" {
-                    Assert-MockCalled -CommandName Register-ScheduledTask -Times 1
-                }
+                    #mocks were called that register a task to run WSUS cleanup
+                    Should -Invoke Register-ScheduledTask -Exactly 1
 
-                it "mocks were not called that remove tasks or log errors" {
-                    Assert-MockCalled -CommandName Unregister-ScheduledTask -Times 0
-                    Assert-MockCalled -CommandName New-InvalidResultException -Times 0
+                    #mocks were not called that remove tasks or log errors
+                    Should -Invoke Unregister-ScheduledTask -Exactly 0
+                    Should -Invoke New-InvalidResultException -Exactly 0
                 }
             }
 
             Context 'resource processes Set tasks to remove Cleanup task (Ensure=Absent)' {
-                Mock -CommandName Get-ScheduledTask -MockWith {$true}
+                BeforeAll {
+                    Mock -CommandName Get-ScheduledTask -MockWith {$true}
+                }
 
                it 'should not throw when running on a properly configured server' {
-                    {Set-targetResource @DSCSetValues -Ensure Absent -verbose} | should not throw
-                }
+                    {Set-targetResource @DSCSetValues -Ensure Absent -verbose} | should -Not -Throw
 
-                it "mocks were called for commands that gather information" {
-                    Assert-MockCalled -CommandName Get-ScheduledTask -Times 1
-                    Assert-MockCalled -CommandName Test-TargetResource -Times 1
-                }
+                    #mocks were called for commands that gather information
+                    Should -Invoke Get-ScheduledTask -Exactly 1
+                    Should -Invoke Test-TargetResource -Exactly 1
 
-                it "mocks were called to remove Cleanup task" {
-                    Assert-MockCalled -CommandName Unregister-ScheduledTask -Times 1
-                }
+                    #mocks were called that register a task to run WSUS cleanup
+                    Should -Invoke Unregister-ScheduledTask -Exactly 1
 
-                it "mocks were not called that register tasks or log errors" {
-                    Assert-MockCalled -CommandName Register-ScheduledTask -Times 0
-                    Assert-MockCalled -CommandName New-InvalidResultException -Times 0
+                    #mocks were not called that remove tasks or log errors
+                    Should -Invoke Register-ScheduledTask -Exactly 0
+                    Should -Invoke New-InvalidResultException -Exactly 0
                 }
             }
         }

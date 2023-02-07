@@ -38,10 +38,11 @@ BuildWorkflow:
     - package_module_nupkg
 
   hqrmtest:
-    - DscResource_Tests_Stop_On_Fail
+    - Invoke_HQRM_Tests_Stop_On_Fail
 
   test:
     - Pester_Tests_Stop_On_Fail
+    - Convert_Pester_Coverage
     - Pester_if_Code_Coverage_Under_Threshold
 
   publish:
@@ -51,35 +52,54 @@ BuildWorkflow:
 
 
 Pester: #Passthru, OutputFile, CodeCoverageOutputFile not supported
-  OutputFormat: NUnitXML
+  Configuration:
+    Run:
+      Path:
+        - tests/Unit
+        - tests/QA
+    Output:
+      Verbosity: Detailed
+      StackTraceVerbosity: Full
+      CIFormat: Auto
+    CodeCoverage:
+      CoveragePercentTarget: 50
+      OutputPath: JaCoCo_coverage.xml
+      OutputEncoding: ascii
+      # There is a bug in Pester when running unit tests for classes when 'UseBreakpoints' is turned off.
+      # See error in gist: https://gist.github.com/johlju/c16dfd9587c7e066e8825fc54b33a703
+      UseBreakpoints: true
+    TestResult:
+      OutputFormat: NUnitXML
+      OutputEncoding: ascii
   ExcludeFromCodeCoverage:
     - Modules/DscResource.Common
-  Script:
-    # - tests/Unit/MSFT_UpdateServicesCleanup.tests.ps1
-    # - tests/Unit/MSFT_UpdateServicesServer.tests.ps1
-    # - tests/Unit/MSFT_UpdateServicesApprovalRule.tests.ps1
-    - tests/Unit
-    - tests/QA
-    # - tests/Integration
   ExcludeTag:
     - helpQuality
     - FunctionalQuality
     - TestQuality
-  Tag:
-  CodeCoverageThreshold: 50 # Set to 0 to bypass
-  # CodeCoverageOutputFile: JaCoCo_$OsShortName.xml
-  # CodeCoverageOutputFileEncoding: ascii
-  # CodeCoverageMergedOutputFile: JaCoCo_Merged.xml
 
+####################################################
+#      Pester Configuration (DscResource.Test)     #
+####################################################
 DscTest:
-  ExcludeTag:
-    - "Common Tests - New Error-Level Script Analyzer Rules"
-  Tag:
-  ExcludeSourceFile:
-    - output
-  ExcludeModuleFile:
-    - Modules/DscResource.Common
-
+  Pester:
+    Configuration:
+      Filter:
+        ExcludeTag:
+          - "Common Tests - New Error-Level Script Analyzer Rules"
+      Output:
+        Verbosity: Detailed
+        CIFormat: Auto
+      TestResult:
+        OutputFormat: NUnitXML
+        OutputEncoding: ascii
+        OutputPath: ./output/testResults/NUnitXml_HQRM_Tests.xml
+  Script:
+    ExcludeSourceFile:
+      - output
+    ExcludeModuleFile:
+      - Modules/DscResource.Common
+    MainGitBranch: main
 
 ModuleBuildTasks:
   Sampler:
@@ -87,6 +107,8 @@ ModuleBuildTasks:
   Sampler.GitHubTasks:
     - '*.ib.tasks'
   DscResource.DocGenerator:
+    - 'Task.*'
+  DscResource.Test:
     - 'Task.*'
 
 

@@ -4,17 +4,19 @@ $script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US' -FileName 'P
 
 # New-InvalidArgumentError
 # New-InvalidArgumentException -ArgumentName 'Action' -Message $errorMessage
+
 <#
     .SYNOPSIS
         Resolves a path and verifies it exists.
 
     .PARAMETER Path
-        Path to resolve
+        Path to resolve and return to caller.
 
 #>
 function Invoke-ResolvePath
 {
     [CmdletBinding()]
+    [OutputType([string])]
     param
     (
         [Parameter(Mandatory = $true)]
@@ -152,6 +154,7 @@ function Test-RootedPath
 function Get-Arguments
 {
     [CmdletBinding()]
+    [OutputType([System.Collections.Hashtable])]
     param
     (
         [Parameter(Mandatory = $true)]
@@ -166,7 +169,7 @@ function Get-Arguments
         $NewArgumentNames
     )
 
-    $returnValue = @{ }
+    $returnValue = @{}
 
     for ($i = 0; $i -lt $ArgumentNames.Count; $i++)
     {
