@@ -154,7 +154,7 @@ function Test-RootedPath
 function Get-Arguments
 {
     [CmdletBinding()]
-    [OutputType([hasthable])]
+    [OutputType([System.Collections.Hashtable])]
     param
     (
         [Parameter(Mandatory = $true)]
