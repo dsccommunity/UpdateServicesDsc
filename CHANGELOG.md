@@ -33,6 +33,7 @@ multiple products dor the same `Title`.
  Fixed verbose output of Languages in UpdateServiceServer
 - Fix issue [#63](https://github.com/dsccommunity/UpdateServicesDsc/issues/63),
  Fixed verbose output of WSUS server in UpdateServicesApprovalRule
+- Fixed the `azure-pipelines.yml` to trigger on main not master.
 
 ## [1.2.0] - 2020-05-18
 

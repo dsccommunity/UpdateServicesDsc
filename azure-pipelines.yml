@@ -1,7 +1,7 @@
 trigger:
   branches:
     include:
-    - master
+    - main
   paths:
     exclude:
     - CHANGELOG.md
@@ -15,7 +15,7 @@ variables:
   buildFolderName: output
   buildArtifactName: output
   testResultFolderName: testResults
-  defaultBranch: master
+  defaultBranch: main
 
 stages:
   - stage: Build
@@ -126,12 +126,12 @@ stages:
 
   - stage: Deploy
     dependsOn: Test
-    # Only execute deploy stage if we're on master and previous stage succeeded
+    # Only execute deploy stage if we're on main and previous stage succeeded
     condition: |
       and(
         succeeded(),
         or(
-          eq(variables['Build.SourceBranch'], 'refs/heads/master'),
+          eq(variables['Build.SourceBranch'], 'refs/heads/main'),
           startsWith(variables['Build.SourceBranch'], 'refs/tags/')
         ),
         contains(variables['System.TeamFoundationCollectionUri'], 'dsccommunity')
