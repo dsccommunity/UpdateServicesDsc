@@ -121,10 +121,10 @@ function Get-TargetResource
         }
         else
         {
-            $Languages = ($WsusConfiguration.GetEnabledUpdateLanguages()) -join ','
+            $Languages = [String[]]$WsusConfiguration.GetEnabledUpdateLanguages()
         }
 
-        Write-Verbose -Message ($script:localizedData.WsusLanguages -f $Languages)
+        Write-Verbose -Message ($script:localizedData.WsusLanguages -f ($Languages -join ','))
         Write-Verbose -Message $script:localizedData.GettingWsusClassifications
         if ($Classifications = @($WsusSubscription.GetUpdateClassifications().ID.Guid))
         {
