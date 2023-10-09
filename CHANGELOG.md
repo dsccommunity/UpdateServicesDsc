@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changed default timeout in Wait-Win32ProcessStart function for cab installation.
 - Updated pester test to support pester v5
 - Updated ReadMe.md to removed `RunRuleNow` parameter.
+- Updated data type for `$languages` returned by `GetEnabledUpdateLanguages()` in 
+  `Get-TargetResource` function in `MSFT_UpdateServicesServer.psm1`
 
 ### Added
 
@@ -34,6 +36,8 @@ multiple products dor the same `Title`.
 - Fix issue [#63](https://github.com/dsccommunity/UpdateServicesDsc/issues/63),
  Fixed verbose output of WSUS server in UpdateServicesApprovalRule
 - Fixed the `azure-pipelines.yml` to trigger on main not master.
+- Fix issue [#76](https://github.com/dsccommunity/UpdateServicesDsc/issues/76),
+ Incorrect Type for Language in return value for Get-TargetResource
 
 ## [1.2.0] - 2020-05-18
 
