@@ -136,6 +136,23 @@ try
                     }
                 }
             }
+
+            Context 'All update languages enabled' {
+                It 'should contain wildcard' {
+                  $script:result.Languages | Should -Be *
+                }
+            }
+
+            Context 'All update languages not enabled' {
+                BeforeEach {
+                    Mock Get-WsusServer -MockWith { return $(Get-WsusServerWithAllUpdateLanguagesDisabled) }
+                    $script:result = Get-TargetResource -Ensure 'Present' -verbose
+                }
+
+                It 'should contain only selected languages' {
+                    $script:result.Languages | Should -Be @('en','fr')
+                }
+            }
         }
         #endregion
 
