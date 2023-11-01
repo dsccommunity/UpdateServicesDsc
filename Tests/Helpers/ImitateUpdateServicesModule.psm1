@@ -255,3 +255,30 @@ function Get-WsusClassification
 }
 
 function Get-WsusProduct {}
+
+function Get-WsusServerWithAllUpdateLanguagesDisabled
+{
+
+    $wsusServer = Get-WsusServerTemplate
+
+    $WsusServer | Add-Member -Force -MemberType ScriptMethod -Name GetConfiguration -Value {
+        $Configuration = @{
+            ProxyName = ''
+            ProxyServerPort = $null
+            ProxyServerBasicAuthentication = $false
+            UpstreamWsusServerName = ''
+            UpstreamWsusServerPortNumber = $null
+            UpStreamServerSSL =  $false
+            MURollupOptin = $true
+            AllUpdateLanguagesEnabled = $false
+        }
+        $Configuration | Add-Member -MemberType ScriptMethod -Name GetEnabledUpdateLanguages -Value {
+            $language = @('en','fr')
+            return $language
+        }
+
+        return $Configuration
+    }
+
+    return $wsusServer
+}
