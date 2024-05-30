@@ -76,9 +76,9 @@ try
                         $message -eq $script:localizedData.GetWsusServerFailed
                     }
                     $script:resource.Ensure | Should -Be 'Absent'
-                    $script:resource.Id | should -Be $null
-                    $script:resource.Name | should -Be 'Servers'
-                    $script:resource.Path | should -Be 'All Computers'
+                    $script:resource.Id | Should -Be $null
+                    $script:resource.Name | Should -Be 'Servers'
+                    $script:resource.Path | Should -Be 'All Computers'
                 }
             }
 

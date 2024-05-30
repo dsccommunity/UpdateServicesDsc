@@ -7,11 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Added UpdateServicesComputerTargetGroup Resource including:
-  - Resource
-  - Unit Tests
-  - Example
-  - Update to ReadMe File
+- Added UpdateServicesComputerTargetGroup Resource to manage computer target groups
   
 ### Changed
 

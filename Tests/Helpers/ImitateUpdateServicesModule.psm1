@@ -149,7 +149,7 @@ function Get-WsusServerTemplate
                     return $this.ChildTargetGroup
                 }
 
-                Add-Member -InputOBject $ComputerTargetGroup.ChildTargetGroup -MemberType ScriptMethod -Name Delete -Value {}
+                Add-Member -InputObject $ComputerTargetGroup.ChildTargetGroup -MemberType ScriptMethod -Name Delete -Value {}
             }
         }
 
