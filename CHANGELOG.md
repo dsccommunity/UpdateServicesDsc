@@ -32,7 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix deploy job in AzurePipeline, Added Sampler.GithubTasks in build.yaml
 - Fix issue #61 and #67, with add a foreach loop when `Set-TargetResource` found
-multiple products dor the same `Title`.
+multiple products for the same `Title`.
 - Fix issue #58 and #66, with removed `-ErrorRecord` parameter on `New-InvalidResultException`
  because `$_` not contain an exception.
 - Fix issue [#62](https://github.com/dsccommunity/UpdateServicesDsc/issues/62),
