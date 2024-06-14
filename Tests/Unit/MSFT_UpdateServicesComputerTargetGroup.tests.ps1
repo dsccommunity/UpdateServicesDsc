@@ -12,6 +12,9 @@ $TestEnvironment = Initialize-TestEnvironment `
     -ResourceType 'Mof' `
     -TestType Unit
 
+#region Pester Test Initialization
+Import-Module $PSScriptRoot\..\Helpers\ImitateUpdateServicesModule.psm1 -force -ErrorAction Stop
+
 #endregion HEADER
 
 
@@ -19,11 +22,6 @@ $TestEnvironment = Initialize-TestEnvironment `
 try
 {
     InModuleScope $script:DSCResourceName {
-
-        #region Pester Test Initialization
-        Import-Module $PSScriptRoot\..\Helpers\ImitateUpdateServicesModule.psm1 -Force
-
-        #endregion
 
         #region Function Get-ComputerTargetGroupPath
         Describe "MSFT_UpdateServicesComputerTargetGroup\Get-ComputerTargetGroupPath." {
@@ -55,7 +53,9 @@ try
                 if (Test-Path -Path variable:script:resource) { Remove-Variable -Scope 'script' -Name 'resource' }
             }
 
-            Mock -CommandName Write-Verbose -MockWith {}
+            BeforeAll {
+                Mock -CommandName Write-Verbose -MockWith {}
+            }
 
             Context 'An error occurs retrieving WSUS Server configuration information.' {
                 Mock -CommandName Get-WsusServer -MockWith { throw 'An error occurred.' }
@@ -121,7 +121,9 @@ try
 
         #region Function Test-TargetResource
         Describe "MSFT_UpdateServicesComputerTargetGroup\Test-TargetResource." {
-            Mock -CommandName Write-Verbose -MockWith {}
+            BeforeAll {
+                Mock -CommandName Write-Verbose -MockWith {}
+            }
 
             Context 'The Computer Target Group "Desktops" is "Present" at Path "All Computers/Workstations" which is the desired state.' {
                 Mock -CommandName Get-TargetResource -MockWith {
@@ -211,7 +213,9 @@ try
                 if (Test-Path -Path variable:script:resource) { Remove-Variable -Scope 'script' -Name 'resource' }
             }
 
-            Mock -CommandName Write-Verbose -MockWith {}
+            BeforeAll {
+                Mock -CommandName Write-Verbose -MockWith {}
+            }
 
             Context 'An error occurs retrieving WSUS Server configuration information.' {
                 Mock -CommandName Get-WsusServer -MockWith { throw 'An error occurred.' }

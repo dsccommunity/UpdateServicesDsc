@@ -179,8 +179,6 @@ function Get-WsusServerTemplate
 
     $WsusServer | Add-Member -MemberType ScriptMethod -Name GetUpdateClassification -Value {}
 
-    $WsusServer | Add-Member -MemberType ScriptMethod -Name GetComputerTargetGroups -Value {}
-
     $WsusServer | Add-Member -MemberType ScriptMethod -Name GetComputerTargetGroups -Value $ComputerTargetGroups
 
     $WsusServer | Add-Member -MemberType ScriptMethod -Name DeleteInstallApprovalRule -Value {}
