@@ -1,6 +1,6 @@
 $script:resourceHelperModulePath = Join-Path -Path $PSScriptRoot -ChildPath '..\..\Modules\DscResource.Common'
 Import-Module -Name $script:resourceHelperModulePath -ErrorAction Stop
-$script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US' -FileName 'PDT.strings.psd1'
+$script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
 
 # New-InvalidArgumentError
 # New-InvalidArgumentException -ArgumentName 'Action' -Message $errorMessage
