@@ -60,7 +60,7 @@ try
             Context 'An error occurs retrieving WSUS Server configuration information.' {
                 Mock -CommandName Get-WsusServer -MockWith { throw 'An error occurred.' }
 
-                It 'Calling Get should throw when an error occurrs retrieving WSUS Server information.' {
+                It 'Calling Get should throw when an error occurs retrieving WSUS Server information.' {
                     { $script:resource = Get-TargetResource -Name 'Servers' -Path 'All Computers'} | Should -Throw ($script:localizedData.WSUSConfigurationFailed)
                     $script:resource | Should -Be $null
                     Assert-MockCalled -CommandName Get-WsusServer -Exactly 1
@@ -70,7 +70,7 @@ try
             Context 'The WSUS Server is not yet configured.' {
                 Mock -CommandName Get-WsusServer -MockWith {}
 
-                It 'Calling Get should not throw when the WSUS Server is not yet configuration / cannot be found.' {
+                It 'Calling Get should not throw when the WSUS Server is not yet configured / cannot be found.' {
                     { $script:resource = Get-TargetResource -Name 'Servers' -Path 'All Computers'} | Should -Not -Throw
                     Assert-MockCalled -CommandName Write-Verbose  -ParameterFilter {
                         $message -eq $script:localizedData.GetWsusServerFailed
@@ -220,7 +220,7 @@ try
             Context 'An error occurs retrieving WSUS Server configuration information.' {
                 Mock -CommandName Get-WsusServer -MockWith { throw 'An error occurred.' }
 
-                It 'Calling Set should throw when an error occurrs retrieving WSUS Server information.' {
+                It 'Calling Set should throw when an error occurs retrieving WSUS Server information.' {
                     { $script:resource = Set-TargetResource -Name 'Servers' -Path 'All Computers'} | Should -Throw ($script:localizedData.WSUSConfigurationFailed)
                     $script:resource | Should -Be $null
                     Assert-MockCalled -CommandName Get-WsusServer -Exactly 1
