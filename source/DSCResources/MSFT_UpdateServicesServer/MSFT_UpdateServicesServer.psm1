@@ -6,14 +6,18 @@
 # Connectors         = 434DE588-ED14-48F5-8EED-A15E09A991F6
 # Critical Updates   = E6CF1350-C01B-414D-A61F-263D14D133B4
 # Definition Updates = E0789628-CE08-4437-BE74-2495B842F43B
+# Drivers            = EBFC1FC5-71A4-4F7B-9ACA-3B9A503104A0
 # Developer Kits     = E140075D-8433-45C3-AD87-E72345B36078
 # Feature Packs      = B54E7D24-7ADD-428F-8B75-90A396FA584F
 # Guidance           = 9511D615-35B2-47BB-927F-F73D8E9260BB
+# Hotfix             = 5EAEF3E6-ABB0-4192-9B26-0FD955381FA9
 # Security Updates   = 0FA1201D-4330-4FA8-8AE9-B877473B6441
 # Service Packs      = 68C5B0A3-D1A6-4553-AE49-01D3A7827828
+# Third Party        = 871A0782-BE12-A5C4-C57F-1BD6D9F7144E
 # Tools              = B4832BD8-E735-4761-8DAF-37F882276DAB
 # Update Rollups     = 28BC880E-0592-4CBF-8F95-C79B17911D5F
 # Updates            = CD5FFD1E-E932-4E3A-BF74-18BF0B1BBD83
+# Upgrades           = 3689BDC8-B205-4AF4-8D4A-A63924C5E9D5
 
 # Load Common Module
 $script:resourceHelperModulePath = Join-Path -Path $PSScriptRoot -ChildPath '..\..\Modules\DscResource.Common'

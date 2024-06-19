@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Internal PDT helper module
   - Updated to load localization strings correctly.
 - General code cleanup
+- Updated Classifications ID reference with additional potential classification GUIDs
 
 ### Added
 
