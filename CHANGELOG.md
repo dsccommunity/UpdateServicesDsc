@@ -5,6 +5,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added UpdateServicesComputerTargetGroup Resource to manage computer target groups
+  
 ### Changed
 
 - Updated initial offline package sync WSUS.cab.
@@ -20,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Updated to load localization strings correctly.
 - UpdateServicesServer
   - Updated to load localization strings correctly.
+- Updated ImitateUpdateServicesModule Module to meet style guidelines
 
 ### Added
 

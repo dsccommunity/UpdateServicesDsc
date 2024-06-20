@@ -86,6 +86,12 @@ Windows Server 2008 R2 SP1, Windows Server 2012 and Windows Server 2012 R2.
 * **CleanupLocalPublishedContentFiles**: Cleanup local published content files.
 * **TimeOfDay** Time of day to start cleanup.
 
+**UpdateServicesComputerTargetGroup** resource has following properties:
+
+* **Ensure**: An enumerated value that describes if the Computer Target Group exists.
+* **Name**: Name of the Computer Target Group.
+* **Path**: Path to the Computer Target Group in the format 'Parent/Child'.
+
 **UpdateServicesServer** resource has following properties:
 
 * **Ensure**: An enumerated value that describes if WSUS is configured.
