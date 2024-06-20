@@ -14,7 +14,7 @@ Describe "Basic tests" {
         }
     }
 
-    Context "Wsus service is correctly  configured" {
+    Context "Wsus service is correctly configured" {
         It "Should can the informations of update service" {
             {$script:wuServer = Get-WsusServer}| Should -Not -Throw
         }

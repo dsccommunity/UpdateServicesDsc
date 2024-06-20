@@ -120,7 +120,7 @@ try
                     $script:result = $null
                 }
 
-                It 'calling test should not throw  and mocks' {
+                It 'calling test should not throw and mocks' {
                     { $script:result = Get-TargetResource -Ensure 'Present' -verbose } | Should -Not -Throw
 
                     Should -Invoke Get-WsusServer -Exactly 1
@@ -129,7 +129,7 @@ try
                 It "Products should contain right value" {
                     $DesiredProducts = @('Windows Server 2003','Windows Server 2008','Windows Server 2008R2','Windows Server 2012','Windows Server 2016','Windows Server 2019')
 
-                    ($script:result.Products |Measure-Object).Count | Should -Be $DesiredProducts.Count
+                    ($script:result.Products | Measure-Object).Count | Should -Be $DesiredProducts.Count
 
                     $DesiredProducts | ForEach-Object {
                         $script:result.Products | Should -Contain $_
