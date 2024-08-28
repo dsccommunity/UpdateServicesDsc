@@ -49,6 +49,8 @@ multiple products for the same `Title`.
 - Fix issue [#63](https://github.com/dsccommunity/UpdateServicesDsc/issues/63),
  Fixed verbose output of WSUS server in UpdateServicesApprovalRule
 - Fixed the `azure-pipelines.yml` to trigger on main not master.
+- Update build process to pin GitVersion to 5.* to resolve errors
+  (https://github.com/gaelcolas/Sampler/issues/477).
 
 ## [1.2.0] - 2020-05-18
 
