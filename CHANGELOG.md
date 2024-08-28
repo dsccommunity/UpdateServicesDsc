@@ -25,6 +25,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - UpdateServicesServer
   - Updated to load localization strings correctly.
 - Updated ImitateUpdateServicesModule Module to meet style guidelines
+- Internal PDT helper module
+  - Updated to load localization strings correctly.
+- General code cleanup
+- Updated Classifications ID reference with additional potential classification GUIDs
 
 ### Added
 

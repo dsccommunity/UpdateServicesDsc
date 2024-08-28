@@ -119,4 +119,4 @@ Windows Server 2008 R2 SP1, Windows Server 2012 and Windows Server 2012 R2.
 
 ## Versions
 
-Plese refer to the [Changelog](CHANGELOG.md)
+Please refer to the [Changelog](CHANGELOG.md)
