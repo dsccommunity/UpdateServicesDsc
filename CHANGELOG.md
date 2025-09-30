@@ -48,7 +48,8 @@ multiple products for the same `Title`.
 - Fixed the `azure-pipelines.yml` to trigger on main not master.
 - Update build process to pin GitVersion to 5.* to resolve errors
   (https://github.com/gaelcolas/Sampler/issues/477).
-- Replaced New-InvalidArgumentException with New-ArgumentException to resolve HQRM tests.
+- Replaced New-InvalidArgumentException with New-ArgumentException to resolve
+  HQRM tests.
 
 ## [1.2.0] - 2020-05-18
 
