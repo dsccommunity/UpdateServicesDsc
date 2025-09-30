@@ -15,6 +15,9 @@ Updated author, copyright notice, and URLs.
 #Requires -Module UpdateServicesDsc
 
 <#
+    .SYNOPSIS
+        Create WSUS Computer Target Groups.
+
     .DESCRIPTION
         This configuration will create two WSUS Computer Target Groups
         (a Parent and a Child)
