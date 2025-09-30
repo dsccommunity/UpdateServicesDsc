@@ -55,6 +55,9 @@ try
 
             BeforeAll {
                 Mock -CommandName Write-Verbose -MockWith {}
+                Mock -CommandName New-InvalidOperationException -MockWith {
+                    throw $Message
+                }
             }
 
             Context 'An error occurs retrieving WSUS Server configuration information.' {
@@ -64,6 +67,9 @@ try
                     { $script:resource = Get-TargetResource -Name 'Servers' -Path 'All Computers'} | Should -Throw ($script:localizedData.WSUSConfigurationFailed)
                     $script:resource | Should -Be $null
                     Should -Invoke -CommandName Get-WsusServer -Exactly 1
+                    Should -Invoke -CommandName New-InvalidOperationException -Exactly 1 -ParameterFilter {
+                        $Message -eq $script:localizedData.WSUSConfigurationFailed
+                    }
                 }
             }
 
