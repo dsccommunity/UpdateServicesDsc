@@ -62,13 +62,13 @@ try
                 }
             }
 
-            Context 'An error occurs retrieving WSUS Server configuration information.' {
+            Context 'When an error occurs retrieving WSUS Server configuration information' {
                 BeforeAll {
                     Mock -CommandName Get-WsusServer -MockWith { throw 'An error occurred.' }
                 }
 
                 It 'Calling Get should throw when an error occurs retrieving WSUS Server information.' {
-                    { $script:resource = Get-TargetResource -Name 'Servers' -Path 'All Computers'} | Should -Throw ($script:localizedData.WSUSConfigurationFailed)
+                    { $script:resource = Get-TargetResource -Name 'Servers' -Path 'All Computers' } | Should -Throw ($script:localizedData.WSUSConfigurationFailed)
                     $script:resource | Should -Be $null
                     Should -Invoke -CommandName Get-WsusServer -Exactly 1
                     Should -Invoke -CommandName New-InvalidOperationException -Exactly 1 -ParameterFilter {
