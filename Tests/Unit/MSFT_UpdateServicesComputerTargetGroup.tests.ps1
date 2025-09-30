@@ -61,7 +61,9 @@ try
             }
 
             Context 'An error occurs retrieving WSUS Server configuration information.' {
-                Mock -CommandName Get-WsusServer -MockWith { throw 'An error occurred.' }
+                BeforeAll {
+                    Mock -CommandName Get-WsusServer -MockWith { throw 'An error occurred.' }
+                }
 
                 It 'Calling Get should throw when an error occurs retrieving WSUS Server information.' {
                     { $script:resource = Get-TargetResource -Name 'Servers' -Path 'All Computers'} | Should -Throw ($script:localizedData.WSUSConfigurationFailed)
@@ -74,7 +76,9 @@ try
             }
 
             Context 'The WSUS Server is not yet configured.' {
-                Mock -CommandName Get-WsusServer -MockWith {}
+                BeforeAll {
+                    Mock -CommandName Get-WsusServer -MockWith {}
+                }
 
                 It 'Calling Get should not throw when the WSUS Server is not yet configured / cannot be found.' {
                     { $script:resource = Get-TargetResource -Name 'Servers' -Path 'All Computers'} | Should -Not -Throw
@@ -132,12 +136,14 @@ try
             }
 
             Context 'The Computer Target Group "Desktops" is "Present" at Path "All Computers/Workstations" which is the desired state.' {
-                Mock -CommandName Get-TargetResource -MockWith {
-                    return @{
-                        Ensure          = 'Present'
-                        Name            = 'Desktops'
-                        Path            = 'All Computers/Workstations'
-                        Id              = '2b77a9ce-f320-41c7-bec7-9b22f67ae5b1'
+                BeforeAll {
+                    Mock -CommandName Get-TargetResource -MockWith {
+                        return @{
+                            Ensure          = 'Present'
+                            Name            = 'Desktops'
+                            Path            = 'All Computers/Workstations'
+                            Id              = '2b77a9ce-f320-41c7-bec7-9b22f67ae5b1'
+                        }
                     }
                 }
 
@@ -152,12 +158,14 @@ try
             }
 
             Context 'The Computer Target Group "Desktops" is "Absent" at Path "All Computers/Workstations" which is the desired state (Present).' {
-                Mock -CommandName Get-TargetResource -MockWith {
-                    return @{
-                        Ensure          = 'Absent'
-                        Name            = 'Desktops'
-                        Path            = 'All Computers/Workstations'
-                        Id              = $null
+                BeforeAll {
+                    Mock -CommandName Get-TargetResource -MockWith {
+                        return @{
+                            Ensure          = 'Absent'
+                            Name            = 'Desktops'
+                            Path            = 'All Computers/Workstations'
+                            Id              = $null
+                        }
                     }
                 }
 
@@ -172,12 +180,14 @@ try
             }
 
             Context 'The Computer Target Group "Desktops" is "Present" at Path "All Computers/Workstations" which is NOT the desired state.' {
-                Mock -CommandName Get-TargetResource -MockWith {
-                    return @{
-                        Ensure          = 'Present'
-                        Name            = 'Desktops'
-                        Path            = 'All Computers/Workstations'
-                        Id              = '2b77a9ce-f320-41c7-bec7-9b22f67ae5b1'
+                BeforeAll {
+                    Mock -CommandName Get-TargetResource -MockWith {
+                        return @{
+                            Ensure          = 'Present'
+                            Name            = 'Desktops'
+                            Path            = 'All Computers/Workstations'
+                            Id              = '2b77a9ce-f320-41c7-bec7-9b22f67ae5b1'
+                        }
                     }
                 }
 
@@ -192,12 +202,14 @@ try
             }
 
             Context 'The Computer Target Group "Desktops" is "Absent" at Path "All Computers/Workstations" which is NOT the desired state (Present).' {
-                Mock -CommandName Get-TargetResource -MockWith {
-                    return @{
-                        Ensure          = 'Absent'
-                        Name            = 'Desktops'
-                        Path            = 'All Computers/Workstations'
-                        Id              = $null
+                BeforeAll {
+                    Mock -CommandName Get-TargetResource -MockWith {
+                        return @{
+                            Ensure          = 'Absent'
+                            Name            = 'Desktops'
+                            Path            = 'All Computers/Workstations'
+                            Id              = $null
+                        }
                     }
                 }
 
@@ -224,7 +236,9 @@ try
             }
 
             Context 'An error occurs retrieving WSUS Server configuration information.' {
-                Mock -CommandName Get-WsusServer -MockWith { throw 'An error occurred.' }
+                BeforeAll {
+                    Mock -CommandName Get-WsusServer -MockWith { throw 'An error occurred.' }
+                }
 
                 It 'Calling Set should throw when an error occurs retrieving WSUS Server information.' {
                     { $script:resource = Set-TargetResource -Name 'Servers' -Path 'All Computers'} | Should -Throw ($script:localizedData.WSUSConfigurationFailed)
@@ -234,7 +248,9 @@ try
             }
 
             Context 'The WSUS Server is not yet configured.' {
-                Mock -CommandName Get-WsusServer -MockWith {}
+                BeforeAll {
+                    Mock -CommandName Get-WsusServer -MockWith {}
+                }
 
                 It 'Calling Set should not throw when the WSUS Server is not yet configuration / cannot be found.' {
                     { $script:resource = Set-TargetResource -Name 'Servers' -Path 'All Computers'} | Should -Not -Throw
@@ -246,7 +262,9 @@ try
             }
 
             Context 'The Parent of the Computer Target Group is not present and therefore the new group cannot be created.' {
-                Mock -CommandName Write-Warning -MockWith {}
+                BeforeAll {
+                    Mock -CommandName Write-Warning -MockWith {}
+                }
 
                 It 'Calling Set where the Parent of the Computer Target Group does not exist throws an exception.' {
                     { $script:resource = Set-TargetResource -Name 'Win10' -Path 'All Computers/Desktops'} | Should -Throw `
