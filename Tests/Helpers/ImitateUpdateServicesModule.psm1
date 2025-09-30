@@ -167,10 +167,7 @@ function Get-WsusServerTemplate
             [object]
             $ComputerTargetGroup
         )
-        {
-            Write-Output $Name
-            Write-Output $ComputerTargetGroup
-        }
+        return @($Name, $ComputerTargetGroup)
     }
 
     $WsusServer | Add-Member -MemberType ScriptMethod -Name GetInstallApprovalRules -Value $ApprovalRule
