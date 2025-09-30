@@ -25,21 +25,23 @@ try
 
         #region Function Get-ComputerTargetGroupPath
         Describe "MSFT_UpdateServicesComputerTargetGroup\Get-ComputerTargetGroupPath." {
-            $WsusServer = Get-WsusServer
+            BeforeAll {
+                $WsusServer = Get-WsusServer
+            }
 
-            Context "The Function returns expected path for the 'All Computers' ComputerTargetGroup." {
+            Context "When getting the path for the 'All Computers' ComputerTargetGroup" {
                 $ComputerTargetGroup = $WsusServer.GetComputerTargetGroups() | Where-Object -FilterScript { $_.Name -eq 'All Computers' }
                 $result = Get-ComputerTargetGroupPath -ComputerTargetGroup $ComputerTargetGroup
                 $result | Should -Be 'All Computers'
             }
 
-            Context "The Function returns expected path for the 'Desktops' ComputerTargetGroup." {
+            Context "When getting the path for the 'Desktops' ComputerTargetGroup" {
                 $ComputerTargetGroup = $WsusServer.GetComputerTargetGroups() | Where-Object -FilterScript { $_.Name -eq 'Desktops' }
                 $result = Get-ComputerTargetGroupPath -ComputerTargetGroup $ComputerTargetGroup
                 $result | Should -Be 'All Computers/Workstations'
             }
 
-            Context "The Function returns expected path for the 'Workstations' ComputerTargetGroup." {
+            Context "When getting the path for the 'Workstations' ComputerTargetGroup" {
                 $ComputerTargetGroup = $WsusServer.GetComputerTargetGroups() | Where-Object -FilterScript { $_.Name -eq 'Workstations' }
                 $result = Get-ComputerTargetGroupPath -ComputerTargetGroup $ComputerTargetGroup
                 $result | Should -Be 'All Computers'
