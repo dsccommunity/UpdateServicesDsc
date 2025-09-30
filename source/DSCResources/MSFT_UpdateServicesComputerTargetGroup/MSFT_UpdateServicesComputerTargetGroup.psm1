@@ -14,10 +14,6 @@ $script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
         This function retrieves the current state of a WSUS Computer Target Group
         by querying the WSUS server and validating the group's path.
 
-        The returned object provides the following properties:
-            Name: The Name of the WSUS Computer Target Group.
-            Path: The Path to the Parent of the Computer Target Group.
-            Id: The Id / GUID of the WSUS Computer Target Group.
     .PARAMETER Name
         The Name of the WSUS Computer Target Group.
 
@@ -95,6 +91,11 @@ function Get-TargetResource
 <#
     .SYNOPSIS
         Sets the state of the WSUS Computer Target Group.
+
+    .DESCRIPTION
+        This function creates or removes a WSUS Computer Target Group based on
+        the Ensure parameter. It validates the parent path and performs the
+        appropriate action on the WSUS server.
 
     .PARAMETER Ensure
         Determines if the Computer Target Group should be created or removed.
@@ -209,6 +210,11 @@ function Set-TargetResource
     .SYNOPSIS
         Tests the current state of the WSUS Computer Target Group.
 
+    .DESCRIPTION
+        This function creates or removes a WSUS Computer Target Group based on
+        the Ensure parameter. It validates the parent path and performs the
+        appropriate action on the WSUS server.
+
     .PARAMETER Ensure
         Determines if the Computer Target Group should be created or removed.
         Accepts 'Present' (default) or 'Absent'.
@@ -258,8 +264,17 @@ function Test-TargetResource
     .SYNOPSIS
         Gets the Computer Target Group Path within WSUS by recursing up through each Parent Computer Target Group
 
+    .DESCRIPTION
+        This function recursively traverses the parent hierarchy of a WSUS Computer
+        Target Group to construct its full path in the format 'Parent/Child/GrandChild'.
+
     .PARAMETER ComputerTargetGroup
-        The Computer TargetGroup
+        The Computer Target Group object for which to retrieve the path.
+
+    .OUTPUTS
+        System.String
+
+        Returns the full hierarchical path of the Computer Target Group.
 #>
 function Get-ComputerTargetGroupPath
 {
