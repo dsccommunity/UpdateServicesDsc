@@ -25,9 +25,7 @@ try
 
         #region Function Get-ComputerTargetGroupPath
         Describe "MSFT_UpdateServicesComputerTargetGroup\Get-ComputerTargetGroupPath." {
-            BeforeAll {
-                $WsusServer = Get-WsusServer
-            }
+            $WsusServer = Get-WsusServer
 
             Context "When getting the path for the 'All Computers' ComputerTargetGroup" {
                 $ComputerTargetGroup = $WsusServer.GetComputerTargetGroups() | Where-Object -FilterScript { $_.Name -eq 'All Computers' }
