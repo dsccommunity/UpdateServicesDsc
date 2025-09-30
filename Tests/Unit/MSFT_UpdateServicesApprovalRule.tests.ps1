@@ -51,7 +51,7 @@ try
             BeforeAll {
                 Mock -CommandName New-InvalidOperationException -MockWith {}
                 Mock -CommandName New-InvalidResultException -MockWith {}
-                Mock -CommandName New-InvalidArgumentException -MockWith {}
+                Mock -CommandName New-ArgumentException -MockWith {}
             }
 
             Context 'server should be configured.' {
@@ -82,7 +82,7 @@ try
 
                 it "mocks were not called" {
                     Assert-MockCalled -CommandName New-InvalidResultException -Times 0
-                    Assert-MockCalled -CommandName New-InvalidArgumentException -Times 0
+                    Assert-MockCalled -CommandName New-ArgumentException -Times 0
                     Assert-MockCalled -CommandName New-InvalidOperationException -Times 0
                 }
 
@@ -121,7 +121,7 @@ try
 
                 it "mocks were not called" {
                     Assert-MockCalled -CommandName New-InvalidResultException -Times 0
-                    Assert-MockCalled -CommandName New-InvalidArgumentException -Times 0
+                    Assert-MockCalled -CommandName New-ArgumentException -Times 0
                     Assert-MockCalled -CommandName New-InvalidOperationException -Times 0
                 }
             }
@@ -154,7 +154,7 @@ try
 
                 it "mocks were not called" {
                     Assert-MockCalled -CommandName New-InvalidResultException -Times 0
-                    Assert-MockCalled -CommandName New-InvalidArgumentException -Times 0
+                    Assert-MockCalled -CommandName New-ArgumentException -Times 0
                     Assert-MockCalled -CommandName New-InvalidOperationException -Times 0
                 }
             }
@@ -241,7 +241,7 @@ try
                     Mock Get-WsusProduct -mockwith {}
                     Mock -CommandName New-InvalidOperationException -MockWith {}
                     Mock -CommandName New-InvalidResultException -MockWith {}
-                    Mock -CommandName New-InvalidArgumentException -MockWith {}
+                    Mock -CommandName New-ArgumentException -MockWith {}
                 }
 
                 it 'should not throw when running on a properly configured server' {
@@ -253,7 +253,7 @@ try
 
                     #mock are not called
                     Should -Invoke New-InvalidResultException -Exactly 0
-                    Should -Invoke New-InvalidArgumentException -Exactly 0
+                    Should -Invoke New-ArgumentException -Exactly 0
                     Should -Invoke New-InvalidOperationException -Exactly 0
                 }
             }
@@ -264,7 +264,7 @@ try
                     Mock Get-WsusProduct -mockwith {}
                     Mock -CommandName New-InvalidOperationException -MockWith {}
                     Mock -CommandName New-InvalidResultException -MockWith {}
-                    Mock -CommandName New-InvalidArgumentException -MockWith {}
+                    Mock -CommandName New-ArgumentException -MockWith {}
                     Mock Test-TargetResource -mockwith {$true}
                 }
 
@@ -278,7 +278,7 @@ try
 
                     #mock are not called
                     Should -Invoke New-InvalidResultException -Exactly 0
-                    Should -Invoke New-InvalidArgumentException -Exactly 0
+                    Should -Invoke New-ArgumentException -Exactly 0
                     Should -Invoke New-InvalidOperationException -Exactly 0
                 }
             }
@@ -289,7 +289,7 @@ try
                     Mock Get-WsusProduct -mockwith {}
                     Mock -CommandName New-InvalidOperationException -MockWith {}
                     Mock -CommandName New-InvalidResultException -MockWith {}
-                    Mock -CommandName New-InvalidArgumentException -MockWith {}
+                    Mock -CommandName New-ArgumentException -MockWith {}
                     Mock Test-TargetResource -mockwith {$true}
                 }
 
@@ -303,7 +303,7 @@ try
                     Should -Invoke New-Object -Exactly 0
                     Should -Invoke Get-WsusProduct -Exactly 0
                     Should -Invoke New-InvalidResultException -Exactly 0
-                    Should -Invoke New-InvalidArgumentException -Exactly 0
+                    Should -Invoke New-ArgumentException -Exactly 0
                     Should -Invoke New-InvalidOperationException -Exactly 0
                 }
             }
@@ -314,7 +314,7 @@ try
                     Mock Get-WsusProduct -mockwith {}
                     Mock -CommandName New-InvalidOperationException -MockWith {}
                     Mock -CommandName New-InvalidResultException -MockWith {}
-                    Mock -CommandName New-InvalidArgumentException -MockWith {}
+                    Mock -CommandName New-ArgumentException -MockWith {}
                     Mock Test-TargetResource -mockwith {$true}
                 }
 
@@ -328,7 +328,7 @@ try
 
                     #mock are not called
                     Should -Invoke New-InvalidResultException -Exactly 0
-                    Should -Invoke New-InvalidArgumentException -Exactly 0
+                    Should -Invoke New-ArgumentException -Exactly 0
                     Should -Invoke New-InvalidOperationException -Exactly 0
                 }
             }
