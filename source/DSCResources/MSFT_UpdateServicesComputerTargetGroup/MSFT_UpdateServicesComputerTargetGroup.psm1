@@ -10,6 +10,10 @@ $script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
     .SYNOPSIS
         Retrieves the current state of the WSUS Computer Target Group.
 
+    .DESCRIPTION
+        This function retrieves the current state of a WSUS Computer Target Group
+        by querying the WSUS server and validating the group's path.
+
         The returned object provides the following properties:
             Name: The Name of the WSUS Computer Target Group.
             Path: The Path to the Parent of the Computer Target Group.
@@ -18,7 +22,7 @@ $script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
         The Name of the WSUS Computer Target Group.
 
     .PARAMETER Path
-        The Path to the WSUS Compter Target Group in the format 'Parent/Child'.
+        The Path to the WSUS Computer Target Group in the format 'Parent/Child'.
 #>
 function Get-TargetResource
 {

@@ -63,7 +63,7 @@ try
                 It 'Calling Get should throw when an error occurs retrieving WSUS Server information.' {
                     { $script:resource = Get-TargetResource -Name 'Servers' -Path 'All Computers'} | Should -Throw ($script:localizedData.WSUSConfigurationFailed)
                     $script:resource | Should -Be $null
-                    Assert-MockCalled -CommandName Get-WsusServer -Exactly 1
+                    Should -Invoke -CommandName Get-WsusServer -Exactly 1
                 }
             }
 
@@ -72,7 +72,7 @@ try
 
                 It 'Calling Get should not throw when the WSUS Server is not yet configured / cannot be found.' {
                     { $script:resource = Get-TargetResource -Name 'Servers' -Path 'All Computers'} | Should -Not -Throw
-                    Assert-MockCalled -CommandName Write-Verbose  -ParameterFilter {
+                    Should -Invoke -CommandName Write-Verbose  -ParameterFilter {
                         $message -eq $script:localizedData.GetWsusServerFailed
                     }
                     $script:resource.Ensure | Should -Be 'Absent'
@@ -86,10 +86,10 @@ try
                 It 'Calling Get should return absent when Computer Target Group does not exist at any path.' {
                     $resource = Get-TargetResource -Name 'Domain Controllers' -Path 'All Computers'
                     $resource.Ensure | Should -Be 'Absent'
-                    Assert-MockCalled -CommandName Write-Verbose -ParameterFilter {
+                    Should -Invoke -CommandName Write-Verbose -ParameterFilter {
                         $message -eq ($script:localizedData.GetWsusServerSucceeded -f 'ServerName')
                     }
-                    Assert-MockCalled -CommandName Write-Verbose -ParameterFilter {
+                    Should -Invoke -CommandName Write-Verbose -ParameterFilter {
                         $message -eq ($script:localizedData.NotFoundComputerTargetGroup -f 'Domain Controllers', 'All Computers')
                     }
 
@@ -107,7 +107,7 @@ try
             Context 'The Computer Target Group is in the desired state (specified name exists with the desired path).' {
                 It 'Calling Get should return present when Computer Target Group does exist at the specified path.' {
                     $resource = Get-TargetResource -Name 'Desktops' -Path 'All Computers/Workstations'
-                    Assert-MockCalled -CommandName Write-Verbose -ParameterFilter {
+                    Should -Invoke -CommandName Write-Verbose -ParameterFilter {
                         $message -eq ($script:localizedData.FoundComputerTargetGroup -f `
                         'Desktops', 'All Computers/Workstations', '2b77a9ce-f320-41c7-bec7-9b22f67ae5b1')
                     }
@@ -138,7 +138,7 @@ try
                 It 'Test-TargetResource should return $true when Computer Target Resource is in the desired state.' {
                     $resource = Test-TargetResource -Name 'Desktops' -Path 'All Computers/Workstations'
                     $resource | Should -Be $true
-                    Assert-MockCalled -CommandName Write-Verbose -ParameterFilter {
+                    Should -Invoke -CommandName Write-Verbose -ParameterFilter {
                         $message -eq ($script:localizedData.ResourceInDesiredState -f `
                         'Desktops', 'All Computers/Workstations', 'Present')
                     }
@@ -158,7 +158,7 @@ try
                 It 'Test-TargetResource should return $true when Computer Target Resource is in the desired state.' {
                     $resource = Test-TargetResource -Name 'Desktops' -Path 'All Computers/Workstations' -Ensure 'Absent'
                     $resource | Should -Be $true
-                    Assert-MockCalled -CommandName Write-Verbose -ParameterFilter {
+                    Should -Invoke -CommandName Write-Verbose -ParameterFilter {
                         $message -eq ($script:localizedData.ResourceInDesiredState -f `
                         'Desktops', 'All Computers/Workstations', 'Absent')
                     }
@@ -178,7 +178,7 @@ try
                 It 'Test-TargetResource should return $false when Computer Target Resource is NOT in the desired state.' {
                     $resource = Test-TargetResource -Name 'Desktops' -Path 'All Computers/Workstations' -Ensure 'Absent'
                     $resource | Should -Be $false
-                    Assert-MockCalled -CommandName Write-Verbose -ParameterFilter {
+                    Should -Invoke -CommandName Write-Verbose -ParameterFilter {
                         $message -eq ($script:localizedData.ResourceNotInDesiredState -f `
                         'Desktops', 'All Computers/Workstations', 'Present')
                     }
@@ -198,7 +198,7 @@ try
                 It 'Test-TargetResource should return $false when Computer Target Resource is NOT in the desired state.' {
                     $resource = Test-TargetResource -Name 'Desktops' -Path 'All Computers/Workstations' -Ensure 'Present'
                     $resource | Should -Be $false
-                    Assert-MockCalled -CommandName Write-Verbose -ParameterFilter {
+                    Should -Invoke -CommandName Write-Verbose -ParameterFilter {
                         $message -eq ($script:localizedData.ResourceNotInDesiredState -f `
                         'Desktops', 'All Computers/Workstations', 'Absent')
                     }
@@ -223,7 +223,7 @@ try
                 It 'Calling Set should throw when an error occurs retrieving WSUS Server information.' {
                     { $script:resource = Set-TargetResource -Name 'Servers' -Path 'All Computers'} | Should -Throw ($script:localizedData.WSUSConfigurationFailed)
                     $script:resource | Should -Be $null
-                    Assert-MockCalled -CommandName Get-WsusServer -Exactly 1
+                    Should -Invoke -CommandName Get-WsusServer -Exactly 1
                 }
             }
 
@@ -232,7 +232,7 @@ try
 
                 It 'Calling Set should not throw when the WSUS Server is not yet configuration / cannot be found.' {
                     { $script:resource = Set-TargetResource -Name 'Servers' -Path 'All Computers'} | Should -Not -Throw
-                    Assert-MockCalled -CommandName Write-Verbose  -ParameterFilter {
+                    Should -Invoke -CommandName Write-Verbose  -ParameterFilter {
                         $message -eq $script:localizedData.GetWsusServerFailed
                     }
                     $script:resource | Should -Be $null
@@ -252,7 +252,7 @@ try
             Context 'The new Computer Target Group (at Root Level) is successfully created.' {
                 It 'Calling Set where Computer Target Group (at Root Level) does not exist and Ensure is "Present" creates the required group.' {
                     { $script:resource = Set-TargetResource -Name 'Member Servers' -Path 'All Computers'} | Should -Not -Throw
-                    Assert-MockCalled Write-Verbose -ParameterFilter {
+                    Should -Invoke Write-Verbose -ParameterFilter {
                         $message -eq ($script:localizedData.CreateComputerTargetGroupSuccess -f 'Member Servers', `
                         'All Computers')
                     }
@@ -262,7 +262,7 @@ try
             Context 'The new Computer Target Group is successfully created.' {
                 It 'Calling Set where Computer Target Group does not exist and Ensure is "Present" creates the required group.' {
                     { $script:resource = Set-TargetResource -Name 'Database' -Path 'All Computers/Servers'} | Should -Not -Throw
-                    Assert-MockCalled Write-Verbose -ParameterFilter {
+                    Should -Invoke Write-Verbose -ParameterFilter {
                         $message -eq ($script:localizedData.CreateComputerTargetGroupSuccess -f 'Database', `
                         'All Computers/Servers')
                     }
@@ -272,7 +272,7 @@ try
             Context 'The new Computer Target Group is successfully deleted.' {
                 It 'Calling Set where Computer Target Group exists and Ensure is "Absent" deletes the required group.' {
                     { $script:resource = Set-TargetResource -Name 'Web' -Path 'All Computers/Servers' -Ensure 'Absent' } | Should -Not -Throw
-                    Assert-MockCalled Write-Verbose -ParameterFilter {
+                    Should -Invoke Write-Verbose -ParameterFilter {
                         $message -eq ($script:localizedData.DeleteComputerTargetGroupSuccess -f 'Web', `
                         'f4aa59c7-e6a0-4e6d-97b0-293d00a0dc60', 'All Computers/Servers')
                     }

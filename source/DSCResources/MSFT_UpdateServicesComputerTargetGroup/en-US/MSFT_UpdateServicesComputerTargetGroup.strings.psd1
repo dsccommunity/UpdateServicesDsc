@@ -1,4 +1,4 @@
-# Localized Strings for UpdateServicesApprovalRule resource
+# Localized Strings for UpdateServicesComputerTargetGroup resource
 ConvertFrom-StringData @'
 GetWsusServerFailed                 = Get-WsusServer failed to return a WSUS Server. The server may not yet have been configured.
 WSUSConfigurationFailed             = WSUS Computer Target Group configuration failed.
