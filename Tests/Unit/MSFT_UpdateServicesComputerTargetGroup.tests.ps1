@@ -63,7 +63,7 @@ try
                 }
 
                 It 'Calling Get should throw when an error occurs retrieving WSUS Server information.' {
-                    { $script:resource = Get-TargetResource -Name 'Servers' -Path 'All Computers' } | Should -Throw ($script:localizedData.WSUSConfigurationFailed)
+                    { $script:resource = Get-TargetResource -Name 'Servers' -Path 'All Computers' } | Should -Throw ('*' + $script:localizedData.WSUSConfigurationFailed)
                     $script:resource | Should -Be $null
                     Should -Invoke -CommandName Get-WsusServer -Exactly 1
                 }
@@ -103,7 +103,7 @@ try
             Context 'The Computer Target Group is not in the desired state (specified name exists but not at the desired path).' {
                 It 'Calling Get should throw when Computer Target Group does not exist at the specified path.' {
                     { $script:resource = Get-TargetResource -Name 'Desktops' -Path 'All Computers/Servers' } | Should -Throw `
-                    ($script:localizedData.DuplicateComputerTargetGroup -f 'Desktops',  'All Computers/Workstations')
+                    ('*' + $script:localizedData.DuplicateComputerTargetGroup -f 'Desktops',  'All Computers/Workstations')
                     $script:resource | Should -Be $null
                 }
             }
@@ -235,7 +235,7 @@ try
                 }
 
                 It 'Calling Set should throw when an error occurs retrieving WSUS Server information.' {
-                    { $script:resource = Set-TargetResource -Name 'Servers' -Path 'All Computers'} | Should -Throw ($script:localizedData.WSUSConfigurationFailed)
+                    { $script:resource = Set-TargetResource -Name 'Servers' -Path 'All Computers'} | Should -Throw ('*' + $script:localizedData.WSUSConfigurationFailed)
                     $script:resource | Should -Be $null
                     Should -Invoke -CommandName Get-WsusServer -Exactly 1
                 }
@@ -262,7 +262,7 @@ try
 
                 It 'Calling Set where the Parent of the Computer Target Group does not exist throws an exception.' {
                     { $script:resource = Set-TargetResource -Name 'Win10' -Path 'All Computers/Desktops'} | Should -Throw `
-                        ($script:localizedData.NotFoundParentComputerTargetGroup -f 'Desktops', `
+                        ('*' + $script:localizedData.NotFoundParentComputerTargetGroup -f 'Desktops', `
                         'All Computers', 'Win10')
                 }
             }
