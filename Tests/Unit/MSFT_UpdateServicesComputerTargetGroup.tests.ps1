@@ -21,7 +21,7 @@ Import-Module $PSScriptRoot\..\Helpers\ImitateUpdateServicesModule.psm1 -force -
 # Begin Testing
 try
 {
-    InModuleScope $script:DSCResourceName {
+    InModuleScope $script:dscResourceName {
 
         #region Function Get-ComputerTargetGroupPath
         Describe "MSFT_UpdateServicesComputerTargetGroup\Get-ComputerTargetGroupPath." {
