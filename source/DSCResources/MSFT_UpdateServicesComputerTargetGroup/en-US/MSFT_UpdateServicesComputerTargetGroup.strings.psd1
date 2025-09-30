@@ -1,6 +1,5 @@
 # Localized Strings for UpdateServicesComputerTargetGroup resource
 ConvertFrom-StringData @'
-ConvertFrom-StringData @'
 GetWsusServerFailed                 = Get-WsusServer failed to return a WSUS Server. The server may not yet have been configured. (USCTG0001)
 WSUSConfigurationFailed             = WSUS Computer Target Group configuration failed. (USCTG0002)
 GetWsusServerSucceeded              = WSUS Server information has been successfully retrieved from server '{0}'. (USCTG0003)
@@ -15,5 +14,4 @@ CreateComputerTargetGroupFailed     = An error occurred creating the Computer Ta
 CreateComputerTargetGroupSuccess    = The Computer Target Group '{0}' was successfully created at Path '{1}'. (USCTG0012)
 DeleteComputerTargetGroupFailed     = An error occurred deleting the Computer TargetGroup '{0}' with ID '{1}' from Path '{2}'. (USCTG0013)
 DeleteComputerTargetGroupSuccess    = The Computer Target Group '{0}' with ID '{1}' was successfully deleted from Path '{2}'. (USCTG0014)
-'@
 '@
