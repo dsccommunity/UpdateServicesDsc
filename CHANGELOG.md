@@ -28,7 +28,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Added UpdateServicesComputerTargetGroup Resource to manage computer target groups
+- Added UpdateServicesComputerTargetGroup Resource to manage computer target
+  groups ([issue #44](https://github.com/dsccommunity/UpdateServicesDsc/issues/44))
 - Added TestKitchen files for integration tests
 - Added required modules, Sampler.GitHubTasks, powershell-yaml
 - Added wildcard support in Products parameter of UpdatesServicesServer resource.
@@ -47,7 +48,7 @@ multiple products for the same `Title`.
  Fixed verbose output of WSUS server in UpdateServicesApprovalRule
 - Fixed the `azure-pipelines.yml` to trigger on main not master.
 - Update build process to pin GitVersion to 5.* to resolve errors
-  ([issue gaelcolas/Sampler#477](https://github.com/gaelcolas/Sampler/issues/477))
+  ([issue #477](https://github.com/gaelcolas/Sampler/issues/477))
 - Replaced New-InvalidArgumentException with New-ArgumentException to resolve
   HQRM tests.
 
