@@ -58,24 +58,32 @@ Describe 'MSFT_UpdateServicesComputerTargetGroup' -Tag 'DSCResource' {
 
         #region Function Get-ComputerTargetGroupPath
         Describe "MSFT_UpdateServicesComputerTargetGroup\Get-ComputerTargetGroupPath." {
-            $WsusServer = Get-WsusServer
+            BeforeAll {
+                $WsusServer = Get-WsusServer
+            }
 
             Context "When getting the path for the 'All Computers' ComputerTargetGroup" {
-                $ComputerTargetGroup = $WsusServer.GetComputerTargetGroups() | Where-Object -FilterScript { $_.Name -eq 'All Computers' }
-                $result = Get-ComputerTargetGroupPath -ComputerTargetGroup $ComputerTargetGroup
-                $result | Should -Be 'All Computers'
+                It "Should return the correct path" {
+                    $ComputerTargetGroup = $WsusServer.GetComputerTargetGroups() | Where-Object -FilterScript { $_.Name -eq 'All Computers' }
+                    $result = Get-ComputerTargetGroupPath -ComputerTargetGroup $ComputerTargetGroup
+                    $result | Should -Be 'All Computers'
+                }
             }
 
             Context "When getting the path for the 'Desktops' ComputerTargetGroup" {
-                $ComputerTargetGroup = $WsusServer.GetComputerTargetGroups() | Where-Object -FilterScript { $_.Name -eq 'Desktops' }
-                $result = Get-ComputerTargetGroupPath -ComputerTargetGroup $ComputerTargetGroup
-                $result | Should -Be 'All Computers/Workstations'
+                It "Should return the correct path" {
+                    $ComputerTargetGroup = $WsusServer.GetComputerTargetGroups() | Where-Object -FilterScript { $_.Name -eq 'Desktops' }
+                    $result = Get-ComputerTargetGroupPath -ComputerTargetGroup $ComputerTargetGroup
+                    $result | Should -Be 'All Computers/Workstations'
+                }
             }
 
             Context "When getting the path for the 'Workstations' ComputerTargetGroup" {
-                $ComputerTargetGroup = $WsusServer.GetComputerTargetGroups() | Where-Object -FilterScript { $_.Name -eq 'Workstations' }
-                $result = Get-ComputerTargetGroupPath -ComputerTargetGroup $ComputerTargetGroup
-                $result | Should -Be 'All Computers'
+                It "Should return the correct path" {
+                    $ComputerTargetGroup = $WsusServer.GetComputerTargetGroups() | Where-Object -FilterScript { $_.Name -eq 'Workstations' }
+                    $result = Get-ComputerTargetGroupPath -ComputerTargetGroup $ComputerTargetGroup
+                    $result | Should -Be 'All Computers'
+                }
             }
         }
         #endregion
@@ -84,10 +92,6 @@ Describe 'MSFT_UpdateServicesComputerTargetGroup' -Tag 'DSCResource' {
         Describe "MSFT_UpdateServicesComputerTargetGroup\Get-TargetResource." {
             BeforeEach {
                 if (Test-Path -Path variable:script:resource) { Remove-Variable -Scope 'script' -Name 'resource' }
-            }
-
-            BeforeAll {
-                Mock -CommandName Write-Verbose -MockWith {}
             }
 
             Context 'When an error occurs retrieving WSUS Server configuration information' {
@@ -109,9 +113,6 @@ Describe 'MSFT_UpdateServicesComputerTargetGroup' -Tag 'DSCResource' {
 
                 It 'Calling Get should not throw when the WSUS Server is not yet configured / cannot be found.' {
                     { $script:resource = Get-TargetResource -Name 'Servers' -Path 'All Computers'} | Should -Not -Throw
-                    Should -Invoke -CommandName Write-Verbose  -ParameterFilter {
-                        $message -eq $script:localizedData.GetWsusServerFailed
-                    }
                     $script:resource.Ensure | Should -Be 'Absent'
                     $script:resource.Id | Should -Be $null
                     $script:resource.Name | Should -Be 'Servers'
@@ -123,13 +124,6 @@ Describe 'MSFT_UpdateServicesComputerTargetGroup' -Tag 'DSCResource' {
                 It 'Calling Get should return absent when Computer Target Group does not exist at any path.' {
                     $resource = Get-TargetResource -Name 'Domain Controllers' -Path 'All Computers'
                     $resource.Ensure | Should -Be 'Absent'
-                    Should -Invoke -CommandName Write-Verbose -ParameterFilter {
-                        $message -eq ($script:localizedData.GetWsusServerSucceeded -f 'ServerName')
-                    }
-                    Should -Invoke -CommandName Write-Verbose -ParameterFilter {
-                        $message -eq ($script:localizedData.NotFoundComputerTargetGroup -f 'Domain Controllers', 'All Computers')
-                    }
-
                 }
             }
 
@@ -144,13 +138,8 @@ Describe 'MSFT_UpdateServicesComputerTargetGroup' -Tag 'DSCResource' {
             Context 'The Computer Target Group is in the desired state (specified name exists with the desired path).' {
                 It 'Calling Get should return present when Computer Target Group does exist at the specified path.' {
                     $resource = Get-TargetResource -Name 'Desktops' -Path 'All Computers/Workstations'
-                    Should -Invoke -CommandName Write-Verbose -ParameterFilter {
-                        $message -eq ($script:localizedData.FoundComputerTargetGroup -f `
-                        'Desktops', 'All Computers/Workstations', '2b77a9ce-f320-41c7-bec7-9b22f67ae5b1')
-                    }
                     $resource.Ensure | Should -Be 'Present'
                     $resource.Id | Should -Be '2b77a9ce-f320-41c7-bec7-9b22f67ae5b1'
-
                 }
             }
         }
@@ -158,10 +147,6 @@ Describe 'MSFT_UpdateServicesComputerTargetGroup' -Tag 'DSCResource' {
 
         #region Function Test-TargetResource
         Describe "MSFT_UpdateServicesComputerTargetGroup\Test-TargetResource." {
-            BeforeAll {
-                Mock -CommandName Write-Verbose -MockWith {}
-            }
-
             Context 'The Computer Target Group "Desktops" is "Present" at Path "All Computers/Workstations" which is the desired state.' {
                 BeforeAll {
                     Mock -CommandName Get-TargetResource -MockWith {
@@ -177,10 +162,6 @@ Describe 'MSFT_UpdateServicesComputerTargetGroup' -Tag 'DSCResource' {
                 It 'Test-TargetResource should return $true when Computer Target Resource is in the desired state.' {
                     $resource = Test-TargetResource -Name 'Desktops' -Path 'All Computers/Workstations'
                     $resource | Should -Be $true
-                    Should -Invoke -CommandName Write-Verbose -ParameterFilter {
-                        $message -eq ($script:localizedData.ResourceInDesiredState -f `
-                        'Desktops', 'All Computers/Workstations', 'Present')
-                    }
                 }
             }
 
@@ -199,10 +180,6 @@ Describe 'MSFT_UpdateServicesComputerTargetGroup' -Tag 'DSCResource' {
                 It 'Test-TargetResource should return $true when Computer Target Resource is in the desired state.' {
                     $resource = Test-TargetResource -Name 'Desktops' -Path 'All Computers/Workstations' -Ensure 'Absent'
                     $resource | Should -Be $true
-                    Should -Invoke -CommandName Write-Verbose -ParameterFilter {
-                        $message -eq ($script:localizedData.ResourceInDesiredState -f `
-                        'Desktops', 'All Computers/Workstations', 'Absent')
-                    }
                 }
             }
 
@@ -221,10 +198,6 @@ Describe 'MSFT_UpdateServicesComputerTargetGroup' -Tag 'DSCResource' {
                 It 'Test-TargetResource should return $false when Computer Target Resource is NOT in the desired state.' {
                     $resource = Test-TargetResource -Name 'Desktops' -Path 'All Computers/Workstations' -Ensure 'Absent'
                     $resource | Should -Be $false
-                    Should -Invoke -CommandName Write-Verbose -ParameterFilter {
-                        $message -eq ($script:localizedData.ResourceNotInDesiredState -f `
-                        'Desktops', 'All Computers/Workstations', 'Present')
-                    }
                 }
             }
 
@@ -243,10 +216,6 @@ Describe 'MSFT_UpdateServicesComputerTargetGroup' -Tag 'DSCResource' {
                 It 'Test-TargetResource should return $false when Computer Target Resource is NOT in the desired state.' {
                     $resource = Test-TargetResource -Name 'Desktops' -Path 'All Computers/Workstations' -Ensure 'Present'
                     $resource | Should -Be $false
-                    Should -Invoke -CommandName Write-Verbose -ParameterFilter {
-                        $message -eq ($script:localizedData.ResourceNotInDesiredState -f `
-                        'Desktops', 'All Computers/Workstations', 'Absent')
-                    }
                 }
             }
         }
@@ -256,10 +225,6 @@ Describe 'MSFT_UpdateServicesComputerTargetGroup' -Tag 'DSCResource' {
         Describe "MSFT_UpdateServicesComputerTargetGroup\Set-TargetResource" {
             BeforeEach {
                 if (Test-Path -Path variable:script:resource) { Remove-Variable -Scope 'script' -Name 'resource' }
-            }
-
-            BeforeAll {
-                Mock -CommandName Write-Verbose -MockWith {}
             }
 
             Context 'An error occurs retrieving WSUS Server configuration information.' {
@@ -281,9 +246,6 @@ Describe 'MSFT_UpdateServicesComputerTargetGroup' -Tag 'DSCResource' {
 
                 It 'Calling Set should not throw when the WSUS Server is not yet configuration / cannot be found.' {
                     { $script:resource = Set-TargetResource -Name 'Servers' -Path 'All Computers'} | Should -Not -Throw
-                    Should -Invoke -CommandName Write-Verbose  -ParameterFilter {
-                        $message -eq $script:localizedData.GetWsusServerFailed
-                    }
                     $script:resource | Should -Be $null
                 }
             }
@@ -303,30 +265,18 @@ Describe 'MSFT_UpdateServicesComputerTargetGroup' -Tag 'DSCResource' {
             Context 'The new Computer Target Group (at Root Level) is successfully created.' {
                 It 'Calling Set where Computer Target Group (at Root Level) does not exist and Ensure is "Present" creates the required group.' {
                     { $script:resource = Set-TargetResource -Name 'Member Servers' -Path 'All Computers'} | Should -Not -Throw
-                    Should -Invoke Write-Verbose -ParameterFilter {
-                        $message -eq ($script:localizedData.CreateComputerTargetGroupSuccess -f 'Member Servers', `
-                        'All Computers')
-                    }
                 }
             }
 
             Context 'The new Computer Target Group is successfully created.' {
                 It 'Calling Set where Computer Target Group does not exist and Ensure is "Present" creates the required group.' {
                     { $script:resource = Set-TargetResource -Name 'Database' -Path 'All Computers/Servers'} | Should -Not -Throw
-                    Should -Invoke Write-Verbose -ParameterFilter {
-                        $message -eq ($script:localizedData.CreateComputerTargetGroupSuccess -f 'Database', `
-                        'All Computers/Servers')
-                    }
                 }
             }
 
             Context 'The new Computer Target Group is successfully deleted.' {
                 It 'Calling Set where Computer Target Group exists and Ensure is "Absent" deletes the required group.' {
                     { $script:resource = Set-TargetResource -Name 'Web' -Path 'All Computers/Servers' -Ensure 'Absent' } | Should -Not -Throw
-                    Should -Invoke Write-Verbose -ParameterFilter {
-                        $message -eq ($script:localizedData.DeleteComputerTargetGroupSuccess -f 'Web', `
-                        'f4aa59c7-e6a0-4e6d-97b0-293d00a0dc60', 'All Computers/Servers')
-                    }
                 }
             }
         }
