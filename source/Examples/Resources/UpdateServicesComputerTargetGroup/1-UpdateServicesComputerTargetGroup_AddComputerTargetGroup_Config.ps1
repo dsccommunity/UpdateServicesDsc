@@ -19,8 +19,8 @@ Updated author, copyright notice, and URLs.
         Create WSUS Computer Target Groups.
 
     .DESCRIPTION
-        This configuration will create two WSUS Computer Target Groups
-        (a Parent and a Child)
+        This configuration will create a WSUS Computer Target Group named 'Web'
+        in the 'All Computers/Servers' path using the UpdateServicesDsc module.
 #>
 Configuration UpdateServicesComputerTargetGroup_AddComputerTargetGroup_Config
 {

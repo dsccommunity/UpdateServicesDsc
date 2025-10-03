@@ -15,8 +15,12 @@ Updated author, copyright notice, and URLs.
 #Requires -Module UpdateServicesDsc
 
 <#
+    .SYNOPSIS
+        Delete a WSUS Computer Target Group.
+
     .DESCRIPTION
-        This configuration will delete a WSUS Computer Target Group
+        This configuration will delete a WSUS Computer Target Group named 'Web'
+        from the 'All Computers/Servers' path using the UpdateServicesDsc module.
 #>
 Configuration UpdateServicesComputerTargetGroup_DeleteComputerTargetGroup_Config
 {
