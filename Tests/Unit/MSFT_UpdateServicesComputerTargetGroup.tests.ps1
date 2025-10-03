@@ -109,6 +109,10 @@ Describe "MSFT_UpdateServicesComputerTargetGroup\Get-TargetResource." {
             $script:resource | Should -Be $null
             Should -Invoke -CommandName Get-WsusServer -Exactly 1
         }
+
+        AfterAll {
+            Remove-Mock -CommandName Get-WsusServer
+        }
     }
 
     Context 'The WSUS Server is not yet configured.' {
@@ -122,6 +126,10 @@ Describe "MSFT_UpdateServicesComputerTargetGroup\Get-TargetResource." {
             $script:resource.Id | Should -Be $null
             $script:resource.Name | Should -Be 'Servers'
             $script:resource.Path | Should -Be 'All Computers'
+        }
+
+        AfterAll {
+            Remove-Mock -CommandName Get-WsusServer
         }
     }
 
@@ -242,6 +250,10 @@ Describe "MSFT_UpdateServicesComputerTargetGroup\Set-TargetResource" {
             $script:resource | Should -Be $null
             Should -Invoke -CommandName Get-WsusServer -Exactly 1
         }
+
+        AfterAll {
+            Remove-Mock -CommandName Get-WsusServer
+        }
     }
 
     Context 'The WSUS Server is not yet configured.' {
@@ -252,6 +264,10 @@ Describe "MSFT_UpdateServicesComputerTargetGroup\Set-TargetResource" {
         It 'Calling Set should not throw when the WSUS Server is not yet configuration / cannot be found.' {
             { $script:resource = Set-TargetResource -Name 'Servers' -Path 'All Computers'} | Should -Not -Throw
             $script:resource | Should -Be $null
+        }
+
+        AfterAll {
+            Remove-Mock -CommandName Get-WsusServer
         }
     }
 
