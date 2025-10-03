@@ -24,9 +24,7 @@ Updated author, copyright notice, and URLs.
 #>
 Configuration UpdateServicesComputerTargetGroup_AddComputerTargetGroup_Config
 {
-    param
-    (
-    )
+    param ()
 
     Import-DscResource -ModuleName UpdateServicesDsc
 

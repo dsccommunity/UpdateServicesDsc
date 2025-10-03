@@ -20,9 +20,7 @@ Updated author, copyright notice, and URLs.
 #>
 Configuration UpdateServicesComputerTargetGroup_DeleteComputerTargetGroup_Config
 {
-    param
-    (
-    )
+    param ()
 
     Import-DscResource -ModuleName UpdateServicesDsc
 
