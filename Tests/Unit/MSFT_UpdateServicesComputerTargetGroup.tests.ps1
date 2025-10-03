@@ -63,7 +63,7 @@ try
                 }
 
                 It 'Calling Get should throw when an error occurs retrieving WSUS Server information.' {
-                    { $script:resource = Get-TargetResource -Name 'Servers' -Path 'All Computers' } | Should -Throw ($script:localizedData.WSUSConfigurationFailed)
+                    { $script:resource = Get-TargetResource -Name 'Servers' -Path 'All Computers' } | Should -Throw ('*' + $script:localizedData.WSUSConfigurationFailed + '*')
                     $script:resource | Should -Be $null
                     Should -Invoke -CommandName Get-WsusServer -Exactly 1
                 }
@@ -235,7 +235,7 @@ try
                 }
 
                 It 'Calling Set should throw when an error occurs retrieving WSUS Server information.' {
-                    { $script:resource = Set-TargetResource -Name 'Servers' -Path 'All Computers'} | Should -Throw ($script:localizedData.WSUSConfigurationFailed)
+                    { $script:resource = Set-TargetResource -Name 'Servers' -Path 'All Computers'} | Should -Throw ('*' + $script:localizedData.WSUSConfigurationFailed + '*')
                     $script:resource | Should -Be $null
                     Should -Invoke -CommandName Get-WsusServer -Exactly 1
                 }

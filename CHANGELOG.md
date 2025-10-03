@@ -47,8 +47,9 @@ multiple products for the same `Title`.
  Fixed verbose output of WSUS server in UpdateServicesApprovalRule
 - Fixed the `azure-pipelines.yml` to trigger on main not master.
 - Update build process to pin GitVersion to 5.* to resolve errors
-  (https://github.com/gaelcolas/Sampler/issues/477).
-- Replaced New-InvalidArgumentException with New-ArgumentException to resolve HQRM tests.
+  ([issue gaelcolas/Sampler#477](https://github.com/gaelcolas/Sampler/issues/477))
+- Replaced New-InvalidArgumentException with New-ArgumentException to resolve
+  HQRM tests.
 
 ## [1.2.0] - 2020-05-18
 
