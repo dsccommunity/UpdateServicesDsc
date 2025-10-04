@@ -3,7 +3,7 @@ Import-Module -Name $script:resourceHelperModulePath -ErrorAction Stop
 $script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
 
 # New-InvalidArgumentError
-# New-InvalidArgumentException -ArgumentName 'Action' -Message $errorMessage
+# New-ArgumentException -ArgumentName 'Action' -Message $errorMessage
 
 <#
     .SYNOPSIS
@@ -34,7 +34,7 @@ function Invoke-ResolvePath
                 $script:localizedData.InvalidArgument -f @('Path', $Path) +
                 $script:localizedData.FileNotFound
             )
-            New-InvalidArgumentException -ArgumentName 'Path' -Message $errorMessage
+            New-ArgumentException -ArgumentName 'Path' -Message $errorMessage
         }
 
         return $Path
@@ -48,7 +48,7 @@ function Invoke-ResolvePath
                 $script:localizedData.InvalidArgument -f @('Path', $Path) +
                 $script:localizedData.FileNotFound
             )
-            New-InvalidArgumentException -ArgumentName 'Path' -Message $errorMessage
+            New-ArgumentException -ArgumentName 'Path' -Message $errorMessage
         }
 
         return $Path
@@ -60,7 +60,7 @@ function Invoke-ResolvePath
             $script:localizedData.InvalidArgument -f @('$Env:Path', $Env:Path) +
             $script:localizedData.PathVariableEmpty
         )
-        New-InvalidArgumentException -ArgumentName 'Path' -Message $errorMessage
+        New-ArgumentException -ArgumentName 'Path' -Message $errorMessage
     }
 
     if ((Split-Path -Path $Path -Leaf) -ne $Path)
@@ -69,7 +69,7 @@ function Invoke-ResolvePath
             $script:localizedData.InvalidArgument -f @('Path', $Path) +
             $script:localizedData.AbsolutePathOrFileName
         )
-        New-InvalidArgumentException -ArgumentName 'Path' -Message $errorMessage
+        New-ArgumentException -ArgumentName 'Path' -Message $errorMessage
     }
 
     foreach ($rawSegment in $env:Path.Split(';'))
@@ -101,7 +101,7 @@ function Invoke-ResolvePath
             $script:localizedData.InvalidArgument -f @('Path', $Path) +
             $script:localizedData.FileNotFound
         )
-    New-InvalidArgumentException -ArgumentName 'Path' -Message $errorMessage
+    New-ArgumentException -ArgumentName 'Path' -Message $errorMessage
 }
 
 <#
@@ -132,7 +132,7 @@ function Test-RootedPath
             $script:localizedData.InvalidArgument -f @('Path', $Path) +
             $_.Exception.Message
         )
-        New-InvalidArgumentException -ArgumentName 'Path' -Message $errorMessage
+        New-ArgumentException -ArgumentName 'Path' -Message $errorMessage
     }
 }
 
@@ -871,7 +871,7 @@ function Wait-Win32ProcessEnd
         $errorMessage = (
             $script:localizedData.ProcessFailedToStartError -f @($Path, $Arguments)
         )
-        New-InvalidArgumentException -ArgumentName 'Path' -Message $errorMessage
+        New-ArgumentException -ArgumentName 'Path' -Message $errorMessage
     }
 
     if (-not (Wait-Win32ProcessStop @getArguments))
@@ -880,7 +880,7 @@ function Wait-Win32ProcessEnd
         $errorMessage = (
             $script:localizedData.ProcessFailedToStopError -f @($Path, $Arguments)
         )
-        New-InvalidArgumentException -ArgumentName 'Path' -Message $errorMessage
+        New-ArgumentException -ArgumentName 'Path' -Message $errorMessage
     }
 } # end function Wait-Win32ProcessEnd
 
