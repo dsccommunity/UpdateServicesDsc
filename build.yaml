@@ -43,7 +43,7 @@ BuildWorkflow:
 
   pack:
     - build
-    # - docs
+    - docs
     - package_module_nupkg
 
   hqrmtest:
