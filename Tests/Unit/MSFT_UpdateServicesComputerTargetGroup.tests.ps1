@@ -55,16 +55,10 @@ AfterAll {
 
 #region Function Get-ComputerTargetGroupPath
 Describe "MSFT_UpdateServicesComputerTargetGroup\Get-ComputerTargetGroupPath." {
-    BeforeAll {
-        InModuleScope -ScriptBlock {
-            $script:WsusServer = Get-WsusServer
-        }
-    }
-
     Context "When getting the path for the 'All Computers' ComputerTargetGroup" {
         It "Should return the correct path" {
             InModuleScope -ScriptBlock {
-                $ComputerTargetGroup = $script:WsusServer.GetComputerTargetGroups() | Where-Object -FilterScript { $_.Name -eq 'All Computers' }
+                $ComputerTargetGroup = (Get-WsusServer).GetComputerTargetGroups() | Where-Object -FilterScript { $_.Name -eq 'All Computers' }
                 $result = Get-ComputerTargetGroupPath -ComputerTargetGroup $ComputerTargetGroup
                 $result | Should -Be 'All Computers'
             }
@@ -74,7 +68,7 @@ Describe "MSFT_UpdateServicesComputerTargetGroup\Get-ComputerTargetGroupPath." {
     Context "When getting the path for the 'Desktops' ComputerTargetGroup" {
         It "Should return the correct path" {
             InModuleScope -ScriptBlock {
-                $ComputerTargetGroup = $script:WsusServer.GetComputerTargetGroups() | Where-Object -FilterScript { $_.Name -eq 'Desktops' }
+                $ComputerTargetGroup = (Get-WsusServer).GetComputerTargetGroups() | Where-Object -FilterScript { $_.Name -eq 'Desktops' }
                 $result = Get-ComputerTargetGroupPath -ComputerTargetGroup $ComputerTargetGroup
                 $result | Should -Be 'All Computers/Workstations'
             }
@@ -84,7 +78,7 @@ Describe "MSFT_UpdateServicesComputerTargetGroup\Get-ComputerTargetGroupPath." {
     Context "When getting the path for the 'Workstations' ComputerTargetGroup" {
         It "Should return the correct path" {
             InModuleScope -ScriptBlock {
-                $ComputerTargetGroup = $script:WsusServer.GetComputerTargetGroups() | Where-Object -FilterScript { $_.Name -eq 'Workstations' }
+                $ComputerTargetGroup = (Get-WsusServer).GetComputerTargetGroups() | Where-Object -FilterScript { $_.Name -eq 'Workstations' }
                 $result = Get-ComputerTargetGroupPath -ComputerTargetGroup $ComputerTargetGroup
                 $result | Should -Be 'All Computers'
             }
