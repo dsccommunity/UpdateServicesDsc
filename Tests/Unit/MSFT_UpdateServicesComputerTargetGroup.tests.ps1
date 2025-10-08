@@ -55,7 +55,7 @@ AfterAll {
 
 #region Function Get-ComputerTargetGroupPath
 Describe "MSFT_UpdateServicesComputerTargetGroup\Get-ComputerTargetGroupPath." {
-    BeforeEach {
+    BeforeAll {
         InModuleScope -ScriptBlock {
             $script:WsusServer = Get-WsusServer
         }
