@@ -39,8 +39,7 @@ BeforeAll {
     $PSDefaultParameterValues['Mock:ModuleName'] = $script:dscResourceName
     $PSDefaultParameterValues['Should:ModuleName'] = $script:dscResourceName
 
-    $DSCSetValues =
-    @{
+    $DSCSetValues = @{
         DeclineSupersededUpdates = $true
         DeclineExpiredUpdates = $true
         CleanupObsoleteUpdates = $true
@@ -51,8 +50,7 @@ BeforeAll {
         TimeOfDay = "04:00:00"
     }
 
-    $DSCTestValues =
-    @{
+    $DSCTestValues = @{
         DeclineSupersededUpdates = $true
         DeclineExpiredUpdates = $true
         CleanupObsoleteUpdates = $true
