@@ -104,7 +104,7 @@ Describe "MSFT_UpdateServicesServer\Get-TargetResource" {
     Context 'server should be configured.' {
 
         It 'calling Get should not throw and mocks' {
-            { $Script:resource = Get-TargetResource -Ensure 'Present' -verbose } | Should -Not -Throw
+            $Script:resource = Get-TargetResource -Ensure 'Present' -Verbose
 
             Should -Invoke Get-ItemProperty -Exactly 2
         }
@@ -125,9 +125,9 @@ Describe "MSFT_UpdateServicesServer\Get-TargetResource" {
 
         It 'calling Get should not throw and mocks' {
             Mock -CommandName Get-WSUSServer -MockWith { }
-            { $Script:resource = Get-TargetResource -Ensure 'Absent' -verbose } | Should -Not -Throw
+            $Script:resource = Get-TargetResource -Ensure 'Absent' -Verbose
 
-            Should -Invoke Get-WsusServer -Exactly 1
+            Should -Invoke Get-WsusServer -Times 1 -Exactly
         }
 
         It 'sets the value for Ensure' {
@@ -146,9 +146,9 @@ Describe "MSFT_UpdateServicesServer\Get-TargetResource" {
         }
 
         It 'calling test should not throw and mocks' {
-            { $script:result = Get-TargetResource -Ensure 'Present' -verbose } | Should -Not -Throw
+            $script:result = Get-TargetResource -Ensure 'Present' -Verbose
 
-            Should -Invoke Get-WsusServer -Exactly 1
+            Should -Invoke Get-WsusServer -Times 1 -Exactly
         }
 
         It "Products should contain right value" {
@@ -177,9 +177,9 @@ Describe "MSFT_UpdateServicesServer\Test-TargetResource" {
         }
 
         It 'calling test should not throw' {
-            { $script:result = Test-TargetResource @DSCTestValues -verbose } | Should -Not -Throw
+            $script:result = Test-TargetResource @DSCTestValues -Verbose
 
-            Should -Invoke Get-TargetResource -Exactly 1
+            Should -Invoke Get-TargetResource -Times 1 -Exactly
         }
 
         It "result should be true" {
@@ -201,9 +201,9 @@ Describe "MSFT_UpdateServicesServer\Test-TargetResource" {
         }
 
         It 'calling test should not throw' {
-            { $script:result = Test-TargetResource @DSCTestValues -verbose } | Should -Not -Throw
+            $script:result = Test-TargetResource @DSCTestValues -Verbose
 
-            Should -Invoke Get-TargetResource -Exactly 1
+            Should -Invoke Get-TargetResource -Times 1 -Exactly
         }
 
         It "result should be true" {
@@ -220,9 +220,9 @@ Describe "MSFT_UpdateServicesServer\Test-TargetResource" {
         }
 
         It 'calling test should not throw' {
-            { $script:result = Test-TargetResource @DSCTestValues -Ensure 'Present' -verbose } | Should -Not -Throw
+            $script:result = Test-TargetResource @DSCTestValues -Ensure 'Present' -Verbose
 
-            Should -Invoke Get-TargetResource -Exactly 1
+            Should -Invoke Get-TargetResource -Times 1 -Exactly
         }
 
         It "result should be false" {
@@ -261,13 +261,13 @@ Describe "MSFT_UpdateServicesServer\Test-TargetResource" {
             $script:result = $null
 
             It "calling test with change to <_> should not throw" {
-                { $script:result = Test-TargetResource @DSCTestValues -verbose } | Should -Not -Throw
+                $script:result = Test-TargetResource @DSCTestValues -Verbose
 
-                Should -Invoke Get-TargetResource -Exactly 1
+                Should -Invoke Get-TargetResource -Times 1 -Exactly
             }
 
             It "result should be false when <_> has changed" {
-                $script:result | Should -Be $false
+                $script:result | Should -BeFalse
             }
 
             AfterAll {
@@ -331,7 +331,7 @@ Describe "MSFT_UpdateServicesServer\Test-TargetResource" {
         }
 
         It 'calling test should not throw' {
-            { $script:result = Test-TargetResource @DSCTestValues -Ensure 'Present' -verbose } | Should -Not -Throw
+            $script:result = Test-TargetResource @DSCTestValues -Ensure 'Present' -Verbose
         }
 
         It "result should be true" {
@@ -354,9 +354,9 @@ Describe "MSFT_UpdateServicesServer\Set-TargetResource" {
     Context 'resource is idempotent (Ensure=Present)' {
 
         It 'should not throw when running on a properly configured server' {
-            { Set-targetResource @DSCTestValues -Ensure Present -verbose } | Should -Not -Throw
+            Set-TargetResource @DSCTestValues -Ensure Present -Verbose
 
-            Should -Invoke Test-TargetResource -Exactly 1
+            Should -Invoke Test-TargetResource -Times 1 -Exactly
             Should -Invoke SaveWsusConfiguration -Exactly 2
             Should -Invoke New-InvalidResultException -Exactly 0
             Should -Invoke New-InvalidOperationException -Exactly 0
@@ -366,9 +366,9 @@ Describe "MSFT_UpdateServicesServer\Set-TargetResource" {
     Context 'resource supports Ensure=Absent' {
 
         It 'should not throw when running on a properly configured server' {
-            { Set-targetResource @DSCTestValues -Ensure Absent -verbose } | Should -Not -Throw
+            Set-TargetResource @DSCTestValues -Ensure Absent -Verbose
 
-            Should -Invoke Test-TargetResource -Exactly 1
+            Should -Invoke Test-TargetResource -Times 1 -Exactly
             Should -Invoke SaveWsusConfiguration -Exactly 2
 
             Should -Invoke New-InvalidResultException -Exactly 0

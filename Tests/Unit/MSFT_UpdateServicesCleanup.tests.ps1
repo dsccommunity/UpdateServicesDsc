@@ -101,13 +101,13 @@ Describe "MSFT_UpdateServicesCleanup\Get-TargetResource" {
             } -Verifiable
         }
 
-        it 'calling Get should not throw' {
-            {$Script:resource = Get-TargetResource -Ensure "Present" -verbose} | Should -Not -Throw
+        It 'calling Get should not throw' {
+            $Script:resource = Get-TargetResource -Ensure "Present" -Verbose
 
-            Should -Invoke Get-ScheduledTask -Exactly 1
+            Should -Invoke Get-ScheduledTask -Times 1 -Exactly
         }
 
-        it 'Ensure' {
+        It 'Ensure' {
                 $Script:resource.Ensure | should -Be 'Present'
         }
 
@@ -122,28 +122,28 @@ Describe "MSFT_UpdateServicesCleanup\Get-TargetResource" {
         )
 
         Context 'When <_> property is valid' -Foreach $settingsList {
-            it '<_> should be true' {
+            It '<_> should be true' {
                 $Script:resource.$_ | Should -BeTrue
             }
         }
 
-        it 'TimeOfDay' {
+        It 'TimeOfDay' {
             $Script:resource.TimeOfDay | Should -Be $StartBoundary.Split('T')[1]
         }
     }
 
     Context 'server is not configured.' {
         BeforeAll {
-            Mock Get-ScheduledTask -mockwith {} -Verifiable
+            Mock Get-ScheduledTask -Verifiable
         }
 
-        it 'calling Get should not throw' {
-            {$Script:resource = Get-TargetResource -Ensure 'Absent' -verbose} | should -Not -Throw
+        It 'calling Get should not throw' {
+            $Script:resource = Get-TargetResource -Ensure 'Absent' -Verbose
 
-            Should -Invoke Get-ScheduledTask -Exactly 1
+            Should -Invoke Get-ScheduledTask -Times 1 -Exactly
         }
 
-        it 'Ensure' {
+        It 'Ensure' {
             $Script:resource.Ensure | should -Be 'Absent'
         }
     }
@@ -166,13 +166,13 @@ Describe "MSFT_UpdateServicesCleanup\Get-TargetResource" {
             }
         }
 
-        it 'calling Get should not throw' {
-            {$Script:resource = Get-TargetResource -Ensure 'Present' -verbose} | should -Not -Throw
+        It 'calling Get should not throw' {
+            $Script:resource = Get-TargetResource -Ensure 'Present' -Verbose
 
-            Should -Invoke Get-ScheduledTask -Exactly 1
+            Should -Invoke Get-ScheduledTask -Times 1 -Exactly
         }
 
-        it 'Ensure' {
+        It 'Ensure' {
             $Script:resource.Ensure | should -Be 'Absent'
         }
     }
@@ -190,13 +190,13 @@ Describe "MSFT_UpdateServicesCleanup\Test-TargetResource" {
             $script:result = $null
         }
 
-        it 'calling test should not throw' {
-            {$script:result = Test-TargetResource @DSCTestValues -verbose} | should -Not -Throw
+        It 'calling test should not throw' {
+            $script:result = Test-TargetResource @DSCTestValues -Verbose
 
-            Should -Invoke Get-TargetResource -Exactly 1
+            Should -Invoke Get-TargetResource -Times 1 -Exactly
         }
 
-        it "result should be true" {
+        It "result should be true" {
             $script:result | should -BeTrue
         }
     }
@@ -209,13 +209,13 @@ Describe "MSFT_UpdateServicesCleanup\Test-TargetResource" {
             $script:result = $null
         }
 
-        it 'calling test should not throw' {
-            {$script:result = Test-TargetResource @DSCTestValues -verbose} | should -Not -Throw
+        It 'calling test should not throw' {
+            $script:result = Test-TargetResource @DSCTestValues -Verbose
 
-            Should -Invoke Get-TargetResource -Exactly 1
+            Should -Invoke Get-TargetResource -Times 1 -Exactly
         }
 
-        it "result should be true" {
+        It "result should be true" {
             $script:result | should -BeTrue
         }
     }
@@ -227,13 +227,13 @@ Describe "MSFT_UpdateServicesCleanup\Test-TargetResource" {
             $script:result = $null
         }
 
-        it 'calling test should not throw' {
-            {$script:result = Test-TargetResource @DSCTestValues -Ensure 'Present' -verbose} | should -Not -Throw
+        It 'calling test should not throw' {
+            $script:result = Test-TargetResource @DSCTestValues -Ensure 'Present' -Verbose
 
-            Should -Invoke Get-TargetResource -Exactly 1
+            Should -Invoke Get-TargetResource -Times 1 -Exactly
         }
 
-        it "result should be false" {
+        It "result should be false" {
             $script:result | should -BeFalse
         }
     }
@@ -266,18 +266,14 @@ Describe "MSFT_UpdateServicesCleanup\Test-TargetResource" {
                 $script:result = $null
             }
 
-            it 'calling test should not throw' {
-                {$script:result = Test-TargetResource @DSCTestValues -verbose} | should -Not -Throw
+            It 'calling test should not throw' {
+                $script:result = Test-TargetResource @DSCTestValues -Verbose
 
-                Should -Invoke Get-TargetResource -Exactly 1
+                Should -Invoke Get-TargetResource -Times 1 -Exactly
             }
 
-            it "result should be false when <_> has changed" {
+            It "result should be false when <_> has changed" {
                 $script:result | should -BeFalse
-            }
-
-            AfterAll {
-                #$DSCTestValues.Add("$setting",$true)
             }
         }
     }
@@ -290,10 +286,10 @@ Describe "MSFT_UpdateServicesCleanup\Set-TargetResource" {
         $Arguments = 'foo"$DeclineSupersededUpdates = $True;$DeclineExpiredUpdates = $True;$CleanupObsoleteUpdates = $True;$CompressUpdates = $True;$CleanupObsoleteComputers = $True;$CleanupUnneededContentFiles = $True;$CleanupLocalPublishedContentFiles = $True'
         $Execute = "$($env:SystemRoot)\System32\WindowsPowerShell\v1.0\powershell.exe"
         $StartBoundary = '20160101T04:00:00'
-        Mock -CommandName Unregister-ScheduledTask -MockWith {}
-        Mock -CommandName Register-ScheduledTask -MockWith {}
+        Mock -CommandName Unregister-ScheduledTask
+        Mock -CommandName Register-ScheduledTask
         Mock -CommandName Test-TargetResource -MockWith {$true}
-        Mock -CommandName New-InvalidResultException -MockWith {}
+        Mock -CommandName New-InvalidResultException
     }
 
     Context 'resource is idempotent (Ensure=Present)' {
@@ -301,17 +297,17 @@ Describe "MSFT_UpdateServicesCleanup\Set-TargetResource" {
             Mock -CommandName Get-ScheduledTask -MockWith {$true}
         }
 
-        it 'should not throw when running on a properly configured server' {
-            {Set-targetResource @DSCSetValues -Ensure Present -verbose} | should -Not -Throw
+        It 'should not throw when running on a properly configured server' {
+            Set-TargetResource @DSCSetValues -Ensure Present -Verbose
 
             #mocks were called for commands that gather information
-            Should -Invoke Get-ScheduledTask -Exactly 1
-            Should -Invoke Unregister-ScheduledTask -Exactly 1
-            Should -Invoke Register-ScheduledTask -Exactly 1
-            Should -Invoke Test-TargetResource -Exactly 1
+            Should -Invoke Get-ScheduledTask -Times 1 -Exactly
+            Should -Invoke Unregister-ScheduledTask -Times 1 -Exactly
+            Should -Invoke Register-ScheduledTask -Times 1 -Exactly
+            Should -Invoke Test-TargetResource -Times 1 -Exactly
 
             #mocks were called that register a task to run WSUS cleanup
-            Should -Invoke Register-ScheduledTask -Exactly 1
+            Should -Invoke Register-ScheduledTask -Times 1 -Exactly
 
             #mocks were not called that remove tasks or log errors
             Should -Invoke New-InvalidResultException -Exactly 0
@@ -320,19 +316,19 @@ Describe "MSFT_UpdateServicesCleanup\Set-TargetResource" {
 
     Context 'resource processes Set tasks to register Cleanup task (Ensure=Present)' {
         BeforeAll {
-            Mock -CommandName Get-ScheduledTask -MockWith {}
+            Mock -CommandName Get-ScheduledTask
         }
 
-        it 'should not throw when running on a properly configured server' {
-            {Set-targetResource @DSCSetValues -Ensure Present -verbose} | should -Not -Throw
+        It 'should not throw when running on a properly configured server' {
+            Set-TargetResource @DSCSetValues -Ensure Present -Verbose
 
             #mocks were called for commands that gather information
-            Should -Invoke Get-ScheduledTask -Exactly 1
-            Should -Invoke Register-ScheduledTask -Exactly 1
-            Should -Invoke Test-TargetResource -Exactly 1
+            Should -Invoke Get-ScheduledTask -Times 1 -Exactly
+            Should -Invoke Register-ScheduledTask -Times 1 -Exactly
+            Should -Invoke Test-TargetResource -Times 1 -Exactly
 
             #mocks were called that register a task to run WSUS cleanup
-            Should -Invoke Register-ScheduledTask -Exactly 1
+            Should -Invoke Register-ScheduledTask -Times 1 -Exactly
 
             #mocks were not called that remove tasks or log errors
             Should -Invoke Unregister-ScheduledTask -Exactly 0
@@ -345,15 +341,15 @@ Describe "MSFT_UpdateServicesCleanup\Set-TargetResource" {
             Mock -CommandName Get-ScheduledTask -MockWith {$true}
         }
 
-        it 'should not throw when running on a properly configured server' {
-            {Set-targetResource @DSCSetValues -Ensure Absent -verbose} | should -Not -Throw
+        It 'should not throw when running on a properly configured server' {
+            Set-TargetResource @DSCSetValues -Ensure Absent -Verbose
 
             #mocks were called for commands that gather information
-            Should -Invoke Get-ScheduledTask -Exactly 1
-            Should -Invoke Test-TargetResource -Exactly 1
+            Should -Invoke Get-ScheduledTask -Times 1 -Exactly
+            Should -Invoke Test-TargetResource -Times 1 -Exactly
 
             #mocks were called that register a task to run WSUS cleanup
-            Should -Invoke Unregister-ScheduledTask -Exactly 1
+            Should -Invoke Unregister-ScheduledTask -Times 1 -Exactly
 
             #mocks were not called that remove tasks or log errors
             Should -Invoke Register-ScheduledTask -Exactly 0

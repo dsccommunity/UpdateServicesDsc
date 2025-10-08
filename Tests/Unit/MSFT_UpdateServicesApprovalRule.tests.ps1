@@ -76,113 +76,109 @@ AfterAll {
 #region Function Get-TargetResource expecting Ensure Present
 Describe "MSFT_UpdateServicesApprovalRule\Get-TargetResource" {
     BeforeAll {
-        Mock -CommandName New-InvalidOperationException -MockWith {}
-        Mock -CommandName New-InvalidResultException -MockWith {}
-        Mock -CommandName New-ArgumentException -MockWith {}
+        Mock -CommandName New-InvalidOperationException
+        Mock -CommandName New-InvalidResultException
+        Mock -CommandName New-ArgumentException
     }
 
-    Context 'server should be configured.' {
+    Context 'When server is configured' {
 
-        it 'calling Get should not throw' {
-            {$Script:resource = Get-TargetResource -Name $script:WsusServer.Name -verbose} | should -not -throw
+        it 'Should not throw when calling Get-TargetResource' {
+            $Script:resource = Get-TargetResource -Name $script:WsusServer.Name -Verbose
         }
 
-        it "Ensure" {
+        It "Should return Ensure as Present" {
             $Script:resource.Ensure | should -Be 'Present'
         }
 
-        it "Classifications" {
+        It "Should return correct Classifications" {
             $Script:resource.Classifications | should -Be $DSCSetValues.Classifications
         }
 
-        it "Products" {
+        It "Should return correct Products" {
             $Script:resource.Products | should -Be $DSCSetValues.Products
         }
 
-        it "Computer Groups" {
+        It "Should return correct ComputerGroups" {
             $Script:resource.ComputerGroups | should -Be $DSCSetValues.ComputerGroups
         }
 
-        it "Enabled" {
+        It "Should return correct Enabled state" {
             $Script:resource.Enabled | should -Be $DSCSetValues.Enabled
         }
 
-        it "mocks were not called" {
-            Assert-MockCalled -CommandName New-InvalidResultException -Times 0
-            Assert-MockCalled -CommandName New-ArgumentException -Times 0
-            Assert-MockCalled -CommandName New-InvalidOperationException -Times 0
+        It "mocks were not called" {
+            Should -Invoke New-InvalidResultException -Exactly 0
+            Should -Invoke New-ArgumentException -Exactly 0
+            Should -Invoke New-InvalidOperationException -Exactly 0
         }
 
     }
 
-    Context 'server should not be configured.' {
+    Context 'When server should not be configured' {
 
-        it 'calling Get should not throw' {
-            Mock -CommandName Get-WSUSServer -MockWith {} -Verifiable
-            {$Script:resource = Get-TargetResource -Name $script:WsusServer.Name -verbose} | should -not -throw
+        It 'Should not throw when calling Get-TargetResource' {
+            Mock -CommandName Get-WSUSServer
+            $Script:resource = Get-TargetResource -Name $script:WsusServer.Name -Verbose
         }
 
-        it "Ensure" {
+        It "Should return Ensure as Absent" {
             $Script:resource.Ensure | should -Be 'Absent'
         }
 
-        it "Classifications" {
+        It "Should return empty Classifications" {
             $Script:resource.Classifications | should -BeNullOrEmpty
         }
 
-        it "Products" {
+        It "Should return empty Products" {
             $Script:resource.Products | should -BeNullOrEmpty
         }
 
-        it "Computer Groups" {
+        It "Should return empty ComputerGroups" {
             $Script:resource.ComputerGroups | should -BeNullOrEmpty
         }
 
-        it "Enabled" {
+        It "Should return empty Enabled state" {
             $Script:resource.Enabled | should -BeNullOrEmpty
         }
 
-        it "mocks were called" {
-            Assert-VerifiableMock
-        }
-
-        it "mocks were not called" {
-            Assert-MockCalled -CommandName New-InvalidResultException -Times 0
-            Assert-MockCalled -CommandName New-ArgumentException -Times 0
-            Assert-MockCalled -CommandName New-InvalidOperationException -Times 0
+        It "mocks were not called" {
+            Should -Invoke New-InvalidResultException -Exactly 0
+            Should -Invoke New-ArgumentException -Exactly 0
+            Should -Invoke New-InvalidOperationException -Exactly 0
         }
     }
 
-    Context 'server is not configured.' {
+    Context 'When approval rule does not exist' {
 
-        it 'calling Get should not throw' {
-            {$Script:resource = Get-TargetResource -Name 'Foo' -verbose} | should -not -throw
+        It 'Should not throw when calling Get-TargetResource with non-existent rule' {
+            $Script:resource = Get-TargetResource -Name 'Foo' -Verbose
         }
 
-        it "Ensure" {
+        It "Should return Ensure as Absent" {
             $Script:resource.Ensure | should -Be 'Absent'
         }
 
-        it "Classifications" {
+        It "Should return null Classifications" {
             $Script:resource.Classifications | should -Be $null
         }
 
-        it "Products" {
+        It "Should return null Products" {
             $Script:resource.Products | should -Be $null
         }
 
-        it "Computer Groups" {
+        It "Should return null ComputerGroups" {
             $Script:resource.ComputerGroups | should -Be $null
         }
 
-        it "Enabled" {
+        It "Should return null Enabled state" {
             $Script:resource.Enabled | should -Be $null
         }
 
-        it "mocks were not called" {
-            Assert-MockCalled -CommandName New-InvalidResultException -Times 0
-            Assert-MockCalled -CommandName New-ArgumentException -Times 0
-            Assert-MockCalled -CommandName New-InvalidOperationException -Times 0
+        It "mocks were not called" {
+            Should -Invoke New-InvalidResultException -Exactly 0
+            Should -Invoke New-ArgumentException -Exactly 0
+            Should -Invoke New-InvalidOperationException -Exactly 0
         }
     }
 }
@@ -190,39 +186,39 @@ Describe "MSFT_UpdateServicesApprovalRule\Get-TargetResource" {
 
 #region Function Test-TargetResource
 Describe "MSFT_UpdateServicesApprovalRule\Test-TargetResource" {
-    Context 'server is in correct state (Ensure=Present)' {
+    Context 'When server is in correct state (Ensure=Present)' {
         BeforeAll {
             $DSCTestValues.Remove('Ensure')
             $DSCTestValues.Add('Ensure','Present')
             $script:result = $null
         }
 
-        it 'calling test should not throw' {
-            {$script:result = Test-TargetResource @DSCTestValues -verbose} | should -not -throw
+        It 'Should not throw when calling Test-TargetResource' {
+            $script:result = Test-TargetResource @DSCTestValues -Verbose
         }
 
-        it "result should be true" {
-            $script:result | should -Be $true
+        It "Should return true when state is correct" {
+            $script:result | should -BeTrue
         }
     }
 
-    Context 'server should not be configured (Ensure=Absent) but is' {
+    Context 'When server should not be configured (Ensure=Absent) but is' {
         BeforeAll {
             $DSCTestValues.Remove('Ensure')
             $DSCTestValues.Add('Ensure','Absent')
             $script:result = $null
         }
 
-        it 'calling test should not throw' {
-            {$script:result = Test-TargetResource @DSCTestValues -verbose} | should -not -throw
+        It 'Should not throw when calling Test-TargetResource' {
+            $script:result = Test-TargetResource @DSCTestValues -Verbose
         }
 
-        it "result should be false" {
+        It "Should return false when Ensure is Absent but resource exists" {
             $script:result | should -BeFalse
         }
     }
 
-    Context "setting has drifted" {
+    Context "When setting has drifted" {
         BeforeAll {
             $DSCTestValues.Remove('Ensure')
             $DSCTestValues.Add('Ensure','Present')
@@ -230,25 +226,15 @@ Describe "MSFT_UpdateServicesApprovalRule\Test-TargetResource" {
 
         $settingsList = 'Classifications','Products','ComputerGroups'
         Context 'When <_> property is drifted' -Foreach $settingsList {
-            BeforeAll {
-                #$valueWithoutDrift = $DSCTestValues.$_
-
-            }
-
-            it 'calling test should not throw' {
+            It 'Should not throw when calling Test-TargetResource with drifted property' {
                 $DSCTestValuesDrifted = $DSCTestValues.Clone()
                 $DSCTestValuesDrifted["$_"] = 'foo'
                 $script:result = $null
-                {$script:result = Test-TargetResource @DSCTestValuesDrifted -verbose} | should -Not -Throw
+                $script:result = Test-TargetResource @DSCTestValuesDrifted -Verbose
             }
 
-            it "result should be false when $setting has changed" {
+            It "Should return false when property has drifted" {
                 $script:result | should -BeFalse
-            }
-
-            BeforeAll {
-                #$DSCTestValues.Remove("$_")
-                #$DSCTestValues.Add("$_",$valueWithoutDrift)
             }
         }
     }
@@ -262,21 +248,21 @@ Describe "MSFT_UpdateServicesApprovalRule\Set-TargetResource" {
         $Collection | Add-Member -MemberType ScriptMethod -Name Add -Value {}
     }
 
-    Context 'server is already in a correct state (resource is idempotent)' {
+    Context 'When server is already in correct state (resource is idempotent)' {
         BeforeAll {
             Mock New-Object -mockwith {$Collection}
-            Mock Get-WsusProduct -mockwith {}
-            Mock -CommandName New-InvalidOperationException -MockWith {}
-            Mock -CommandName New-InvalidResultException -MockWith {}
-            Mock -CommandName New-ArgumentException -MockWith {}
+            Mock Get-WsusProduct
+            Mock -CommandName New-InvalidOperationException
+            Mock -CommandName New-InvalidResultException
+            Mock -CommandName New-ArgumentException
         }
 
-        it 'should not throw when running on a properly configured server' {
-            {Set-targetResource @DSCSetValues -verbose} | should -Not -Throw
+        It 'Should not throw when running on a properly configured server' {
+            Set-TargetResource @DSCSetValues -Verbose
 
             #mock were called
             Should -Invoke New-Object -Exactly 3
-            Should -Invoke Get-WsusProduct -Exactly 1
+            Should -Invoke Get-WsusProduct -Times 1 -Exactly
 
             #mock are not called
             Should -Invoke New-InvalidResultException -Exactly 0
@@ -285,23 +271,23 @@ Describe "MSFT_UpdateServicesApprovalRule\Set-TargetResource" {
         }
     }
 
-    Context 'server is not in a correct state (resource takes action)' {
+    Context 'When server is not in correct state (resource takes action)' {
         BeforeAll {
             Mock New-Object -mockwith {$Collection}
-            Mock Get-WsusProduct -mockwith {}
-            Mock -CommandName New-InvalidOperationException -MockWith {}
-            Mock -CommandName New-InvalidResultException -MockWith {}
-            Mock -CommandName New-ArgumentException -MockWith {}
+            Mock Get-WsusProduct
+            Mock -CommandName New-InvalidOperationException
+            Mock -CommandName New-InvalidResultException
+            Mock -CommandName New-ArgumentException
             Mock Test-TargetResource -mockwith {$true}
         }
 
-        it 'should not throw when running on an incorrectly configured server' {
-            {Set-targetResource -Name "Foo" -Classification "00000000-0000-0000-0000-0000testguid" -verbose} | should -Not -Throw
+        It 'Should not throw when running on an incorrectly configured server' {
+            Set-TargetResource -Name "Foo" -Classification "00000000-0000-0000-0000-0000testguid" -Verbose
 
             #mock were called
             Should -Invoke New-Object -Exactly 3
-            Should -Invoke Test-TargetResource -Exactly 1
-            Should -Invoke Get-WsusProduct -Exactly 1
+            Should -Invoke Test-TargetResource -Times 1 -Exactly
+            Should -Invoke Get-WsusProduct -Times 1 -Exactly
 
             #mock are not called
             Should -Invoke New-InvalidResultException -Exactly 0
@@ -310,21 +296,21 @@ Describe "MSFT_UpdateServicesApprovalRule\Set-TargetResource" {
         }
     }
 
-    Context 'server should not be configured (Ensure=Absent)' {
+    Context 'When server should not be configured (Ensure=Absent)' {
         BeforeAll {
             Mock New-Object -mockwith {$Collection}
-            Mock Get-WsusProduct -mockwith {}
-            Mock -CommandName New-InvalidOperationException -MockWith {}
-            Mock -CommandName New-InvalidResultException -MockWith {}
-            Mock -CommandName New-ArgumentException -MockWith {}
+            Mock Get-WsusProduct
+            Mock -CommandName New-InvalidOperationException
+            Mock -CommandName New-InvalidResultException
+            Mock -CommandName New-ArgumentException
             Mock Test-TargetResource -mockwith {$true}
         }
 
-        it 'should not throw when running on an incorrectly configured server' {
-            {Set-targetResource @DSCSetValues -Ensure Absent -verbose} | should -Not -Throw
+        It 'Should not throw when removing approval rule'{
+            Set-TargetResource @DSCSetValues -Ensure Absent -Verbose
 
             #mock were called
-            Should -Invoke Test-TargetResource -Exactly 1
+            Should -Invoke Test-TargetResource -Times 1 -Exactly
 
             #mock are not called
             Should -Invoke New-Object -Exactly 0
@@ -335,23 +321,23 @@ Describe "MSFT_UpdateServicesApprovalRule\Set-TargetResource" {
         }
     }
 
-    Context 'server is in correct state and synchronize is included' {
+    Context 'When server is in correct state and synchronize is included' {
         BeforeAll {
             Mock New-Object -mockwith {$Collection}
-            Mock Get-WsusProduct -mockwith {}
-            Mock -CommandName New-InvalidOperationException -MockWith {}
-            Mock -CommandName New-InvalidResultException -MockWith {}
-            Mock -CommandName New-ArgumentException -MockWith {}
+            Mock Get-WsusProduct
+            Mock -CommandName New-InvalidOperationException
+            Mock -CommandName New-InvalidResultException
+            Mock -CommandName New-ArgumentException
             Mock Test-TargetResource -mockwith {$true}
         }
 
-        it 'should not throw when running on a properly configured server' {
-            {Set-targetResource @DSCSetValues -Synchronize $true -verbose} | should -Not -Throw
+        It 'Should not throw when synchronizing on a properly configured server' {
+            Set-TargetResource @DSCSetValues -Synchronize $true -Verbose
 
             #mock were called
             Should -Invoke New-Object -Exactly 3
-            Should -Invoke Test-TargetResource -Exactly 1
-            Should -Invoke Get-WsusProduct -Exactly 1
+            Should -Invoke Test-TargetResource -Times 1 -Exactly
+            Should -Invoke Get-WsusProduct -Times 1 -Exactly
 
             #mock are not called
             Should -Invoke New-InvalidResultException -Exactly 0

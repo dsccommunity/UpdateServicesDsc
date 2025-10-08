@@ -64,7 +64,7 @@ Describe "MSFT_UpdateServicesComputerTargetGroup\Get-ComputerTargetGroupPath." {
     Context 'When getting the path for the "All Computers" ComputerTargetGroup' {
         It 'Should return the correct path' {
             InModuleScope -ScriptBlock {
-                $ComputerTargetGroup = $WsusServer.GetComputerTargetGroups() | Where-Object -FilterScript { $_.Name -eq 'All Computers' }
+                $ComputerTargetGroup = $script:WsusServer.GetComputerTargetGroups() | Where-Object -FilterScript { $_.Name -eq 'All Computers' }
                 $result = Get-ComputerTargetGroupPath -ComputerTargetGroup $ComputerTargetGroup
                 $result | Should -Be 'All Computers'
             }
@@ -74,7 +74,7 @@ Describe "MSFT_UpdateServicesComputerTargetGroup\Get-ComputerTargetGroupPath." {
     Context 'When getting the path for the "Desktops" ComputerTargetGroup' {
         It 'Should return the correct path' {
             InModuleScope -ScriptBlock {
-                $ComputerTargetGroup = $WsusServer.GetComputerTargetGroups() | Where-Object -FilterScript { $_.Name -eq 'Desktops' }
+                $ComputerTargetGroup = $script:WsusServer.GetComputerTargetGroups() | Where-Object -FilterScript { $_.Name -eq 'Desktops' }
                 $result = Get-ComputerTargetGroupPath -ComputerTargetGroup $ComputerTargetGroup
                 $result | Should -Be 'All Computers/Workstations'
             }
@@ -84,7 +84,7 @@ Describe "MSFT_UpdateServicesComputerTargetGroup\Get-ComputerTargetGroupPath." {
     Context 'When getting the path for the "Workstations" ComputerTargetGroup' {
         It 'Should return the correct path' {
             InModuleScope -ScriptBlock {
-                $ComputerTargetGroup = $WsusServer.GetComputerTargetGroups() | Where-Object -FilterScript { $_.Name -eq 'Workstations' }
+                $ComputerTargetGroup = $script:WsusServer.GetComputerTargetGroups() | Where-Object -FilterScript { $_.Name -eq 'Workstations' }
                 $result = Get-ComputerTargetGroupPath -ComputerTargetGroup $ComputerTargetGroup
                 $result | Should -Be 'All Computers'
             }
@@ -107,17 +107,17 @@ Describe "MSFT_UpdateServicesComputerTargetGroup\Get-TargetResource." {
         It 'Should throw when an error occurs retrieving WSUS Server information.' {
             { $script:resource = Get-TargetResource -Name 'Servers' -Path 'All Computers' } | Should -Throw ('*' + $script:localizedData.WSUSConfigurationFailed + '*')
             $script:resource | Should -Be $null
-            Should -Invoke -CommandName Get-WsusServer -Exactly 1
+            Should -Invoke -CommandName Get-WsusServer -Times 1 -Exactly
         }
     }
 
     Context 'When the WSUS Server is not yet configured.' {
         BeforeAll {
-            Mock -CommandName Get-WsusServer -MockWith {}
+            Mock -CommandName Get-WsusServer
         }
 
         It 'Should not throw when the WSUS Server is not yet configured / cannot be found.' {
-            { $script:resource = Get-TargetResource -Name 'Servers' -Path 'All Computers'} | Should -Not -Throw
+            $script:resource = Get-TargetResource -Name 'Servers' -Path 'All Computers'
             $script:resource.Ensure | Should -Be 'Absent'
             $script:resource.Id | Should -Be $null
             $script:resource.Name | Should -Be 'Servers'
@@ -166,7 +166,7 @@ Describe "MSFT_UpdateServicesComputerTargetGroup\Test-TargetResource." {
 
         It 'Should return $true when Computer Target Resource is in the desired state.' {
             $resource = Test-TargetResource -Name 'Desktops' -Path 'All Computers/Workstations'
-            $resource | Should -Be $true
+            $resource | Should -BeTrue
         }
     }
 
@@ -184,7 +184,7 @@ Describe "MSFT_UpdateServicesComputerTargetGroup\Test-TargetResource." {
 
         It 'Should return $true when Computer Target Resource is in the desired state.' {
             $resource = Test-TargetResource -Name 'Desktops' -Path 'All Computers/Workstations' -Ensure 'Absent'
-            $resource | Should -Be $true
+            $resource | Should -BeTrue
         }
     }
 
@@ -202,7 +202,7 @@ Describe "MSFT_UpdateServicesComputerTargetGroup\Test-TargetResource." {
 
         It 'Should return $false when Computer Target Resource is NOT in the desired state.' {
             $resource = Test-TargetResource -Name 'Desktops' -Path 'All Computers/Workstations' -Ensure 'Absent'
-            $resource | Should -Be $false
+            $resource | Should -BeFalse
         }
     }
 
@@ -220,7 +220,7 @@ Describe "MSFT_UpdateServicesComputerTargetGroup\Test-TargetResource." {
 
         It 'Should return $false when Computer Target Resource is NOT in the desired state.' {
             $resource = Test-TargetResource -Name 'Desktops' -Path 'All Computers/Workstations' -Ensure 'Present'
-            $resource | Should -Be $false
+            $resource | Should -BeFalse
         }
     }
 }
@@ -240,24 +240,24 @@ Describe "MSFT_UpdateServicesComputerTargetGroup\Set-TargetResource" {
         It 'Should throw when an error occurs retrieving WSUS Server information.' {
             { $script:resource = Set-TargetResource -Name 'Servers' -Path 'All Computers'} | Should -Throw ('*' + $script:localizedData.WSUSConfigurationFailed + '*')
             $script:resource | Should -Be $null
-            Should -Invoke -CommandName Get-WsusServer -Exactly 1
+            Should -Invoke -CommandName Get-WsusServer -Times 1 -Exactly
         }
     }
 
     Context 'When the WSUS Server is not yet configured.' {
         BeforeAll {
-            Mock -CommandName Get-WsusServer -MockWith {}
+            Mock -CommandName Get-WsusServer
         }
 
         It 'Should not throw when the WSUS Server is not yet configuration / cannot be found.' {
-            { $script:resource = Set-TargetResource -Name 'Servers' -Path 'All Computers'} | Should -Not -Throw
+            $script:resource = Set-TargetResource -Name 'Servers' -Path 'All Computers'
             $script:resource | Should -Be $null
         }
     }
 
     Context 'When the Parent of the Computer Target Group is not present and therefore the new group cannot be created.' {
         BeforeAll {
-            Mock -CommandName Write-Warning -MockWith {}
+            Mock -CommandName Write-Warning
         }
 
         It 'Should throw an exception where the Parent of the Computer Target Group does not exist.' {
@@ -269,19 +269,19 @@ Describe "MSFT_UpdateServicesComputerTargetGroup\Set-TargetResource" {
 
     Context 'When the new Computer Target Group (at Root Level) is successfully created.' {
         It 'Should create the required group where Computer Target Group (at Root Level) does not exist and Ensure is "Present".' {
-            { $script:resource = Set-TargetResource -Name 'Member Servers' -Path 'All Computers'} | Should -Not -Throw
+            $script:resource = Set-TargetResource -Name 'Member Servers' -Path 'All Computers'
         }
     }
 
     Context 'When the new Computer Target Group is successfully created.' {
         It 'Should create the required group where Computer Target Group does not exist and Ensure is "Present".' {
-            { $script:resource = Set-TargetResource -Name 'Database' -Path 'All Computers/Servers'} | Should -Not -Throw
+            $script:resource = Set-TargetResource -Name 'Database' -Path 'All Computers/Servers'
         }
     }
 
     Context 'When the new Computer Target Group is successfully deleted.' {
         It 'Should delete the required group where Computer Target Group exists and Ensure is "Absent".' {
-            { $script:resource = Set-TargetResource -Name 'Web' -Path 'All Computers/Servers' -Ensure 'Absent' } | Should -Not -Throw
+            $script:resource = Set-TargetResource -Name 'Web' -Path 'All Computers/Servers' -Ensure 'Absent'
         }
     }
 }
