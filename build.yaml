@@ -52,7 +52,10 @@ BuildWorkflow:
   test:
     - Pester_Tests_Stop_On_Fail
     - Convert_Pester_Coverage
-    - Pester_if_Code_Coverage_Under_Threshold
+    - Pester_If_Code_Coverage_Under_Threshold
+
+  merge:
+    - Merge_CodeCoverage_Files
 
   publish:
     - Publish_release_to_GitHub
