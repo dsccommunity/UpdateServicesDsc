@@ -292,7 +292,7 @@ function Set-TargetResource
     if ( -Not (Test-TargetResource @PSBoundParameters))
     {
         $errorMessage = $script:localizedData.TestFailedAfterSet
-        New-InvalidResultException -Message $errorMessage -ErrorRecord $_
+        New-InvalidResultException -Message $errorMessage
     }
     else
     {

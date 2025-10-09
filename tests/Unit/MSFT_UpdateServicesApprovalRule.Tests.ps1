@@ -36,6 +36,7 @@ BeforeAll {
 
     # Load stub cmdlets and classes.
     Import-Module (Join-Path -Path $PSScriptRoot -ChildPath 'Stubs\UpdateServices.stubs.psm1')
+    Import-Module (Join-Path -Path $PSScriptRoot -ChildPath 'TestHelpers\CommonTestHelper.psm1')
 
     $PSDefaultParameterValues['InModuleScope:ModuleName'] = $script:dscResourceName
     $PSDefaultParameterValues['Mock:ModuleName'] = $script:dscResourceName
@@ -51,69 +52,17 @@ AfterAll {
 
     # Unload stub module
     Remove-Module -Name UpdateServices.stubs -Force
+    Remove-Module -Name CommonTestHelper -Force
 
     # Unload the module being tested so that It doesn't impact any other tests.
     Get-Module -Name $script:dscResourceName -All | Remove-Module -Force
 }
 
-# BeforeAll {
-#     $script:WsusServer = [pscustomobject]@{
-#         Name = 'ServerName'
-#     }
-
-#     $DSCSetValues = @{
-#         Name            = $script:WsusServer.Name
-#         Classifications = "00000000-0000-0000-0000-0000testguid"
-#         Products        = "Product"
-#         ComputerGroups  = "Computer Target Group"
-#         Enabled         = $true
-#     }
-
-#     $DSCTestValues = @{
-#         Name            = $script:WsusServer.Name
-#         Classifications = "00000000-0000-0000-0000-0000testguid"
-#         Products        = "Product"
-#         ComputerGroups  = "Computer Target Group"
-#         Enabled         = $true
-#     }
-# }
-
 Describe 'MSFT_UpdateServicesApprovalRule\Get-TargetResource' -Tag 'Get' {
     Context 'When the server should be configured with specific classifications, products and computer groups' {
         BeforeAll {
             Mock -CommandName Get-WsusServer -MockWith {
-                $obj = [PSCustomObject] @{}
-                $obj | Add-Member -Force -MemberType ScriptMethod -Name GetInstallApprovalRules -Value {
-                    $ApprovalRule = [PSCustomObject] @{
-                        Name    = 'ServerName'
-                        Enabled = $true
-                    }
-
-                    $ApprovalRule | Add-Member -Force -MemberType ScriptMethod -Name GetUpdateClassifications -Value {
-                        return @{
-                            Name = 'Update Classification'
-                            ID   = @{
-                                GUID = '00000000-0000-0000-0000-0000testguid'
-                            }
-                        }
-                    }
-
-                    $ApprovalRule | Add-Member -Force -MemberType ScriptMethod -Name GetCategories -Value {
-                        return @{
-                            Title = 'Product'
-                        }
-                    }
-
-                    $ApprovalRule | Add-Member -Force -MemberType ScriptMethod -Name GetComputerTargetGroups -Value {
-                        return @{
-                            Name = 'Computer Target Group'
-                        }
-                    }
-
-                    return $ApprovalRule
-                }
-
-                return $obj
+                return CommonTestHelper\Get-WsusServerTemplate
             }
         }
 
@@ -471,7 +420,7 @@ Describe 'MSFT_UpdateServicesApprovalRule\Set-TargetResource' -Tag 'Set' {
 
                 $testParams = @{
                     Name           = 'ServerName'
-                    Classification = '00000000-0000-0000-0000-0000testguid'
+                    Classification = @('00000000-0000-0000-0000-0000testguid')
                 }
 
                 $errorRecord = Get-InvalidOperationRecord -Message ($script:localizedData.RuleFailedToCreate -f $testParams.Name)
@@ -483,107 +432,246 @@ Describe 'MSFT_UpdateServicesApprovalRule\Set-TargetResource' -Tag 'Set' {
         }
     }
 
+    Context 'When getting the WSUS server fails' {
+        BeforeAll {
+            Mock -CommandName Get-WsusServer
+            Mock -CommandName Test-TargetResource -MockWith { $true }
+        }
 
-    # BeforeAll {
-    #     $Collection = [pscustomobject]@{}
-    #     $Collection | Add-Member -MemberType ScriptMethod -Name Add -Value {}
-    # }
+        Context 'When property ''Synchronize'' is $false the resource should not throw' {
+            It 'Should not throw an error' {
+                InModuleScope -ScriptBlock {
+                    Set-StrictMode -Version 1.0
 
-    # Context 'server is already in a correct state (resource is idempotent)' {
-    #     BeforeAll {
-    #         Mock New-Object -mockwith { $Collection }
-    #         Mock Get-WsusProduct -mockwith {}
-    #         Mock -CommandName New-InvalidOperationException -MockWith {}
-    #         Mock -CommandName New-InvalidResultException -MockWith {}
-    #         Mock -CommandName New-InvalidArgumentException -MockWith {}
-    #     }
+                    $testParams = @{
+                        Name           = 'ServerName'
+                        Classification = @('00000000-0000-0000-0000-0000testguid')
+                    }
 
-    #     It 'should not throw when running on a properly configured server' {
-    #         { Set-targetResource @DSCSetValues -verbose } | Should -Not -Throw
+                    $null = Set-TargetResource @testParams
+                }
 
-    #         #mock were called
-    #         Should -Invoke New-Object -Exactly 3
-    #         Should -Invoke Get-WsusProduct -Exactly 1
+                Should -Invoke -CommandName Get-WsusServer -Exactly -Times 1 -Scope It
+                Should -Invoke -CommandName Test-TargetResource -Exactly -Times 1 -Scope It
+            }
+        }
+    }
 
-    #         #mock are not called
-    #         Should -Invoke New-InvalidResultException -Exactly 0
-    #         Should -Invoke New-InvalidArgumentException -Exactly 0
-    #         Should -Invoke New-InvalidOperationException -Exactly 0
-    #     }
-    # }
+    Context 'When the approval rule already exists' {
+        BeforeAll {
+            Mock -CommandName Get-WsusServer -MockWith {
+                return CommonTestHelper\Get-WsusServerTemplate
+            }
 
-    # Context 'server is not in a correct state (resource takes action)' {
-    #     BeforeAll {
-    #         Mock New-Object -mockwith { $Collection }
-    #         Mock Get-WsusProduct -mockwith {}
-    #         Mock -CommandName New-InvalidOperationException -MockWith {}
-    #         Mock -CommandName New-InvalidResultException -MockWith {}
-    #         Mock -CommandName New-InvalidArgumentException -MockWith {}
-    #         Mock Test-TargetResource -mockwith { $true }
-    #     }
+            Mock -CommandName New-Object -MockWith {
+                $obj = [PSCustomObject] @{}
+                $obj | Add-Member -Force -MemberType ScriptMethod -Name Add -Value { return }
+                return $obj
+            }
 
-    #     It 'should not throw when running on an incorrectly configured server' {
-    #         { Set-targetResource -Name 'Foo' -Classification '00000000-0000-0000-0000-0000testguid' -verbose } | Should -Not -Throw
+            Mock -CommandName Get-WsusClassification -MockWith {
+                return [PSCustomObject] @{
+                    Classification = [PSCustomObject] @{
+                        ID = [PSCustomObject] @{
+                            Guid = '00000000-0000-0000-0000-0000testguid'
+                        }
+                    }
+                }
+            }
 
-    #         #mock were called
-    #         Should -Invoke New-Object -Exactly 3
-    #         Should -Invoke Test-TargetResource -Exactly 1
-    #         Should -Invoke Get-WsusProduct -Exactly 1
+            Mock -CommandName Get-WsusProduct -MockWith {
+                return [PSCustomObject] @{
+                    Title = 'Product'
+                    Id    = 'SomeId'
+                }
+            }
+            Mock -CommandName Test-TargetResource -MockWith { $true }
+        }
 
-    #         #mock are not called
-    #         Should -Invoke New-InvalidResultException -Exactly 0
-    #         Should -Invoke New-InvalidArgumentException -Exactly 0
-    #         Should -Invoke New-InvalidOperationException -Exactly 0
-    #     }
-    # }
+        It 'Should not throw an error' {
+            InModuleScope -ScriptBlock {
+                Set-StrictMode -Version 1.0
 
-    # Context 'server should not be configured (Ensure=Absent)' {
-    #     BeforeAll {
-    #         Mock New-Object -mockwith { $Collection }
-    #         Mock Get-WsusProduct -mockwith {}
-    #         Mock -CommandName New-InvalidOperationException -MockWith {}
-    #         Mock -CommandName New-InvalidResultException -MockWith {}
-    #         Mock -CommandName New-InvalidArgumentException -MockWith {}
-    #         Mock Test-TargetResource -mockwith { $true }
-    #     }
+                $testParams = @{
+                    Ensure         = 'Present'
+                    Name           = 'ServerName'
+                    Classification = @('00000000-0000-0000-0000-0000testguid')
+                    Products       = @('Product')
+                    ComputerGroups = @('Computer Target Group')
+                    Enabled        = $true
+                }
 
-    #     It 'should not throw when running on an incorrectly configured server' {
-    #         { Set-targetResource @DSCSetValues -Ensure Absent -verbose } | Should -Not -Throw
+                $null = Set-TargetResource @testParams
+            }
 
-    #         #mock were called
-    #         Should -Invoke Test-TargetResource -Exactly 1
+            Should -Invoke -CommandName Get-WsusServer -Exactly -Times 1 -Scope It
+            Should -Invoke -CommandName Get-WsusClassification -Exactly -Times 1 -Scope It
+            Should -Invoke -CommandName Get-WsusProduct -Exactly -Times 1 -Scope It
+            Should -Invoke -CommandName Test-TargetResource -Exactly -Times 1 -Scope It
+        }
 
-    #         #mock are not called
-    #         Should -Invoke New-Object -Exactly 0
-    #         Should -Invoke Get-WsusProduct -Exactly 0
-    #         Should -Invoke New-InvalidResultException -Exactly 0
-    #         Should -Invoke New-InvalidArgumentException -Exactly 0
-    #         Should -Invoke New-InvalidOperationException -Exactly 0
-    #     }
-    # }
+        Context 'When the classification does not exist' {
+            BeforeAll {
+                Mock -CommandName Get-WsusClassification
+                Mock -CommandName Get-WsusProduct
+                Mock -CommandName Test-TargetResource -MockWith { $true }
+            }
 
-    # Context 'server is in correct state and synchronize is included' {
-    #     BeforeAll {
-    #         Mock New-Object -mockwith { $Collection }
-    #         Mock Get-WsusProduct -mockwith {}
-    #         Mock -CommandName New-InvalidOperationException -MockWith {}
-    #         Mock -CommandName New-InvalidResultException -MockWith {}
-    #         Mock -CommandName New-InvalidArgumentException -MockWith {}
-    #         Mock Test-TargetResource -mockwith { $true }
-    #     }
+            It 'Should not throw an error' {
+                InModuleScope -ScriptBlock {
+                    Set-StrictMode -Version 1.0
 
-    #     It 'should not throw when running on a properly configured server' {
-    #         { Set-targetResource @DSCSetValues -Synchronize $true -verbose } | Should -Not -Throw
+                    $testParams = @{
+                        Ensure         = 'Present'
+                        Name           = 'ServerName'
+                        Classification = @('00000000-0000-0000-0000-0000testguid')
+                        Products       = @('Product')
+                        ComputerGroups = @('Computer Target Group')
+                        Enabled        = $true
+                    }
 
-    #         #mock were called
-    #         Should -Invoke New-Object -Exactly 3
-    #         Should -Invoke Test-TargetResource -Exactly 1
-    #         Should -Invoke Get-WsusProduct -Exactly 1
+                    $null = Set-TargetResource @testParams
+                }
 
-    #         #mock are not called
-    #         Should -Invoke New-InvalidResultException -Exactly 0
-    #         Should -Invoke New-InvalidArgumentException -Exactly 0
-    #         Should -Invoke New-InvalidOperationException -Exactly 0
-    #     }
-    # }
+                Should -Invoke -CommandName Get-WsusServer -Exactly -Times 1 -Scope It
+                Should -Invoke -CommandName Get-WsusClassification -Exactly -Times 1 -Scope It
+                Should -Invoke -CommandName Get-WsusProduct -Exactly -Times 1 -Scope It
+                Should -Invoke -CommandName Test-TargetResource -Exactly -Times 1 -Scope It
+            }
+        }
+    }
+
+    Context 'When the approval rule should be created' {
+        BeforeAll {
+            Mock -CommandName Get-WsusServer -MockWith {
+                $template = CommonTestHelper\Get-WsusServerTemplate
+                $template | Add-Member -Force -MemberType ScriptMethod -Name GetInstallApprovalRules -Value { return }
+
+                return $template
+            }
+
+            Mock -CommandName New-Object -MockWith {
+                $obj = [PSCustomObject] @{}
+                $obj | Add-Member -Force -MemberType ScriptMethod -Name Add -Value { return }
+                return $obj
+            }
+
+            Mock -CommandName Get-WsusClassification -MockWith {
+                return [PSCustomObject] @{
+                    Classification = [PSCustomObject] @{
+                        ID = [PSCustomObject] @{
+                            Guid = '00000000-0000-0000-0000-0000testguid'
+                        }
+                    }
+                }
+            }
+
+            Mock -CommandName Get-WsusProduct
+            Mock -CommandName Test-TargetResource -MockWith { $true }
+        }
+
+        It 'Should not throw an error' {
+            InModuleScope -ScriptBlock {
+                Set-StrictMode -Version 1.0
+
+                $testParams = @{
+                    Ensure         = 'Present'
+                    Name           = 'ServerName'
+                    Classification = @('00000000-0000-0000-0000-0000testguid')
+                    Products       = @('Product')
+                    ComputerGroups = @('Computer Target Group')
+                    Enabled        = $true
+                }
+
+                $null = Set-TargetResource @testParams
+            }
+
+            Should -Invoke -CommandName Get-WsusServer -Exactly -Times 1 -Scope It
+            Should -Invoke -CommandName Get-WsusClassification -Exactly -Times 1 -Scope It
+            Should -Invoke -CommandName Get-WsusProduct -Exactly -Times 1 -Scope It
+            Should -Invoke -CommandName Test-TargetResource -Exactly -Times 1 -Scope It
+        }
+    }
+
+    Context 'When the approval rule should be removed' {
+        BeforeAll {
+            Mock -CommandName Get-WsusServer -MockWith {
+                CommonTestHelper\Get-WsusServerTemplate
+            }
+
+            Mock -CommandName New-Object -MockWith {
+                $obj = [PSCustomObject] @{}
+                $obj | Add-Member -Force -MemberType ScriptMethod -Name Add -Value { return }
+                return $obj
+            }
+
+            Mock -CommandName Get-WsusClassification -MockWith {
+                return [PSCustomObject] @{
+                    Classification = [PSCustomObject] @{
+                        ID = [PSCustomObject] @{
+                            Guid = '00000000-0000-0000-0000-0000testguid'
+                        }
+                    }
+                }
+            }
+
+            Mock -CommandName Get-WsusProduct
+            Mock -CommandName Test-TargetResource -MockWith { $true }
+        }
+
+        It 'Should not throw an error' {
+            InModuleScope -ScriptBlock {
+                Set-StrictMode -Version 1.0
+
+                $testParams = @{
+                    Ensure         = 'Absent'
+                    Name           = 'ServerName'
+                    Classification = @('00000000-0000-0000-0000-0000testguid')
+                    Products       = @('Product')
+                    ComputerGroups = @('Computer Target Group')
+                    Enabled        = $true
+                }
+
+                $null = Set-TargetResource @testParams
+            }
+
+            Should -Invoke -CommandName Get-WsusServer -Exactly -Times 1 -Scope It
+            Should -Invoke -CommandName Get-WsusClassification -Exactly -Times 0 -Scope It
+            Should -Invoke -CommandName Get-WsusProduct -Exactly -Times 0 -Scope It
+            Should -Invoke -CommandName Test-TargetResource -Exactly -Times 1 -Scope It
+        }
+    }
+
+    Context 'When the approval rule does not create' {
+        BeforeAll {
+            Mock -CommandName Get-WsusServer -MockWith {
+                $template = CommonTestHelper\Get-WsusServerTemplate
+                $template | Add-Member -Force -MemberType ScriptMethod -Name GetInstallApprovalRules -Value { return }
+                $template | Add-Member -Force -MemberType ScriptMethod -Name CreateInstallApprovalRule -Value { return }
+
+                return $template
+            }
+        }
+
+        It 'Should throw the correct error' {
+            InModuleScope -ScriptBlock {
+                Set-StrictMode -Version 1.0
+
+                $testParams = @{
+                    Ensure         = 'Present'
+                    Name           = 'ServerName'
+                    Classification = @('00000000-0000-0000-0000-0000testguid')
+                    Products       = @('Product')
+                    ComputerGroups = @('Computer Target Group')
+                    Enabled        = $true
+                }
+
+                $errorRecord = Get-InvalidOperationRecord -Message ($script:localizedData.RuleFailedToCreate -f $testParams.Name)
+
+                { Set-TargetResource @testParams } | Should -Throw -ExpectedMessage ($errorRecord.Exception.Message + '*')
+            }
+
+            Should -Invoke -CommandName Get-WsusServer -Exactly -Times 1 -Scope It
+        }
+    }
 }
