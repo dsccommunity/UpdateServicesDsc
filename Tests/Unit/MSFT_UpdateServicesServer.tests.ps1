@@ -52,7 +52,7 @@ BeforeAll {
         ProxyServerCredentialUsername     = $null
         ProxyServerBasicAuthentication    = $null
         Languages                         = '*'
-        Products                          = '*'
+        Products                          = @("Office", "Windows")
         Classifications                   = '*'
         SynchronizeAutomatically          = $true
         SynchronizeAutomaticallyTimeOfDay = '04:00:00'
@@ -72,7 +72,7 @@ BeforeAll {
         ProxyServerName                   = 'ProxyServer'
         ProxyServerPort                   = 8080
         Languages                         = "*"
-        Products                          = @("Windows", "Office")
+        Products                          = @("Office", "Windows")
         Classifications                   = @('E6CF1350-C01B-414D-A61F-263D14D133B4', 'E0789628-CE08-4437-BE74-2495B842F43B', '0FA1201D-4330-4FA8-8AE9-B877473B6441')
         SynchronizeAutomatically          = $true
         SynchronizeAutomaticallyTimeOfDay = '04:00:00'
@@ -114,7 +114,7 @@ Describe "MSFT_UpdateServicesServer\Get-TargetResource" {
         }
 
         It "returns good values in Get results"  {
-            foreach ($setting in $DSCSetValues.Keys)
+            foreach ($setting in $DSCGetValues.Keys)
             {
                 $Script:resource.$setting | Should -Be $DSCGetValues.$setting
             }
