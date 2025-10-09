@@ -9,7 +9,7 @@ BeforeDiscovery {
             # Assumes dependencies has been resolved, so if this module is not available, run 'noop' task.
             if (-not (Get-Module -Name 'DscResource.Test' -ListAvailable))
             {
-                # Redirect all streams to $null, except the error stream (stream 3)
+                # Redirect all streams to $null, except the error stream (stream 2)
                 & "$PSScriptRoot/../../build.ps1" -Tasks 'noop' 1> $null 3> $null 4> $null 5> $null 6> $null
             }
 
