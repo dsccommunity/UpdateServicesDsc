@@ -4,26 +4,31 @@
         AddToPath  = $true
         Target     = 'output\RequiredModules'
         Parameters = @{
-           Repository = 'PSGallery'
+            Repository = 'PSGallery'
         }
     }
 
-    'powershell-yaml'           = 'latest'
     InvokeBuild                 = 'latest'
     PSScriptAnalyzer            = 'latest'
-    Pester                      = '5.3.3'
+    Pester                      = 'latest'
     Plaster                     = 'latest'
-    ModuleBuilder               = '1.0.0'
+    ModuleBuilder               = 'latest'
     ChangelogManagement         = 'latest'
     Sampler                     = 'latest'
     'Sampler.GitHubTasks'       = 'latest'
     MarkdownLinkCheck           = 'latest'
     'DscResource.Test'          = 'latest'
-    'DscResource.AnalyzerRules' = 'latest'
     xDscResourceDesigner        = 'latest'
-    'DscResource.DocGenerator'  = 'latest'
+
+    # Build dependencies needed for using the module
     'DscResource.Common'        = 'latest'
 
+    # Analyzer rules
+    'DscResource.AnalyzerRules' = 'latest'
+
+    # Prerequisite modules for documentation.
+    'DscResource.DocGenerator'  = 'latest'
+    PlatyPS                     = 'latest'
 
     # PSPKI                       = 'latest'
     # 'DscResource.Common' = @{

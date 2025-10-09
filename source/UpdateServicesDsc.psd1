@@ -1,31 +1,27 @@
 @{
-
     # Script module or binary module file associated with this manifest.
-    # RootModule = ''
+    RootModule           = 'UpdateServicesDsc.psm1'
 
     # Version number of this module.
-    ModuleVersion = '0.0.1'
-
-    # Supported PSEditions
-    # CompatiblePSEditions = @()
+    ModuleVersion        = '0.0.1'
 
     # ID used to uniquely identify this module
-    GUID = 'bc19eee1-0dce-4be1-8404-ae6df1ae347d'
+    GUID                 = 'bc19eee1-0dce-4be1-8404-ae6df1ae347d'
 
     # Author of this module
-    Author = 'DSC Community'
+    Author               = 'DSC Community'
 
     # Company or vendor of this module
-    CompanyName = 'DSC Community'
+    CompanyName          = 'DSC Community'
 
     # Copyright statement for this module
-    Copyright = '(c) Copyright the DSC Community contributors. All rights reserved.'
+    Copyright            = '(c) Copyright the DSC Community contributors. All rights reserved.'
 
     # Description of the functionality provided by this module
-    Description = 'Module with DSC Resources for deployment and configuration of Windows Server Update Services.'
+    Description          = 'Module with DSC Resources for deployment and configuration of Windows Server Update Services.'
 
     # Minimum version of the Windows PowerShell engine required by this module
-    PowerShellVersion = '5.1'
+    PowerShellVersion    = '5.1'
 
     # Name of the Windows PowerShell host required by this module
     # PowerShellHostName = ''
@@ -37,7 +33,7 @@
     # DotNetFrameworkVersion = ''
 
     # Minimum version of the common language runtime (CLR) required by this module. This prerequisite is valid for the PowerShell Desktop edition only.
-    CLRVersion = '4.0'
+    CLRVersion           = '4.0'
 
     # Processor architecture (None, X86, Amd64) required by this module
     # ProcessorArchitecture = ''
@@ -61,19 +57,19 @@
     # NestedModules = @()
 
     # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-    FunctionsToExport = @()
+    FunctionsToExport    = @()
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
-    CmdletsToExport = @()
+    CmdletsToExport      = @()
 
     # Variables to export from this module
-    # VariablesToExport = @()
+    VariablesToExport = @()
 
     # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
-    AliasesToExport = @()
+    AliasesToExport      = @()
 
     # DSC resources to export from this module
-    DscResourcesToExport = @('UpdateServicesApprovalRule', 'UpdateServicesCleanup','UpdateServicesComputerTargetGroup','UpdateServicesServer')
+    DscResourcesToExport = @()
 
     # List of all modules packaged with this module
     # ModuleList = @()
@@ -82,21 +78,21 @@
     # FileList = @()
 
     # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
-    PrivateData = @{
+    PrivateData          = @{
 
         PSData = @{
 
             # Tags applied to this module. These help with module discovery in online galleries.
-            Tags = 'DSCResource','WSUS','DSCResourceKit'
+            Tags         = 'DSCResource', 'WSUS', 'DSCResourceKit'
 
             # A URL to the license for this module.
-            LicenseUri = 'https://github.com/dsccommunity/UpdateServicesDsc/blob/master/LICENSE'
+            LicenseUri   = 'https://github.com/dsccommunity/UpdateServicesDsc/blob/master/LICENSE'
 
             # A URL to the main website for this project.
-            ProjectUri = 'https://github.com/dsccommunity/UpdateServicesDsc/'
+            ProjectUri   = 'https://github.com/dsccommunity/UpdateServicesDsc/'
 
             # A URL to an icon representing this module.
-            IconUri = 'https://dsccommunity.org/images/DSC_Logo_300p.png'
+            IconUri      = 'https://dsccommunity.org/images/DSC_Logo_300p.png'
 
             # ReleaseNotes of this module
             ReleaseNotes = ''
@@ -104,7 +100,7 @@
             # External dependent modules of this module
             # ExternalModuleDependencies = ''
 
-            Prerelease = ''
+            Prerelease   = ''
 
         } # End of PSData hashtable
 

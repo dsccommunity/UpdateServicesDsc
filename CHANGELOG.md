@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Updated to load localization strings correctly.
 - General code cleanup
 - Updated Classifications ID reference with additional potential classification GUIDs
+- Updated module to use latest Sampler files and modules.
 - Updated all tests with newer DSC Community headers.
 
 ### Added
