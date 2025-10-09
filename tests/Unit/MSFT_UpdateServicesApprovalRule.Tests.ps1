@@ -79,7 +79,7 @@ AfterAll {
 # }
 
 Describe 'MSFT_UpdateServicesApprovalRule\Get-TargetResource' -Tag 'Get' {
-    Context 'When the server should be configured' {
+    Context 'When the server should be configured with specific classifications, products and computer groups' {
         BeforeAll {
             Mock -CommandName Get-WsusServer -MockWith {
                 $obj = [PSCustomObject] @{}
@@ -129,6 +129,48 @@ Describe 'MSFT_UpdateServicesApprovalRule\Get-TargetResource' -Tag 'Get' {
                 $result.ComputerGroups | Should -Be 'Computer Target Group'
                 $result.Enabled | Should -BeTrue
             }
+
+            Should -Invoke -CommandName Get-WsusServer -Exactly -Times 1 -Scope It
+        }
+    }
+
+    Context 'When the server should be configured with default classifications, products and computer groups' {
+        BeforeAll {
+            Mock -CommandName Get-WsusServer -MockWith {
+                $obj = [PSCustomObject] @{}
+                $obj | Add-Member -Force -MemberType ScriptMethod -Name GetInstallApprovalRules -Value {
+                    $ApprovalRule = [PSCustomObject] @{
+                        Name    = 'ServerName'
+                        Enabled = $true
+                    }
+
+                    $ApprovalRule | Add-Member -Force -MemberType ScriptMethod -Name GetUpdateClassifications -Value { return }
+
+                    $ApprovalRule | Add-Member -Force -MemberType ScriptMethod -Name GetCategories -Value { return }
+
+                    $ApprovalRule | Add-Member -Force -MemberType ScriptMethod -Name GetComputerTargetGroups -Value { return }
+
+                    return $ApprovalRule
+                }
+
+                return $obj
+            }
+        }
+
+        It 'Should return the correct result' {
+            InModuleScope -ScriptBlock {
+                Set-StrictMode -Version 1.0
+
+                $result = Get-TargetResource -Name 'ServerName'
+
+                $result.Ensure | Should -Be 'Present'
+                $result.Classifications | Should -Be @('All Classifications')
+                $result.Products | Should -Be @('All Products')
+                $result.ComputerGroups | Should -Be @('All Computers')
+                $result.Enabled | Should -BeTrue
+            }
+
+            Should -Invoke -CommandName Get-WsusServer -Exactly -Times 1 -Scope It
         }
     }
 
@@ -149,6 +191,8 @@ Describe 'MSFT_UpdateServicesApprovalRule\Get-TargetResource' -Tag 'Get' {
                 $result.ComputerGroups | Should -BeNullOrEmpty
                 $result.Enabled | Should -BeNullOrEmpty
             }
+
+            Should -Invoke -CommandName Get-WsusServer -Exactly -Times 1 -Scope It
         }
     }
 
@@ -201,6 +245,8 @@ Describe 'MSFT_UpdateServicesApprovalRule\Get-TargetResource' -Tag 'Get' {
                     $result.ComputerGroups | Should -BeNullOrEmpty
                     $result.Enabled | Should -BeNullOrEmpty
                 }
+
+                Should -Invoke -CommandName Get-WsusServer -Exactly -Times 1 -Scope It
             }
         }
     }
@@ -220,176 +266,324 @@ Describe 'MSFT_UpdateServicesApprovalRule\Get-TargetResource' -Tag 'Get' {
 
                 { Get-TargetResource -Name 'ServerName' } | Should -Throw -ExpectedMessage ($errorRecord.Exception.Message + '*')
             }
+
+            Should -Invoke -CommandName Get-WsusServer -Exactly -Times 1 -Scope It
         }
     }
 }
 
-Describe 'MSFT_UpdateServicesApprovalRule\Test-TargetResource' -Skip:$true {
-    Context 'server is in correct state (Ensure=Present)' {
-        BeforeAll {
-            $DSCTestValues.Remove('Ensure')
-            $DSCTestValues.Add('Ensure', 'Present')
-            $script:result = $null
+Describe 'MSFT_UpdateServicesApprovalRule\Test-TargetResource' -Tag 'Test' {
+    Context 'When the resource is in the desired state' {
+        Context 'When the resource exists' {
+            BeforeAll {
+                Mock -CommandName Get-TargetResource -MockWith {
+                    return @{
+                        Ensure          = 'Present'
+                        Name            = 'ServerName'
+                        Classifications = @('00000000-0000-0000-0000-0000testguid')
+                        Products        = @('Product')
+                        ComputerGroups  = @('Computer Target Group')
+                        Enabled         = $true
+                    }
+                }
+            }
+
+            It 'Should return the correct result' {
+                InModuleScope -ScriptBlock {
+                    Set-StrictMode -Version 1.0
+
+                    $testParams = @{
+                        Ensure          = 'Present'
+                        Name            = 'ServerName'
+                        Classifications = @('00000000-0000-0000-0000-0000testguid')
+                        Products        = @('Product')
+                        ComputerGroups  = @('Computer Target Group')
+                        Enabled         = $true
+                    }
+
+                    Test-TargetResource @testParams | Should -BeTrue
+                }
+            }
         }
 
-        It 'calling test should not throw' {
-            { $script:result = Test-TargetResource @DSCTestValues -verbose } | Should -not -throw
-        }
+        Context 'When the resource does not exist' {
+            BeforeAll {
+                Mock -CommandName Get-TargetResource -MockWith {
+                    return @{
+                        Ensure          = 'Absent'
+                        Name            = 'ServerName'
+                        Classifications = $null
+                        Products        = $null
+                        ComputerGroups  = $null
+                        Enabled         = $null
+                    }
+                }
+            }
 
-        It 'result should be true' {
-            $script:result | Should -Be $true
+            It 'Should return the correct result' {
+                InModuleScope -ScriptBlock {
+                    Set-StrictMode -Version 1.0
+
+                    $testParams = @{
+                        Ensure = 'Absent'
+                        Name   = 'ServerName'
+                    }
+
+                    Test-TargetResource @testParams | Should -BeTrue
+                }
+            }
         }
     }
 
-    Context 'server should not be configured (Ensure=Absent) but is' {
-        BeforeAll {
-            $DSCTestValues.Remove('Ensure')
-            $DSCTestValues.Add('Ensure', 'Absent')
-            $script:result = $null
-        }
-
-        It 'calling test should not throw' {
-            { $script:result = Test-TargetResource @DSCTestValues -verbose } | Should -not -throw
-        }
-
-        It 'result should be false' {
-            $script:result | Should -BeFalse
-        }
-    }
-
-    Context 'setting has drifted' {
-        BeforeAll {
-            $DSCTestValues.Remove('Ensure')
-            $DSCTestValues.Add('Ensure', 'Present')
-        }
-
-        $settingsList = 'Classifications', 'Products', 'ComputerGroups'
-        Context 'When <_> property is drifted' -Foreach $settingsList {
+    Context 'When the resource is not in the desired state' {
+        Context 'When the resource exists' {
             BeforeAll {
-                #$valueWithoutDrift = $DSCTestValues.$_
+                Mock -CommandName Get-TargetResource -MockWith {
+                    return @{
+                        Ensure          = 'Present'
+                        Name            = 'ServerName'
+                        Classifications = @('00000000-0000-0000-0000-0000testguid')
+                        Products        = @('Product')
+                        ComputerGroups  = @('Computer Target Group')
+                        Enabled         = $true
+                    }
+                }
             }
 
-            It 'calling test should not throw' {
-                $DSCTestValuesDrifted = $DSCTestValues.Clone()
-                $DSCTestValuesDrifted["$_"] = 'foo'
-                $script:result = $null
-                { $script:result = Test-TargetResource @DSCTestValuesDrifted -verbose } | Should -Not -Throw
-            }
+            It 'Should return the correct result' {
+                InModuleScope -ScriptBlock {
+                    Set-StrictMode -Version 1.0
 
-            It "result should be false when $setting has changed" {
-                $script:result | Should -BeFalse
-            }
+                    $testParams = @{
+                        Ensure = 'Absent'
+                        Name   = 'ServerName'
+                    }
 
+                    Test-TargetResource @testParams | Should -BeFalse
+                }
+            }
+        }
+
+        Context 'When the resource does not exist' {
             BeforeAll {
-                #$DSCTestValues.Remove("$_")
-                #$DSCTestValues.Add("$_",$valueWithoutDrift)
+                Mock -CommandName Get-TargetResource -MockWith {
+                    return @{
+                        Ensure          = 'Absent'
+                        Name            = 'ServerName'
+                        Classifications = $null
+                        Products        = $null
+                        ComputerGroups  = $null
+                        Enabled         = $null
+                    }
+                }
+            }
+
+            It 'Should return the correct result' {
+                InModuleScope -ScriptBlock {
+                    Set-StrictMode -Version 1.0
+
+                    $testParams = @{
+                        Ensure          = 'Present'
+                        Name            = 'ServerName'
+                        Classifications = @('00000000-0000-0000-0000-0000testguid')
+                        Products        = @('Product')
+                        ComputerGroups  = @('Computer Target Group')
+                        Enabled         = $true
+                    }
+
+                    Test-TargetResource @testParams | Should -BeFalse
+                }
+            }
+        }
+
+        BeforeDiscovery {
+            $testCases = @(
+                @{
+                    PropertyName = 'Classifications'
+                    Value        = 'foo'
+                },
+                @{
+                    PropertyName = 'Products'
+                    Value        = 'foo'
+                },
+                @{
+                    PropertyName = 'ComputerGroups'
+                    Value        = 'foo'
+                }
+                @{
+                    PropertyName = 'Enabled'
+                    Value        = $false
+                }
+            )
+        }
+
+        Context 'When the property <PropertyName> is incorrect' -ForEach $testCases {
+            BeforeAll {
+                Mock -CommandName Get-TargetResource -MockWith {
+                    $obj = @{
+                        Ensure          = 'Present'
+                        Name            = 'ServerName'
+                        Classifications = @('00000000-0000-0000-0000-0000testguid')
+                        Products        = @('Product')
+                        ComputerGroups  = @('Computer Target Group')
+                        Enabled         = $true
+                    }
+
+                    $obj[$PropertyName] = $Value
+
+                    return $obj
+                }
+            }
+
+            It 'Should return the correct result' {
+                InModuleScope -Parameters $_ -ScriptBlock {
+                    Set-StrictMode -Version 1.0
+
+                    $testParams = @{
+                        Ensure          = 'Present'
+                        Name            = 'ServerName'
+                        Classifications = @('00000000-0000-0000-0000-0000testguid')
+                        Products        = @('Product')
+                        ComputerGroups  = @('Computer Target Group')
+                        Enabled         = $true
+                    }
+
+                    $result = Test-TargetResource @testParams
+
+                    $result | Should -BeFalse
+                }
             }
         }
     }
 }
 
-#region Function Set-TargetResource
-Describe 'MSFT_UpdateServicesApprovalRule\Set-TargetResource' -Skip:$true {
-    BeforeAll {
-        $Collection = [pscustomobject]@{}
-        $Collection | Add-Member -MemberType ScriptMethod -Name Add -Value {}
-    }
-
-    Context 'server is already in a correct state (resource is idempotent)' {
+Describe 'MSFT_UpdateServicesApprovalRule\Set-TargetResource' -Tag 'Set' {
+    Context 'When setting the resource fails' {
         BeforeAll {
-            Mock New-Object -mockwith { $Collection }
-            Mock Get-WsusProduct -mockwith {}
-            Mock -CommandName New-InvalidOperationException -MockWith {}
-            Mock -CommandName New-InvalidResultException -MockWith {}
-            Mock -CommandName New-InvalidArgumentException -MockWith {}
+            Mock Get-WsusServer -MockWith {
+                throw 'Some error'
+            }
         }
 
-        It 'should not throw when running on a properly configured server' {
-            { Set-targetResource @DSCSetValues -verbose } | Should -Not -Throw
+        It 'Should throw the correct error' {
+            InModuleScope -ScriptBlock {
+                Set-StrictMode -Version 1.0
 
-            #mock were called
-            Should -Invoke New-Object -Exactly 3
-            Should -Invoke Get-WsusProduct -Exactly 1
+                $testParams = @{
+                    Name           = 'ServerName'
+                    Classification = '00000000-0000-0000-0000-0000testguid'
+                }
 
-            #mock are not called
-            Should -Invoke New-InvalidResultException -Exactly 0
-            Should -Invoke New-InvalidArgumentException -Exactly 0
-            Should -Invoke New-InvalidOperationException -Exactly 0
-        }
-    }
+                $errorRecord = Get-InvalidOperationRecord -Message ($script:localizedData.RuleFailedToCreate -f $testParams.Name)
 
-    Context 'server is not in a correct state (resource takes action)' {
-        BeforeAll {
-            Mock New-Object -mockwith { $Collection }
-            Mock Get-WsusProduct -mockwith {}
-            Mock -CommandName New-InvalidOperationException -MockWith {}
-            Mock -CommandName New-InvalidResultException -MockWith {}
-            Mock -CommandName New-InvalidArgumentException -MockWith {}
-            Mock Test-TargetResource -mockwith { $true }
-        }
+                { Set-TargetResource @testParams } | Should -Throw -ExpectedMessage ($errorRecord.Exception.Message + '*')
+            }
 
-        It 'should not throw when running on an incorrectly configured server' {
-            { Set-targetResource -Name 'Foo' -Classification '00000000-0000-0000-0000-0000testguid' -verbose } | Should -Not -Throw
-
-            #mock were called
-            Should -Invoke New-Object -Exactly 3
-            Should -Invoke Test-TargetResource -Exactly 1
-            Should -Invoke Get-WsusProduct -Exactly 1
-
-            #mock are not called
-            Should -Invoke New-InvalidResultException -Exactly 0
-            Should -Invoke New-InvalidArgumentException -Exactly 0
-            Should -Invoke New-InvalidOperationException -Exactly 0
+            Should -Invoke -CommandName Get-WsusServer -Exactly -Times 1 -Scope It
         }
     }
 
-    Context 'server should not be configured (Ensure=Absent)' {
-        BeforeAll {
-            Mock New-Object -mockwith { $Collection }
-            Mock Get-WsusProduct -mockwith {}
-            Mock -CommandName New-InvalidOperationException -MockWith {}
-            Mock -CommandName New-InvalidResultException -MockWith {}
-            Mock -CommandName New-InvalidArgumentException -MockWith {}
-            Mock Test-TargetResource -mockwith { $true }
-        }
 
-        It 'should not throw when running on an incorrectly configured server' {
-            { Set-targetResource @DSCSetValues -Ensure Absent -verbose } | Should -Not -Throw
+    # BeforeAll {
+    #     $Collection = [pscustomobject]@{}
+    #     $Collection | Add-Member -MemberType ScriptMethod -Name Add -Value {}
+    # }
 
-            #mock were called
-            Should -Invoke Test-TargetResource -Exactly 1
+    # Context 'server is already in a correct state (resource is idempotent)' {
+    #     BeforeAll {
+    #         Mock New-Object -mockwith { $Collection }
+    #         Mock Get-WsusProduct -mockwith {}
+    #         Mock -CommandName New-InvalidOperationException -MockWith {}
+    #         Mock -CommandName New-InvalidResultException -MockWith {}
+    #         Mock -CommandName New-InvalidArgumentException -MockWith {}
+    #     }
 
-            #mock are not called
-            Should -Invoke New-Object -Exactly 0
-            Should -Invoke Get-WsusProduct -Exactly 0
-            Should -Invoke New-InvalidResultException -Exactly 0
-            Should -Invoke New-InvalidArgumentException -Exactly 0
-            Should -Invoke New-InvalidOperationException -Exactly 0
-        }
-    }
+    #     It 'should not throw when running on a properly configured server' {
+    #         { Set-targetResource @DSCSetValues -verbose } | Should -Not -Throw
 
-    Context 'server is in correct state and synchronize is included' {
-        BeforeAll {
-            Mock New-Object -mockwith { $Collection }
-            Mock Get-WsusProduct -mockwith {}
-            Mock -CommandName New-InvalidOperationException -MockWith {}
-            Mock -CommandName New-InvalidResultException -MockWith {}
-            Mock -CommandName New-InvalidArgumentException -MockWith {}
-            Mock Test-TargetResource -mockwith { $true }
-        }
+    #         #mock were called
+    #         Should -Invoke New-Object -Exactly 3
+    #         Should -Invoke Get-WsusProduct -Exactly 1
 
-        It 'should not throw when running on a properly configured server' {
-            { Set-targetResource @DSCSetValues -Synchronize $true -verbose } | Should -Not -Throw
+    #         #mock are not called
+    #         Should -Invoke New-InvalidResultException -Exactly 0
+    #         Should -Invoke New-InvalidArgumentException -Exactly 0
+    #         Should -Invoke New-InvalidOperationException -Exactly 0
+    #     }
+    # }
 
-            #mock were called
-            Should -Invoke New-Object -Exactly 3
-            Should -Invoke Test-TargetResource -Exactly 1
-            Should -Invoke Get-WsusProduct -Exactly 1
+    # Context 'server is not in a correct state (resource takes action)' {
+    #     BeforeAll {
+    #         Mock New-Object -mockwith { $Collection }
+    #         Mock Get-WsusProduct -mockwith {}
+    #         Mock -CommandName New-InvalidOperationException -MockWith {}
+    #         Mock -CommandName New-InvalidResultException -MockWith {}
+    #         Mock -CommandName New-InvalidArgumentException -MockWith {}
+    #         Mock Test-TargetResource -mockwith { $true }
+    #     }
 
-            #mock are not called
-            Should -Invoke New-InvalidResultException -Exactly 0
-            Should -Invoke New-InvalidArgumentException -Exactly 0
-            Should -Invoke New-InvalidOperationException -Exactly 0
-        }
-    }
+    #     It 'should not throw when running on an incorrectly configured server' {
+    #         { Set-targetResource -Name 'Foo' -Classification '00000000-0000-0000-0000-0000testguid' -verbose } | Should -Not -Throw
+
+    #         #mock were called
+    #         Should -Invoke New-Object -Exactly 3
+    #         Should -Invoke Test-TargetResource -Exactly 1
+    #         Should -Invoke Get-WsusProduct -Exactly 1
+
+    #         #mock are not called
+    #         Should -Invoke New-InvalidResultException -Exactly 0
+    #         Should -Invoke New-InvalidArgumentException -Exactly 0
+    #         Should -Invoke New-InvalidOperationException -Exactly 0
+    #     }
+    # }
+
+    # Context 'server should not be configured (Ensure=Absent)' {
+    #     BeforeAll {
+    #         Mock New-Object -mockwith { $Collection }
+    #         Mock Get-WsusProduct -mockwith {}
+    #         Mock -CommandName New-InvalidOperationException -MockWith {}
+    #         Mock -CommandName New-InvalidResultException -MockWith {}
+    #         Mock -CommandName New-InvalidArgumentException -MockWith {}
+    #         Mock Test-TargetResource -mockwith { $true }
+    #     }
+
+    #     It 'should not throw when running on an incorrectly configured server' {
+    #         { Set-targetResource @DSCSetValues -Ensure Absent -verbose } | Should -Not -Throw
+
+    #         #mock were called
+    #         Should -Invoke Test-TargetResource -Exactly 1
+
+    #         #mock are not called
+    #         Should -Invoke New-Object -Exactly 0
+    #         Should -Invoke Get-WsusProduct -Exactly 0
+    #         Should -Invoke New-InvalidResultException -Exactly 0
+    #         Should -Invoke New-InvalidArgumentException -Exactly 0
+    #         Should -Invoke New-InvalidOperationException -Exactly 0
+    #     }
+    # }
+
+    # Context 'server is in correct state and synchronize is included' {
+    #     BeforeAll {
+    #         Mock New-Object -mockwith { $Collection }
+    #         Mock Get-WsusProduct -mockwith {}
+    #         Mock -CommandName New-InvalidOperationException -MockWith {}
+    #         Mock -CommandName New-InvalidResultException -MockWith {}
+    #         Mock -CommandName New-InvalidArgumentException -MockWith {}
+    #         Mock Test-TargetResource -mockwith { $true }
+    #     }
+
+    #     It 'should not throw when running on a properly configured server' {
+    #         { Set-targetResource @DSCSetValues -Synchronize $true -verbose } | Should -Not -Throw
+
+    #         #mock were called
+    #         Should -Invoke New-Object -Exactly 3
+    #         Should -Invoke Test-TargetResource -Exactly 1
+    #         Should -Invoke Get-WsusProduct -Exactly 1
+
+    #         #mock are not called
+    #         Should -Invoke New-InvalidResultException -Exactly 0
+    #         Should -Invoke New-InvalidArgumentException -Exactly 0
+    #         Should -Invoke New-InvalidOperationException -Exactly 0
+    #     }
+    # }
 }
