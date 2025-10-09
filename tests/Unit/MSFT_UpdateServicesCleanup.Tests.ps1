@@ -326,10 +326,6 @@ Describe 'MSFT_UpdateServicesCleanup\Test-TargetResource' -Tag 'Test' {
                     Setting      = 'CleanupLocalPublishedContentFiles'
                     CurrentValue = $false
                 }
-                @{
-                    Setting      = 'TimeOfDay'
-                    CurrentValue = '08:00:00'
-                }
             )
         }
 
@@ -337,7 +333,7 @@ Describe 'MSFT_UpdateServicesCleanup\Test-TargetResource' -Tag 'Test' {
             BeforeAll {
                 Mock -CommandName Get-TargetResource -MockWith {
                     @{
-                        Ensure                            = 'Absent'
+                        Ensure                            = 'Present'
                         DeclineSupersededUpdates          = $true
                         DeclineExpiredUpdates             = $true
                         CleanupObsoleteUpdates            = $true
@@ -366,7 +362,9 @@ Describe 'MSFT_UpdateServicesCleanup\Test-TargetResource' -Tag 'Test' {
                         TimeOfDay                         = '04:00:00'
                     }
 
-                    $result = Test-TargetResource @testParams | Should -BeFalse
+                    $testParams[$Setting] = $CurrentValue
+
+                    Test-TargetResource @testParams | Should -BeFalse
                 }
 
                 Should -Invoke -CommandName Get-TargetResource -Exactly -Times 1 -Scope It
@@ -375,79 +373,134 @@ Describe 'MSFT_UpdateServicesCleanup\Test-TargetResource' -Tag 'Test' {
     }
 }
 
-Describe 'MSFT_UpdateServicesCleanup\Set-TargetResource' -Tag 'Set' -Skip:$true {
-    BeforeAll {
-        $Arguments = 'foo"$DeclineSupersededUpdates = $True;$DeclineExpiredUpdates = $True;$CleanupObsoleteUpdates = $True;$CompressUpdates = $True;$CleanupObsoleteComputers = $True;$CleanupUnneededContentFiles = $True;$CleanupLocalPublishedContentFiles = $True'
-        $Execute = "$($env:SystemRoot)\System32\WindowsPowerShell\v1.0\powershell.exe"
-        $StartBoundary = '20160101T04:00:00'
-        Mock -CommandName Unregister-ScheduledTask -MockWith {}
-        Mock -CommandName Register-ScheduledTask -MockWith {}
-        Mock -CommandName Test-TargetResource -MockWith { $true }
-        Mock -CommandName New-InvalidResultException -MockWith {}
+Describe 'MSFT_UpdateServicesCleanup\Set-TargetResource' -Tag 'Set' {
+    Context 'When the resource should be absent' {
+        Context 'When the resource is absent' {
+            BeforeAll {
+                Mock -CommandName Get-ScheduledTask
+                Mock -CommandName Test-TargetResource -MockWith { $true }
+            }
+
+            It 'Should call the correct mocks' {
+                InModuleScope -ScriptBlock {
+                    Set-StrictMode -Version 1.0
+
+                    $null = Set-TargetResource -Ensure 'Absent'
+                }
+
+                Should -Invoke -CommandName Get-ScheduledTask -Exactly -Times 1 -Scope It
+                Should -Invoke -CommandName Test-TargetResource -Exactly -Times 1 -Scope It
+            }
+        }
+
+        Context 'When the resource is present' {
+            BeforeAll {
+                Mock -CommandName Get-ScheduledTask -MockWith { $true }
+                Mock -CommandName Unregister-ScheduledTask
+                Mock -CommandName Test-TargetResource -MockWith { $true }
+            }
+
+            It 'Should call the correct mocks' {
+                InModuleScope -ScriptBlock {
+                    Set-StrictMode -Version 1.0
+
+                    $null = Set-TargetResource -Ensure 'Absent'
+                }
+
+                Should -Invoke -CommandName Get-ScheduledTask -Exactly -Times 1 -Scope It
+                Should -Invoke -CommandName Unregister-ScheduledTask -Exactly -Times 1 -Scope It
+                Should -Invoke -CommandName Test-TargetResource -Exactly -Times 1 -Scope It
+            }
+        }
+
+        Context 'When Test-TargetResource fails' {
+            BeforeAll {
+                Mock -CommandName Get-ScheduledTask -MockWith { $true }
+                Mock -CommandName Unregister-ScheduledTask
+                Mock -CommandName Test-TargetResource -MockWith { $false }
+            }
+
+            It 'Should throw the correct error' {
+                InModuleScope -ScriptBlock {
+                    Set-StrictMode -Version 1.0
+
+                    $errorRecord = Get-InvalidResultRecord -Message $script:localizedData.TestFailedAfterSet
+
+                    { Set-TargetResource -Ensure 'Absent' } | Should -Throw -ExpectedMessage $errorRecord.Exception.Message
+                }
+
+                Should -Invoke -CommandName Get-ScheduledTask -Exactly -Times 1 -Scope It
+                Should -Invoke -CommandName Unregister-ScheduledTask -Exactly -Times 1 -Scope It
+                Should -Invoke -CommandName Test-TargetResource -Exactly -Times 1 -Scope It
+            }
+        }
     }
 
-    Context 'resource is idempotent (Ensure=Present)' {
-        BeforeAll {
-            Mock -CommandName Get-ScheduledTask -MockWith { $true }
+    Context 'When the resource should be present' {
+        Context 'When the resource is present' {
+            BeforeAll {
+                Mock -CommandName Get-ScheduledTask -MockWith { $true }
+                Mock -CommandName Unregister-ScheduledTask
+                Mock -CommandName Register-ScheduledTask -RemoveParameterValidation @('Action', 'Trigger') -RemoveParameterType @('Action', 'Trigger')
+                Mock -CommandName Test-TargetResource -MockWith { $true }
+            }
+
+            It 'Should call the correct mocks' {
+                InModuleScope -ScriptBlock {
+                    Set-StrictMode -Version 1.0
+
+                    $testParams = @{
+                        Ensure                      = 'Present'
+                        DeclineSupersededUpdates    = $true
+                        DeclineExpiredUpdates       = $true
+                        CleanupObsoleteUpdates      = $true
+                        CompressUpdates             = $true
+                        CleanupObsoleteComputers    = $true
+                        CleanupUnneededContentFiles = $true
+                        TimeOfDay                   = '04:00:00'
+                    }
+
+                    $null = Set-TargetResource @testParams
+                }
+
+                Should -Invoke -CommandName Get-ScheduledTask -Exactly -Times 1 -Scope It
+                Should -Invoke -CommandName Unregister-ScheduledTask -Exactly -Times 1 -Scope It
+                Should -Invoke -CommandName Register-ScheduledTask -Exactly -Times 1 -Scope It
+                Should -Invoke -CommandName Test-TargetResource -Exactly -Times 1 -Scope It
+            }
         }
 
-        it 'should not throw when running on a properly configured server' {
-            { Set-targetResource @DSCSetValues -Ensure Present -verbose } | should -Not -Throw
+        Context 'When the resource is absent' {
+            BeforeAll {
+                Mock -CommandName Get-ScheduledTask
+                Mock -CommandName Unregister-ScheduledTask
+                Mock -CommandName Register-ScheduledTask
+                Mock -CommandName Test-TargetResource -MockWith { $true }
+            }
 
-            #mocks were called for commands that gather information
-            Should -Invoke Get-ScheduledTask -Exactly 1
-            Should -Invoke Unregister-ScheduledTask -Exactly 1
-            Should -Invoke Register-ScheduledTask -Exactly 1
-            Should -Invoke Test-TargetResource -Exactly 1
+            It 'Should call the correct mocks' {
+                InModuleScope -ScriptBlock {
+                    Set-StrictMode -Version 1.0
 
-            #mocks were called that register a task to run WSUS cleanup
-            Should -Invoke Register-ScheduledTask -Exactly 1
+                    $testParams = @{
+                        Ensure                      = 'Present'
+                        DeclineSupersededUpdates    = $true
+                        DeclineExpiredUpdates       = $true
+                        CleanupObsoleteUpdates      = $true
+                        CompressUpdates             = $true
+                        CleanupObsoleteComputers    = $true
+                        CleanupUnneededContentFiles = $true
+                        TimeOfDay                   = '04:00:00'
+                    }
 
-            #mocks were not called that remove tasks or log errors
-            Should -Invoke New-InvalidResultException -Exactly 0
-        }
-    }
+                    $null = Set-TargetResource @testParams
+                }
 
-    Context 'resource processes Set tasks to register Cleanup task (Ensure=Present)' {
-        BeforeAll {
-            Mock -CommandName Get-ScheduledTask -MockWith {}
-        }
-
-        it 'should not throw when running on a properly configured server' {
-            { Set-targetResource @DSCSetValues -Ensure Present -verbose } | should -Not -Throw
-
-            #mocks were called for commands that gather information
-            Should -Invoke Get-ScheduledTask -Exactly 1
-            Should -Invoke Register-ScheduledTask -Exactly 1
-            Should -Invoke Test-TargetResource -Exactly 1
-
-            #mocks were called that register a task to run WSUS cleanup
-            Should -Invoke Register-ScheduledTask -Exactly 1
-
-            #mocks were not called that remove tasks or log errors
-            Should -Invoke Unregister-ScheduledTask -Exactly 0
-            Should -Invoke New-InvalidResultException -Exactly 0
-        }
-    }
-
-    Context 'resource processes Set tasks to remove Cleanup task (Ensure=Absent)' {
-        BeforeAll {
-            Mock -CommandName Get-ScheduledTask -MockWith { $true }
-        }
-
-        it 'should not throw when running on a properly configured server' {
-            { Set-targetResource @DSCSetValues -Ensure Absent -verbose } | should -Not -Throw
-
-            #mocks were called for commands that gather information
-            Should -Invoke Get-ScheduledTask -Exactly 1
-            Should -Invoke Test-TargetResource -Exactly 1
-
-            #mocks were called that register a task to run WSUS cleanup
-            Should -Invoke Unregister-ScheduledTask -Exactly 1
-
-            #mocks were not called that remove tasks or log errors
-            Should -Invoke Register-ScheduledTask -Exactly 0
-            Should -Invoke New-InvalidResultException -Exactly 0
+                Should -Invoke -CommandName Get-ScheduledTask -Exactly -Times 1 -Scope It
+                Should -Invoke -CommandName Unregister-ScheduledTask -Exactly -Times 0 -Scope It
+                Should -Invoke -CommandName Register-ScheduledTask -Exactly -Times 1 -Scope It
+                Should -Invoke -CommandName Test-TargetResource -Exactly -Times 1 -Scope It
+            }
         }
     }
 }

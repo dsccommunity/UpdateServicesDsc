@@ -229,7 +229,7 @@ if(`$WsusServer)
 
     if (-not (Test-TargetResource @PSBoundParameters))
     {
-        throw New-TerminatingError -ErrorType TestFailedAfterSet -ErrorCategory InvalidResult
+        New-InvalidResultException -Message $script:localizedData.TestFailedAfterSet
     }
 }
 
