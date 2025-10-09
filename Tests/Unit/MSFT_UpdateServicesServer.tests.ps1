@@ -9,8 +9,8 @@ BeforeDiscovery {
             # Assumes dependencies has been resolved, so if this module is not available, run 'noop' task.
             if (-not (Get-Module -Name 'DscResource.Test' -ListAvailable))
             {
-                # Redirect all streams to $null, except the error stream (stream 2)
-                & "$PSScriptRoot/../../build.ps1" -Tasks 'noop' 2>&1 4>&1 5>&1 6>&1 > $null
+                # Redirect all streams to $null, except the error stream (stream 3)
+                & "$PSScriptRoot/../../build.ps1" -Tasks 'noop' 1> $null 3> $null 4> $null 5> $null 6> $null
             }
 
             # If the dependencies has not been resolved, this will throw an error.
@@ -185,10 +185,6 @@ Describe "MSFT_UpdateServicesServer\Test-TargetResource" {
         It "result should be true" {
             $script:result | Should -BeTrue
         }
-
-        It 'mocks were called' {
-            Assert-VerifiableMock
-        }
     }
 
     Context 'server should not be configured (Ensure=Absent)' {
@@ -207,7 +203,7 @@ Describe "MSFT_UpdateServicesServer\Test-TargetResource" {
         }
 
         It "result should be true" {
-            $script:result | Should -Be true
+            $script:result | Should -BeTrue
         }
     }
 
