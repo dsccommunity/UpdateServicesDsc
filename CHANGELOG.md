@@ -20,7 +20,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Updated to load localization strings correctly.
 - UpdateServicesServer
   - Updated to load localization strings correctly.
-- Updated ImitateUpdateServicesModule Module to meet style guidelines
 - Internal PDT helper module
   - Updated to load localization strings correctly.
 - General code cleanup
@@ -52,10 +51,6 @@ multiple products for the same `Title`.
 - Fix issue [#63](https://github.com/dsccommunity/UpdateServicesDsc/issues/63),
  Fixed verbose output of WSUS server in UpdateServicesApprovalRule
 - Fixed the `azure-pipelines.yml` to trigger on main not master.
-- Update build process to pin GitVersion to 5.* to resolve errors
-  ([issue #477](https://github.com/gaelcolas/Sampler/issues/477))
-- Replaced New-InvalidArgumentException with New-ArgumentException to resolve
-  HQRM tests.
 
 ## [1.2.0] - 2020-05-18
 

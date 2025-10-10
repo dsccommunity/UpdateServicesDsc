@@ -211,9 +211,8 @@ function Set-TargetResource
         Tests the current state of the WSUS Computer Target Group.
 
     .DESCRIPTION
-        This function creates or removes a WSUS Computer Target Group based on
-        the Ensure parameter. It validates the parent path and performs the
-        appropriate action on the WSUS server.
+        This function determines whether the WSUS Computer Target Group is in
+        the desired state by comparing the current state to the requested Ensure value.
 
     .PARAMETER Ensure
         Determines if the Computer Target Group should be created or removed.
