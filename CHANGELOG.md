@@ -25,6 +25,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - General code cleanup
 - Updated Classifications ID reference with additional potential classification GUIDs
 - Updated module to use latest Sampler files and modules.
+- Generated stubs for `UpdateServices` module.
+- Updated scriptanalyzer settings to latest.
+- Rename `Tests` directory to `tests`.
+- Updated Unit tests to Pester 5 DscCommunity format.
 
 ### Added
 

@@ -1,19 +1,19 @@
 function Get-WsusServerTemplate
 {
-    $WsusServer = [pscustomobject] @{
+    $WsusServer = [PSCustomObject] @{
         Name = 'ServerName'
         }
 
-    $ApprovalRule = [scriptblock]{
-        $ApprovalRule = [pscustomobject]@{
+    $ApprovalRule = [ScriptBlock] {
+        $ApprovalRule = [PSCustomObject] @{
             Name = 'ServerName'
             Enabled = $true
         }
 
         $ApprovalRule | Add-Member -MemberType ScriptMethod -Name GetUpdateClassifications -Value {
-        $UpdateClassification = [pscustomobject]@{
+        $UpdateClassification = [PSCustomObject] @{
             Name = 'Update Classification'
-            ID = [pscustomobject]@{
+            ID = [PSCustomObject] @{
                 GUID = '00000000-0000-0000-0000-0000testguid'
             }
         }
@@ -22,7 +22,7 @@ function Get-WsusServerTemplate
     }
 
         $ApprovalRule | Add-Member -MemberType ScriptMethod -Name GetCategories -Value {
-            $Products = [pscustomobject]@{
+            $Products = [PSCustomObject] @{
                 Title = 'Product'
             }
 
@@ -32,7 +32,7 @@ function Get-WsusServerTemplate
         }
 
         $ApprovalRule | Add-Member -MemberType ScriptMethod -Name GetComputerTargetGroups -Value {
-            $ComputerTargetGroups = [pscustomobject]@{
+            $ComputerTargetGroups = [PSCustomObject] @{
                 Name = 'Computer Target Group'
             }
 
@@ -63,7 +63,7 @@ function Get-WsusServerTemplate
     $WsusServer | Add-Member -MemberType ScriptMethod -Name DeleteInstallApprovalRule -Value {}
 
     $WsusServer | Add-Member -MemberType ScriptMethod -Name GetSubscription -Value {
-            $Subscription = [pscustomobject]@{
+            $Subscription = [PSCustomObject] @{
                 SynchronizeAutomaticallyTimeOfDay = '04:00:00'
                 NumberOfSynchronizationsPerDay = 24
                 SynchronizeAutomatically = $true
@@ -71,9 +71,9 @@ function Get-WsusServerTemplate
 
             $Subscription | Add-Member -MemberType ScriptMethod -Name StartSynchronization -Value {}
             $Subscription | Add-Member -MemberType ScriptMethod -Name GetUpdateClassifications -Value {
-                $UpdateClassification = [pscustomobject]@{
+                $UpdateClassification = [PSCustomObject] @{
                     Name = 'Update Classification'
-                    ID = [pscustomobject]@{
+                    ID = [PSCustomObject] @{
                         GUID = '00000000-0000-0000-0000-0000testguid'
                     }
                 }
@@ -82,10 +82,10 @@ function Get-WsusServerTemplate
             }
 
             $Subscription | Add-Member -MemberType ScriptMethod -Name GetUpdateCategories -Value {
-                $Categories = [pscustomobject]@{
+                $Categories = [PSCustomObject] @{
                     Title = 'Windows'
                 },
-                [pscustomobject]@{
+                [PSCustomObject] @{
                     Title = 'Office'
                 }
 
@@ -112,9 +112,9 @@ function Get-WsusServerTemplate
     }
 
     $WsusServer | Add-Member -MemberType ScriptMethod -Name GetUpdateClassifications -Value {
-        $UpdateClassification = [pscustomobject]@{
+        $UpdateClassification = [PSCustomObject] @{
             Name = 'Update Classification'
-            ID = [pscustomobject]@{
+            ID = [PSCustomObject] @{
                 GUID = '00000000-0000-0000-0000-0000testguid'
             }
         }
@@ -123,28 +123,28 @@ function Get-WsusServerTemplate
     }
 
     $WsusServer | Add-Member -MemberType ScriptMethod -Name GetUpdateCategories -Value {
-        $Categories = [pscustomobject]@{
+        $Categories = [PSCustomObject] @{
             Title = 'Windows'
         },
-        [pscustomobject]@{
+        [PSCustomObject] @{
             Title = 'Office'
         },
-        [pscustomobject]@{
+        [PSCustomObject] @{
             Title = 'Windows Server 2003'
         },
-        [pscustomobject]@{
+        [PSCustomObject] @{
             Title = 'Windows Server 2008'
         },
-        [pscustomobject]@{
+        [PSCustomObject] @{
             Title = 'Windows Server 2008R2'
         },
-        [pscustomobject]@{
+        [PSCustomObject] @{
             Title = 'Windows Server 2012'
         },
-        [pscustomobject]@{
+        [PSCustomObject] @{
             Title = 'Windows Server 2016'
         },
-        [pscustomobject]@{
+        [PSCustomObject] @{
             Title = 'Windows Server 2019'
         }
 
@@ -154,18 +154,13 @@ function Get-WsusServerTemplate
     return $WsusServer
 }
 
-function Get-WsusServer
-{
-    return $(Get-WsusServerTemplate)
-}
-
 function Get-WsusServerMockWildCardPrdt
 {
     $wsusServer = Get-WsusServerTemplate
 
     # Override GetSubscription method
     $WsusServer | Add-Member -Force -MemberType ScriptMethod -Name GetSubscription -Value {
-        $Subscription = [pscustomobject]@{
+        $Subscription = [PSCustomObject] @{
             SynchronizeAutomaticallyTimeOfDay = '04:00:00'
             NumberOfSynchronizationsPerDay = 24
             SynchronizeAutomatically = $true
@@ -173,9 +168,9 @@ function Get-WsusServerMockWildCardPrdt
 
         $Subscription | Add-Member -MemberType ScriptMethod -Name StartSynchronization -Value {}
         $Subscription | Add-Member -MemberType ScriptMethod -Name GetUpdateClassifications -Value {
-            $UpdateClassification = [pscustomobject]@{
+            $UpdateClassification = [PSCustomObject] @{
                 Name = 'Update Classification'
-                ID = [pscustomobject]@{
+                ID = [PSCustomObject] @{
                     GUID = '00000000-0000-0000-0000-0000testguid'
                 }
             }
@@ -184,22 +179,22 @@ function Get-WsusServerMockWildCardPrdt
         }
 
         $Subscription | Add-Member -Force -MemberType ScriptMethod -Name GetUpdateCategories -Value {
-            $Categories = [pscustomobject]@{
+            $Categories = [PSCustomObject] @{
                 Title = 'Windows Server 2003'
             },
-            [pscustomobject]@{
+            [PSCustomObject] @{
                 Title = 'Windows Server 2008'
             },
-            [pscustomobject]@{
+            [PSCustomObject] @{
                 Title = 'Windows Server 2008R2'
             },
-            [pscustomobject]@{
+            [PSCustomObject] @{
                 Title = 'Windows Server 2012'
             },
-            [pscustomobject]@{
+            [PSCustomObject] @{
                 Title = 'Windows Server 2016'
             },
-            [pscustomobject]@{
+            [PSCustomObject] @{
                 Title = 'Windows Server 2019'
             }
 
@@ -211,28 +206,28 @@ function Get-WsusServerMockWildCardPrdt
 
     # Override GetUpdateCategories method
     $WsusServer | Add-Member -Force -MemberType ScriptMethod -Name GetUpdateCategories -Value {
-        $Categories = [pscustomobject]@{
+        $Categories = [PSCustomObject] @{
             Title = 'Windows'
         },
-        [pscustomobject]@{
+        [PSCustomObject] @{
             Title = 'Office'
         },
-        [pscustomobject]@{
+        [PSCustomObject] @{
             Title = 'Windows Server 2003'
         },
-        [pscustomobject]@{
+        [PSCustomObject] @{
             Title = 'Windows Server 2008'
         },
-        [pscustomobject]@{
+        [PSCustomObject] @{
             Title = 'Windows Server 2008R2'
         },
-        [pscustomobject]@{
+        [PSCustomObject] @{
             Title = 'Windows Server 2012'
         },
-        [pscustomobject]@{
+        [PSCustomObject] @{
             Title = 'Windows Server 2016'
         },
-        [pscustomobject]@{
+        [PSCustomObject] @{
             Title = 'Windows Server 2019'
         }
 
@@ -241,17 +236,3 @@ function Get-WsusServerMockWildCardPrdt
 
     return $WsusServer
 }
-function Get-WsusClassification
-{
-    $WsusClassification = [pscustomobject]@{
-        Classification = [pscustomobject]@{
-            ID = [pscustomobject]@{
-                Guid = '00000000-0000-0000-0000-0000testguid'
-            }
-        }
-    }
-
-    return $WsusClassification
-}
-
-function Get-WsusProduct {}
