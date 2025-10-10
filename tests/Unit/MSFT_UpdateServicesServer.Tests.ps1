@@ -1,5 +1,6 @@
 # Suppressing this rule because Script Analyzer does not understand Pester's syntax.
 [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '')]
+[System.Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingConvertToSecureStringWithPlainText', '')]
 param ()
 
 BeforeDiscovery {
@@ -58,49 +59,6 @@ AfterAll {
     Get-Module -Name $script:dscResourceName -All | Remove-Module -Force
 }
 
-# BeforeAll {
-#     $DSCGetValues = @{
-#         SQLServer                         = 'SQLServer'
-#         ContentDir                        = 'C:\WSUSContent\'
-#         UpdateImprovementProgram          = $true
-#         UpstreamServerName                = ''
-#         UpstreamServerPort                = $null
-#         UpstreamServerSSL                 = $null
-#         UpstreamServerReplica             = $null
-#         ProxyServerName                   = ''
-#         ProxyServerPort                   = $null
-#         ProxyServerCredentialUsername     = $null
-#         ProxyServerBasicAuthentication    = $null
-#         Languages                         = '*'
-#         Products                          = '*'
-#         Classifications                   = '*'
-#         SynchronizeAutomatically          = $true
-#         SynchronizeAutomaticallyTimeOfDay = '04:00:00'
-#         SynchronizationsPerDay            = 24
-#         ClientTargetingMode               = 'Client'
-#     }
-
-#     $DSCTestValues = @{
-#         SetupCredential                   = New-Object -typename System.Management.Automation.PSCredential -argumentlist 'foo', $('bar' | ConvertTo-SecureString -AsPlainText -Force)
-#         SQLServer                         = 'SQLServer'
-#         ContentDir                        = 'C:\WSUSContent\'
-#         UpdateImprovementProgram          = $true
-#         UpstreamServerName                = 'UpstreamServer'
-#         UpstreamServerPort                = $false
-#         UpstreamServerSSL                 = $false
-#         UpstreamServerReplica             = $false
-#         ProxyServerName                   = 'ProxyServer'
-#         ProxyServerPort                   = 8080
-#         Languages                         = '*'
-#         Products                          = @('Windows', 'Office')
-#         Classifications                   = @('E6CF1350-C01B-414D-A61F-263D14D133B4', 'E0789628-CE08-4437-BE74-2495B842F43B', '0FA1201D-4330-4FA8-8AE9-B877473B6441')
-#         SynchronizeAutomatically          = $true
-#         SynchronizeAutomaticallyTimeOfDay = '04:00:00'
-#         SynchronizationsPerDay            = 24
-#         ClientTargetingMode               = 'Client'
-#     }
-# }
-
 Describe 'MSFT_UpdateServicesServer\Get-TargetResource' -Tag 'Get' {
     Context 'When the resource is in the desired state' {
         Context 'When the server exists' {
@@ -153,6 +111,8 @@ Describe 'MSFT_UpdateServicesServer\Get-TargetResource' -Tag 'Get' {
                     $result.SynchronizationsPerDay | Should -Be 24
                     $result.ClientTargetingMode | Should -BeNullOrEmpty
                 }
+
+                Should -Invoke -CommandName Get-WsusServer -Exactly -Times 1 -Scope It
             }
         }
 
@@ -188,6 +148,8 @@ Describe 'MSFT_UpdateServicesServer\Get-TargetResource' -Tag 'Get' {
                     $result.SynchronizationsPerDay | Should -BeNullOrEmpty
                     $result.ClientTargetingMode | Should -BeNullOrEmpty
                 }
+
+                Should -Invoke -CommandName Get-WsusServer -Exactly -Times 1 -Scope It
             }
         }
     }
@@ -243,6 +205,8 @@ Describe 'MSFT_UpdateServicesServer\Get-TargetResource' -Tag 'Get' {
                     $result.SynchronizationsPerDay | Should -Be 24
                     $result.ClientTargetingMode | Should -BeNullOrEmpty
                 }
+
+                Should -Invoke -CommandName Get-WsusServer -Exactly -Times 1 -Scope It
             }
         }
 
@@ -278,243 +242,495 @@ Describe 'MSFT_UpdateServicesServer\Get-TargetResource' -Tag 'Get' {
                     $result.SynchronizationsPerDay | Should -BeNullOrEmpty
                     $result.ClientTargetingMode | Should -BeNullOrEmpty
                 }
-            }
-        }
-    }
 
-    # Context 'Products property contains wildcard' {
-    #     BeforeAll {
-    #         Mock -CommandName Get-WsusServer -Verifiable -MockWith {
-    #             #Function presents in Tests\Helpers\ImitateUpdateServicesModule.psm1
-    #             return $(Get-WsusServerMockWildCardPrdt)
-    #         }
-
-    #         $script:result = $null
-    #     }
-
-    #     It 'calling test should not throw and mocks' {
-    #         { $script:result = Get-TargetResource -Ensure 'Present' -verbose } | Should -Not -Throw
-
-    #         Should -Invoke Get-WsusServer -Exactly 1
-    #     }
-
-    #     It 'Products should contain right value' {
-    #         $DesiredProducts = @('Windows Server 2003', 'Windows Server 2008', 'Windows Server 2008R2', 'Windows Server 2012', 'Windows Server 2016', 'Windows Server 2019')
-
-    #         ($script:result.Products | Measure-Object).Count | Should -Be $DesiredProducts.Count
-
-    #         $DesiredProducts | ForEach-Object {
-    #             $script:result.Products | Should -Contain $_
-    #         }
-    #     }
-    # }
-}
-
-Describe 'MSFT_UpdateServicesServer\Test-TargetResource' -Tag 'Test' -Skip:$true {
-
-    Context 'server is in correct state (Ensure=Present)' {
-        BeforeAll {
-            $DSCTestValues.Remove('Ensure')
-            $DSCTestValues.Add('Ensure', 'Present')
-
-            Mock -CommandName Get-TargetResource -MockWith { $DSCTestValues } -Verifiable
-            $script:result = $null
-        }
-
-        It 'calling test should not throw' {
-            { $script:result = Test-TargetResource @DSCTestValues -verbose } | Should -Not -Throw
-
-            Should -Invoke Get-TargetResource -Exactly 1
-        }
-
-        It 'result should be true' {
-            $script:result | Should -BeTrue
-        }
-
-        It 'mocks were called' {
-            Assert-VerifiableMock
-        }
-    }
-
-    Context 'server should not be configured (Ensure=Absent)' {
-        BeforeAll {
-            $DSCTestValues.Remove('Ensure')
-            $DSCTestValues.Add('Ensure', 'Absent')
-
-            Mock -CommandName Get-TargetResource -MockWith { $DSCTestValues } -Verifiable
-            $script:result = $null
-        }
-
-        It 'calling test should not throw' {
-            { $script:result = Test-TargetResource @DSCTestValues -verbose } | Should -Not -Throw
-
-            Should -Invoke Get-TargetResource -Exactly 1
-        }
-
-        It 'result should be true' {
-            $script:result | Should -Be true
-        }
-    }
-
-    Context 'server should be configured correctly but is not' {
-        BeforeAll {
-            $DSCTestValues.Remove('Ensure')
-            Mock -CommandName Get-TargetResource -MockWith { $DSCTestValues } -Verifiable
-
-            $script:result = $null
-        }
-
-        It 'calling test should not throw' {
-            { $script:result = Test-TargetResource @DSCTestValues -Ensure 'Present' -verbose } | Should -Not -Throw
-
-            Should -Invoke Get-TargetResource -Exactly 1
-        }
-
-        It 'result should be false' {
-            $script:result | Should -BeFalse
-        }
-    }
-
-    Context 'setting has drifted' {
-        BeforeAll {
-            $DSCTestValues.Remove('Ensure')
-            $DSCTestValues.Add('Ensure', 'Present')
-        }
-
-        # Settings not currently tested: ProxyServerUserName, ProxyServerCredential, ProxyServerBasicAuthentication, 'Languages', 'Products', 'Classifications', 'SynchronizeAutomatically'
-        $settingsList = @(
-            'UpdateImprovementProgram'
-            'UpstreamServerName'
-            'UpstreamServerPort'
-            'UpstreamServerSSL'
-            'UpstreamServerReplica'
-            'ProxyServerName'
-            'ProxyServerPort'
-            'SynchronizeAutomaticallyTimeOfDay'
-            'SynchronizationsPerDay'
-        )
-
-        Context 'When <_> property is invalid' -Foreach $settingsList {
-            BeforeAll {
-                $setting = $_
-                Mock -CommandName Get-TargetResource -MockWith {
-                    $DSCTestValues.Remove("$setting")
-                    $DSCTestValues
-                }
-            }
-
-            $script:result = $null
-
-            It 'calling test with change to <_> should not throw' {
-                { $script:result = Test-TargetResource @DSCTestValues -verbose } | Should -Not -Throw
-
-                Should -Invoke Get-TargetResource -Exactly 1
-            }
-
-            It 'result should be false when <_> has changed' {
-                $script:result | Should -Be $false
-            }
-
-            AfterAll {
-                $DSCTestValues.Add("$_", $true)
+                Should -Invoke -CommandName Get-WsusServer -Exactly -Times 1 -Scope It
             }
         }
     }
 
     Context 'Products property contains wildcard' {
         BeforeAll {
-            Mock -CommandName Get-WsusServer -Verifiable -MockWith {
-                return $(Get-WsusServerMockWildCardPrdt)
+            Mock -CommandName Get-WsusServer -MockWith {
+                return CommonTestHelper\Get-WsusServerMockWildCardPrdt
             }
 
-            $DSCGetValues = @{
-                Ensure                            = 'Present'
-                SetupCredential                   = New-Object -typename System.Management.Automation.PSCredential -argumentlist 'foo', $('bar' | ConvertTo-SecureString -AsPlainText -Force)
-                SQLServer                         = 'SQLServer'
-                ContentDir                        = 'C:\WSUSContent\'
-                UpdateImprovementProgram          = $true
-                UpstreamServerName                = 'UpstreamServer'
-                UpstreamServerPort                = $false
-                UpstreamServerSSL                 = $false
-                UpstreamServerReplica             = $false
-                ProxyServerName                   = 'ProxyServer'
-                ProxyServerPort                   = 8080
-                Languages                         = '*'
-                Products                          = @('Windows Server 2003', 'Windows Server 2008', 'Windows Server 2008R2', 'Windows Server 2012', 'Windows Server 2016', 'Windows Server 2019')
-                Classifications                   = @('E6CF1350-C01B-414D-A61F-263D14D133B4', 'E0789628-CE08-4437-BE74-2495B842F43B', '0FA1201D-4330-4FA8-8AE9-B877473B6441')
-                SynchronizeAutomatically          = $true
-                SynchronizeAutomaticallyTimeOfDay = '04:00:00'
-                SynchronizationsPerDay            = 24
-                ClientTargetingMode               = 'Client'
+            Mock -CommandName Get-ItemProperty -ParameterFilter {
+                $Path -eq 'HKLM:\SOFTWARE\Microsoft\Update Services\Server\Setup' -and $Name -eq 'SQLServerName'
+            } -MockWith {
+                @{
+                    SQLServerName = 'SQLServer'
+                }
             }
 
-            $DSCTestValues = @{
-                SetupCredential                   = New-Object -typename System.Management.Automation.PSCredential -argumentlist 'foo', $('bar' | ConvertTo-SecureString -AsPlainText -Force)
-                SQLServer                         = 'SQLServer'
-                ContentDir                        = 'C:\WSUSContent\'
-                UpdateImprovementProgram          = $true
-                UpstreamServerName                = 'UpstreamServer'
-                UpstreamServerPort                = $false
-                UpstreamServerSSL                 = $false
-                UpstreamServerReplica             = $false
-                ProxyServerName                   = 'ProxyServer'
-                ProxyServerPort                   = 8080
-                Languages                         = '*'
-                Products                          = 'Windows Server*'
-                Classifications                   = @('E6CF1350-C01B-414D-A61F-263D14D133B4', 'E0789628-CE08-4437-BE74-2495B842F43B', '0FA1201D-4330-4FA8-8AE9-B877473B6441')
-                SynchronizeAutomatically          = $true
-                SynchronizeAutomaticallyTimeOfDay = '04:00:00'
-                SynchronizationsPerDay            = 24
-                ClientTargetingMode               = 'Client'
+            Mock -CommandName Get-ItemProperty -ParameterFilter {
+                $Path -eq 'HKLM:\SOFTWARE\Microsoft\Update Services\Server\Setup' -and $Name -eq 'ContentDir'
+            } -MockWith {
+                @{
+                    ContentDir = 'C:\WSUSContent\'
+                }
             }
-
-            $DSCTestValues.Remove('Ensure')
-
-            Mock -CommandName Get-TargetResource -MockWith { $DSCGetValues } -Verifiable
-
-            $script:result = $null
         }
 
-        It 'calling test should not throw' {
-            { $script:result = Test-TargetResource @DSCTestValues -Ensure 'Present' -verbose } | Should -Not -Throw
+        It 'Should return the correct result' {
+            InModuleScope -ScriptBlock {
+                #ISSUE: variables are not initialized
+                # Set-StrictMode -Version 1.0
+
+                $script:result = Get-TargetResource -Ensure 'Present'
+
+                $script:result.Products | Should -HaveCount 6
+            }
+
+            Should -Invoke -CommandName Get-WsusServer -Exactly -Times 1 -Scope It
         }
 
-        It 'result should be true' {
-            $script:result | Should -Be  $true
+        BeforeDiscovery {
+            $testCases = @(
+                @{
+                    Name = 'Windows Server 2003'
+                }
+                @{
+                    Name = 'Windows Server 2008'
+                }
+                @{
+                    Name = 'Windows Server 2008R2'
+                }
+                @{
+                    Name = 'Windows Server 2012'
+                }
+                @{
+                    Name = 'Windows Server 2016'
+                }
+                @{
+                    Name = 'Windows Server 2019'
+                }
+            )
+        }
+
+        It 'Should have Product ''<Name>'' returned' -ForEach $testCases {
+            InModuleScope -Parameters $_ -ScriptBlock {
+                Set-StrictMode -Version 1.0
+
+                $script:result.Products | Should -Contain $name
+            }
         }
     }
 }
 
-Describe 'MSFT_UpdateServicesServer\Set-TargetResource' -Tag 'Set' -Skip:$true {
-    BeforeAll {
-        $DSCTestValues.Remove('Ensure')
+Describe 'MSFT_UpdateServicesServer\Test-TargetResource' -Tag 'Test' {
+    Context 'When the resource is in the desired state' {
+        Context 'When the resource should be ''Present''' {
+            BeforeAll {
+                Mock -CommandName Get-TargetResource -MockWith {
+                    @{
+                        Ensure                            = 'Present'
+                        SetupCredential                   = [System.Management.Automation.PSCredential]::new('foo', $('bar' | ConvertTo-SecureString -AsPlainText -Force))
+                        SQLServer                         = 'SQLServer'
+                        ContentDir                        = 'C:\WSUSContent\'
+                        UpdateImprovementProgram          = $true
+                        UpstreamServerName                = 'UpstreamServer'
+                        UpstreamServerPort                = $false
+                        UpstreamServerSSL                 = $false
+                        UpstreamServerReplica             = $false
+                        ProxyServerName                   = 'ProxyServer'
+                        ProxyServerPort                   = 8080
+                        Languages                         = '*'
+                        Products                          = @('Windows', 'Office')
+                        Classifications                   = @('E6CF1350-C01B-414D-A61F-263D14D133B4', 'E0789628-CE08-4437-BE74-2495B842F43B', '0FA1201D-4330-4FA8-8AE9-B877473B6441')
+                        SynchronizeAutomatically          = $true
+                        SynchronizeAutomaticallyTimeOfDay = '04:00:00'
+                        SynchronizationsPerDay            = 24
+                        ClientTargetingMode               = 'Client'
+                    }
+                }
 
-        Mock -CommandName Test-TargetResource -MockWith { $true }
-        Mock -CommandName New-InvalidOperationException -MockWith { }
-        Mock -CommandName New-InvalidResultException -MockWith { }
-        Mock SaveWsusConfiguration -MockWith { }
-    }
-    Context 'resource is idempotent (Ensure=Present)' {
+                Mock -CommandName Get-WsusServer -MockWith {
+                    return CommonTestHelper\Get-WsusServerTemplate
+                }
+            }
 
-        It 'should not throw when running on a properly configured server' {
-            { Set-targetResource @DSCTestValues -Ensure Present -verbose } | Should -Not -Throw
+            It 'Should return the correct result' {
+                InModuleScope -ScriptBlock {
+                    Set-StrictMode -Version 1.0
 
-            Should -Invoke Test-TargetResource -Exactly 1
-            Should -Invoke SaveWsusConfiguration -Exactly 2
-            Should -Invoke New-InvalidResultException -Exactly 0
-            Should -Invoke New-InvalidOperationException -Exactly 0
+                    $testParams = @{
+                        Ensure                            = 'Present'
+                        SetupCredential                   = [System.Management.Automation.PSCredential]::new('foo', $('bar' | ConvertTo-SecureString -AsPlainText -Force))
+                        SQLServer                         = 'SQLServer'
+                        ContentDir                        = 'C:\WSUSContent\'
+                        UpdateImprovementProgram          = $true
+                        UpstreamServerName                = 'UpstreamServer'
+                        UpstreamServerPort                = $false
+                        UpstreamServerSSL                 = $false
+                        UpstreamServerReplica             = $false
+                        ProxyServerName                   = 'ProxyServer'
+                        ProxyServerPort                   = 8080
+                        Languages                         = '*'
+                        Products                          = @('Windows', 'Office')
+                        Classifications                   = @('E6CF1350-C01B-414D-A61F-263D14D133B4', 'E0789628-CE08-4437-BE74-2495B842F43B', '0FA1201D-4330-4FA8-8AE9-B877473B6441')
+                        SynchronizeAutomatically          = $true
+                        SynchronizeAutomaticallyTimeOfDay = '04:00:00'
+                        SynchronizationsPerDay            = 24
+                        ClientTargetingMode               = 'Client'
+                    }
+
+                    Test-TargetResource @testParams | Should -BeTrue
+                }
+
+                Should -Invoke -CommandName Get-TargetResource -Exactly -Times 1 -Scope It
+                Should -Invoke -CommandName Get-WsusServer -Exactly -Times 1 -Scope It
+            }
+        }
+
+        Context 'When the resource should be ''Absent''' {
+            BeforeAll {
+                Mock -CommandName Get-TargetResource -MockWith {
+                    @{
+                        Ensure                            = 'Absent'
+                        SetupCredential                   = [System.Management.Automation.PSCredential]::new('foo', $('bar' | ConvertTo-SecureString -AsPlainText -Force))
+                        SQLServer                         = 'SQLServer'
+                        ContentDir                        = 'C:\WSUSContent\'
+                        UpdateImprovementProgram          = $true
+                        UpstreamServerName                = 'UpstreamServer'
+                        UpstreamServerPort                = $false
+                        UpstreamServerSSL                 = $false
+                        UpstreamServerReplica             = $false
+                        ProxyServerName                   = 'ProxyServer'
+                        ProxyServerPort                   = 8080
+                        Languages                         = '*'
+                        Products                          = @('Windows', 'Office')
+                        Classifications                   = @('E6CF1350-C01B-414D-A61F-263D14D133B4', 'E0789628-CE08-4437-BE74-2495B842F43B', '0FA1201D-4330-4FA8-8AE9-B877473B6441')
+                        SynchronizeAutomatically          = $true
+                        SynchronizeAutomaticallyTimeOfDay = '04:00:00'
+                        SynchronizationsPerDay            = 24
+                        ClientTargetingMode               = 'Client'
+                    }
+                }
+
+                Mock -CommandName Get-WsusServer -MockWith {
+                    return CommonTestHelper\Get-WsusServerTemplate
+                }
+            }
+
+            It 'Should return the correct result' {
+                InModuleScope -ScriptBlock {
+                    Set-StrictMode -Version 1.0
+
+                    $testParams = @{
+                        Ensure                            = 'Absent'
+                        SetupCredential                   = [System.Management.Automation.PSCredential]::new('foo', $('bar' | ConvertTo-SecureString -AsPlainText -Force))
+                        SQLServer                         = 'SQLServer'
+                        ContentDir                        = 'C:\WSUSContent\'
+                        UpdateImprovementProgram          = $true
+                        UpstreamServerName                = 'UpstreamServer'
+                        UpstreamServerPort                = $false
+                        UpstreamServerSSL                 = $false
+                        UpstreamServerReplica             = $false
+                        ProxyServerName                   = 'ProxyServer'
+                        ProxyServerPort                   = 8080
+                        Languages                         = '*'
+                        Products                          = @('Windows', 'Office')
+                        Classifications                   = @('E6CF1350-C01B-414D-A61F-263D14D133B4', 'E0789628-CE08-4437-BE74-2495B842F43B', '0FA1201D-4330-4FA8-8AE9-B877473B6441')
+                        SynchronizeAutomatically          = $true
+                        SynchronizeAutomaticallyTimeOfDay = '04:00:00'
+                        SynchronizationsPerDay            = 24
+                        ClientTargetingMode               = 'Client'
+                    }
+
+                    Test-TargetResource @testParams | Should -BeTrue
+                }
+
+                Should -Invoke -CommandName Get-TargetResource -Exactly -Times 1 -Scope It
+                Should -Invoke -CommandName Get-WsusServer -Exactly -Times 1 -Scope It
+            }
+        }
+
+        Context 'When the Products property contains wildcard' {
+            BeforeAll {
+                Mock -CommandName Get-WsusServer -Verifiable -MockWith {
+                    return Get-WsusServerMockWildCardPrdt
+                }
+
+                Mock -CommandName Get-TargetResource -MockWith {
+                    @{
+                        Ensure                            = 'Present'
+                        SetupCredential                   = [System.Management.Automation.PSCredential]::new('foo', $('bar' | ConvertTo-SecureString -AsPlainText -Force))
+                        SQLServer                         = 'SQLServer'
+                        ContentDir                        = 'C:\WSUSContent\'
+                        UpdateImprovementProgram          = $true
+                        UpstreamServerName                = 'UpstreamServer'
+                        UpstreamServerPort                = $false
+                        UpstreamServerSSL                 = $false
+                        UpstreamServerReplica             = $false
+                        ProxyServerName                   = 'ProxyServer'
+                        ProxyServerPort                   = 8080
+                        Languages                         = '*'
+                        Products                          = @('Windows Server 2003', 'Windows Server 2008', 'Windows Server 2008R2', 'Windows Server 2012', 'Windows Server 2016', 'Windows Server 2019')
+                        Classifications                   = @('E6CF1350-C01B-414D-A61F-263D14D133B4', 'E0789628-CE08-4437-BE74-2495B842F43B', '0FA1201D-4330-4FA8-8AE9-B877473B6441')
+                        SynchronizeAutomatically          = $true
+                        SynchronizeAutomaticallyTimeOfDay = '04:00:00'
+                        SynchronizationsPerDay            = 24
+                        ClientTargetingMode               = 'Client'
+                    }
+                }
+            }
+
+            It 'Should return the correct result' {
+                InModuleScope -ScriptBlock {
+                    Set-StrictMode -Version 1.0
+
+                    $testParams = @{
+                        SetupCredential                   = [System.Management.Automation.PSCredential]::new('foo', $('bar' | ConvertTo-SecureString -AsPlainText -Force))
+                        SQLServer                         = 'SQLServer'
+                        ContentDir                        = 'C:\WSUSContent\'
+                        UpdateImprovementProgram          = $true
+                        UpstreamServerName                = 'UpstreamServer'
+                        UpstreamServerPort                = $false
+                        UpstreamServerSSL                 = $false
+                        UpstreamServerReplica             = $false
+                        ProxyServerName                   = 'ProxyServer'
+                        ProxyServerPort                   = 8080
+                        Languages                         = '*'
+                        Products                          = 'Windows Server*'
+                        Classifications                   = @('E6CF1350-C01B-414D-A61F-263D14D133B4', 'E0789628-CE08-4437-BE74-2495B842F43B', '0FA1201D-4330-4FA8-8AE9-B877473B6441')
+                        SynchronizeAutomatically          = $true
+                        SynchronizeAutomaticallyTimeOfDay = '04:00:00'
+                        SynchronizationsPerDay            = 24
+                        ClientTargetingMode               = 'Client'
+                    }
+
+                    Test-TargetResource @testParams -Ensure 'Present' | Should -BeTrue
+                }
+
+                Should -Invoke -CommandName Get-TargetResource -Exactly -Times 1 -Scope It
+                Should -Invoke -CommandName Get-WsusServer -Exactly -Times 1 -Scope It
+            }
         }
     }
 
-    Context 'resource supports Ensure=Absent' {
+    Context 'When the resource is not in the desired state' {
+        Context 'When the server should be ''Present''' {
+            BeforeAll {
+                Mock -CommandName Get-TargetResource -MockWith {
+                    @{
+                        Ensure                            = 'Absent'
+                        SetupCredential                   = [System.Management.Automation.PSCredential]::new('foo', $('bar' | ConvertTo-SecureString -AsPlainText -Force))
+                        SQLServer                         = 'SQLServer'
+                        ContentDir                        = 'C:\WSUSContent\'
+                        UpdateImprovementProgram          = $true
+                        UpstreamServerName                = 'UpstreamServer'
+                        UpstreamServerPort                = $false
+                        UpstreamServerSSL                 = $false
+                        UpstreamServerReplica             = $false
+                        ProxyServerName                   = 'ProxyServer'
+                        ProxyServerPort                   = 8080
+                        Languages                         = '*'
+                        Products                          = @('Windows', 'Office')
+                        Classifications                   = @('E6CF1350-C01B-414D-A61F-263D14D133B4', 'E0789628-CE08-4437-BE74-2495B842F43B', '0FA1201D-4330-4FA8-8AE9-B877473B6441')
+                        SynchronizeAutomatically          = $true
+                        SynchronizeAutomaticallyTimeOfDay = '04:00:00'
+                        SynchronizationsPerDay            = 24
+                        ClientTargetingMode               = 'Client'
+                    }
+                }
 
-        It 'should not throw when running on a properly configured server' {
-            { Set-targetResource @DSCTestValues -Ensure Absent -verbose } | Should -Not -Throw
+                Mock -CommandName Get-WsusServer -MockWith {
+                    return CommonTestHelper\Get-WsusServerTemplate
+                }
+            }
 
-            Should -Invoke Test-TargetResource -Exactly 1
-            Should -Invoke SaveWsusConfiguration -Exactly 2
+            It 'Should return the correct result' {
+                InModuleScope -ScriptBlock {
+                    Set-StrictMode -Version 1.0
 
-            Should -Invoke New-InvalidResultException -Exactly 0
+                    $testParams = @{
+                        Ensure                            = 'Present'
+                        SetupCredential                   = [System.Management.Automation.PSCredential]::new('foo', $('bar' | ConvertTo-SecureString -AsPlainText -Force))
+                        SQLServer                         = 'SQLServer'
+                        ContentDir                        = 'C:\WSUSContent\'
+                        UpdateImprovementProgram          = $true
+                        UpstreamServerName                = 'UpstreamServer'
+                        UpstreamServerPort                = $false
+                        UpstreamServerSSL                 = $false
+                        UpstreamServerReplica             = $false
+                        ProxyServerName                   = 'ProxyServer'
+                        ProxyServerPort                   = 8080
+                        Languages                         = '*'
+                        Products                          = @('Windows', 'Office')
+                        Classifications                   = @('E6CF1350-C01B-414D-A61F-263D14D133B4', 'E0789628-CE08-4437-BE74-2495B842F43B', '0FA1201D-4330-4FA8-8AE9-B877473B6441')
+                        SynchronizeAutomatically          = $true
+                        SynchronizeAutomaticallyTimeOfDay = '04:00:00'
+                        SynchronizationsPerDay            = 24
+                        ClientTargetingMode               = 'Client'
+                    }
+
+                    Test-TargetResource @testParams | Should -BeFalse
+                }
+
+                Should -Invoke -CommandName Get-TargetResource -Exactly -Times 1 -Scope It
+                Should -Invoke -CommandName Get-WsusServer -Exactly -Times 0 -Scope It
+            }
+        }
+
+        BeforeDiscovery {
+            # Settings not currently tested: ProxyServerUserName, ProxyServerCredential, ProxyServerBasicAuthentication, 'Languages', 'Products', 'Classifications', 'SynchronizeAutomatically'
+            $testCases = @(
+                'UpdateImprovementProgram'
+                'UpstreamServerName'
+                'UpstreamServerPort'
+                'UpstreamServerSSL'
+                'UpstreamServerReplica'
+                'ProxyServerName'
+                'ProxyServerPort'
+                'SynchronizeAutomaticallyTimeOfDay'
+                'SynchronizationsPerDay'
+            )
+        }
+
+        Context 'When property ''<_>'' is incorrect' -ForEach $testCases {
+            BeforeAll {
+                Mock -CommandName Get-TargetResource -MockWith {
+                    $data = @{
+                        Ensure                            = 'Absent'
+                        SetupCredential                   = [System.Management.Automation.PSCredential]::new('foo', $('bar' | ConvertTo-SecureString -AsPlainText -Force))
+                        SQLServer                         = 'SQLServer'
+                        ContentDir                        = 'C:\WSUSContent\'
+                        UpdateImprovementProgram          = $true
+                        UpstreamServerName                = 'UpstreamServer'
+                        UpstreamServerPort                = $false
+                        UpstreamServerSSL                 = $false
+                        UpstreamServerReplica             = $false
+                        ProxyServerName                   = 'ProxyServer'
+                        ProxyServerPort                   = 8080
+                        Languages                         = '*'
+                        Products                          = @('Windows', 'Office')
+                        Classifications                   = @('E6CF1350-C01B-414D-A61F-263D14D133B4', 'E0789628-CE08-4437-BE74-2495B842F43B', '0FA1201D-4330-4FA8-8AE9-B877473B6441')
+                        SynchronizeAutomatically          = $true
+                        SynchronizeAutomaticallyTimeOfDay = '04:00:00'
+                        SynchronizationsPerDay            = 24
+                        ClientTargetingMode               = 'Client'
+                    }
+                    $data.Remove($_)
+
+                    return $data
+                }
+
+                Mock -CommandName Get-WsusServer -MockWith {
+                    return CommonTestHelper\Get-WsusServerTemplate
+                }
+            }
+
+            It 'Should return the correct result' {
+                InModuleScope -ScriptBlock {
+                    Set-StrictMode -Version 1.0
+
+                    $testParams = @{
+                        Ensure                            = 'Present'
+                        SetupCredential                   = [System.Management.Automation.PSCredential]::new('foo', $('bar' | ConvertTo-SecureString -AsPlainText -Force))
+                        SQLServer                         = 'SQLServer'
+                        ContentDir                        = 'C:\WSUSContent\'
+                        UpdateImprovementProgram          = $true
+                        UpstreamServerName                = 'UpstreamServer'
+                        UpstreamServerPort                = $false
+                        UpstreamServerSSL                 = $false
+                        UpstreamServerReplica             = $false
+                        ProxyServerName                   = 'ProxyServer'
+                        ProxyServerPort                   = 8080
+                        Languages                         = '*'
+                        Products                          = @('Windows', 'Office')
+                        Classifications                   = @('E6CF1350-C01B-414D-A61F-263D14D133B4', 'E0789628-CE08-4437-BE74-2495B842F43B', '0FA1201D-4330-4FA8-8AE9-B877473B6441')
+                        SynchronizeAutomatically          = $true
+                        SynchronizeAutomaticallyTimeOfDay = '04:00:00'
+                        SynchronizationsPerDay            = 24
+                        ClientTargetingMode               = 'Client'
+                    }
+
+                    Test-TargetResource @testParams | Should -BeFalse
+
+                    Should -Invoke -CommandName Get-TargetResource -Exactly -Times 1 -Scope It
+                    Should -Invoke -CommandName Get-WsusServer -Exactly -Times 0 -Scope It
+                }
+            }
+        }
+    }
+}
+
+Describe 'MSFT_UpdateServicesServer\Set-TargetResource' -Tag 'Set' {
+    BeforeAll {
+        Mock -CommandName Test-TargetResource -MockWith { $true }
+        Mock -CommandName SaveWsusConfiguration
+        Mock -CommandName Get-WsusServer -MockWith {
+            return CommonTestHelper\Get-WsusServerTemplate
+        }
+    }
+
+    Context 'When the resource should be ''Present''' {
+        It 'Should call the correct mocks' {
+            InModuleScope -ScriptBlock {
+                Set-StrictMode -Version 1.0
+
+                $testParams = @{
+                    Ensure                            = 'Present'
+                    SetupCredential                   = [System.Management.Automation.PSCredential]::new('foo', $('bar' | ConvertTo-SecureString -AsPlainText -Force))
+                    SQLServer                         = 'SQLServer'
+                    ContentDir                        = 'C:\WSUSContent\'
+                    UpdateImprovementProgram          = $true
+                    UpstreamServerName                = 'UpstreamServer'
+                    UpstreamServerPort                = $false
+                    UpstreamServerSSL                 = $false
+                    UpstreamServerReplica             = $false
+                    ProxyServerName                   = 'ProxyServer'
+                    ProxyServerPort                   = 8080
+                    Languages                         = '*'
+                    Products                          = @('Windows', 'Office')
+                    Classifications                   = @('E6CF1350-C01B-414D-A61F-263D14D133B4', 'E0789628-CE08-4437-BE74-2495B842F43B', '0FA1201D-4330-4FA8-8AE9-B877473B6441')
+                    SynchronizeAutomatically          = $true
+                    SynchronizeAutomaticallyTimeOfDay = '04:00:00'
+                    SynchronizationsPerDay            = 24
+                    ClientTargetingMode               = 'Client'
+                }
+
+                $null = Set-TargetResource @testParams
+            }
+
+            Should -Invoke -CommandName Test-TargetResource -Exactly -Times 1 -Scope It
+            Should -Invoke -CommandName SaveWsusConfiguration -Exactly -Times 2 -Scope It
+            Should -Invoke -CommandName Get-WsusServer -Exactly -Times 2 -Scope It
+        }
+    }
+
+    Context 'When the resource should be ''Absent''' {
+        It 'Should call the correct mocks' {
+            InModuleScope -ScriptBlock {
+                Set-StrictMode -Version 1.0
+
+                $testParams = @{
+                    Ensure                            = 'Absent'
+                    SetupCredential                   = [System.Management.Automation.PSCredential]::new('foo', $('bar' | ConvertTo-SecureString -AsPlainText -Force))
+                    SQLServer                         = 'SQLServer'
+                    ContentDir                        = 'C:\WSUSContent\'
+                    UpdateImprovementProgram          = $true
+                    UpstreamServerName                = 'UpstreamServer'
+                    UpstreamServerPort                = $false
+                    UpstreamServerSSL                 = $false
+                    UpstreamServerReplica             = $false
+                    ProxyServerName                   = 'ProxyServer'
+                    ProxyServerPort                   = 8080
+                    Languages                         = '*'
+                    Products                          = @('Windows', 'Office')
+                    Classifications                   = @('E6CF1350-C01B-414D-A61F-263D14D133B4', 'E0789628-CE08-4437-BE74-2495B842F43B', '0FA1201D-4330-4FA8-8AE9-B877473B6441')
+                    SynchronizeAutomatically          = $true
+                    SynchronizeAutomaticallyTimeOfDay = '04:00:00'
+                    SynchronizationsPerDay            = 24
+                    ClientTargetingMode               = 'Client'
+                }
+
+                $null = Set-TargetResource @testParams
+            }
+
+            Should -Invoke -CommandName Test-TargetResource -Exactly -Times 1 -Scope It
+            Should -Invoke -CommandName SaveWsusConfiguration -Exactly -Times 2 -Scope It
+            Should -Invoke -CommandName Get-WsusServer -Exactly -Times 2 -Scope It
         }
     }
 }
