@@ -1,3 +1,4 @@
+# Suppressing this rule because Script Analyzer does not understand Pester's syntax.
 [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '')]
 param ()
 
@@ -10,7 +11,7 @@ BeforeDiscovery {
             if (-not (Get-Module -Name 'DscResource.Test' -ListAvailable))
             {
                 # Redirect all streams to $null, except the error stream (stream 2)
-                & "$PSScriptRoot/../../build.ps1" -Tasks 'noop' 1> $null 3> $null 4> $null 5> $null 6> $null
+                & "$PSScriptRoot/../../build.ps1" -Tasks 'noop' 3>&1 4>&1 5>&1 6>&1 > $null
             }
 
             # If the dependencies has not been resolved, this will throw an error.
@@ -33,7 +34,9 @@ BeforeAll {
         -ResourceType 'Mof' `
         -TestType 'Unit'
 
-    Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath '../Helpers/ImitateUpdateServicesModule.psm1') -Force
+    # Load stub cmdlets and classes.
+    Import-Module (Join-Path -Path $PSScriptRoot -ChildPath 'Stubs\UpdateServices.stubs.psm1')
+    Import-Module (Join-Path -Path $PSScriptRoot -ChildPath 'TestHelpers\CommonTestHelper.psm1')
 
     $PSDefaultParameterValues['InModuleScope:ModuleName'] = $script:dscResourceName
     $PSDefaultParameterValues['Mock:ModuleName'] = $script:dscResourceName
@@ -47,10 +50,12 @@ AfterAll {
 
     Restore-TestEnvironment -TestEnvironment $script:testEnvironment
 
-    # Unload the module being tested so that it doesn't impact any other tests.
-    Get-Module -Name $script:dscResourceName -All | Remove-Module -Force
+    # Unload stub module
+    Remove-Module -Name UpdateServices.stubs -Force
+    Remove-Module -Name CommonTestHelper -Force
 
-    Remove-Module -Name 'ImitateUpdateServicesModule' -Force -ErrorAction SilentlyContinue
+    # Unload the module being tested so that It doesn't impact any other tests.
+    Get-Module -Name $script:dscResourceName -All | Remove-Module -Force
 }
 
 #region Function Get-ComputerTargetGroupPath
