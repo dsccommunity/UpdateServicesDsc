@@ -109,7 +109,7 @@ Describe 'MSFT_UpdateServicesServer\Get-TargetResource' -Tag 'Get' {
                     $result.SynchronizeAutomatically | Should -BeTrue
                     $result.SynchronizeAutomaticallyTimeOfDay | Should -Be '04:00:00'
                     $result.SynchronizationsPerDay | Should -Be 24
-                    $result.ClientTargetingMode | Should -BeNullOrEmpty
+                    $result.ClientTargetingMode | Should -Be 'Client'
                 }
 
                 Should -Invoke -CommandName Get-WsusServer -Exactly -Times 1 -Scope It
@@ -203,7 +203,7 @@ Describe 'MSFT_UpdateServicesServer\Get-TargetResource' -Tag 'Get' {
                     $result.SynchronizeAutomatically | Should -BeTrue
                     $result.SynchronizeAutomaticallyTimeOfDay | Should -Be '04:00:00'
                     $result.SynchronizationsPerDay | Should -Be 24
-                    $result.ClientTargetingMode | Should -BeNullOrEmpty
+                    $result.ClientTargetingMode | Should -Be 'Client'
                 }
 
                 Should -Invoke -CommandName Get-WsusServer -Exactly -Times 1 -Scope It

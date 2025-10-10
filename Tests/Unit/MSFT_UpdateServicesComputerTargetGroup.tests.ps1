@@ -62,7 +62,7 @@ AfterAll {
 Describe "MSFT_UpdateServicesComputerTargetGroup\Get-ComputerTargetGroupPath." {
     BeforeAll {
         InModuleScope -ScriptBlock {
-            $script:WsusServer = Get-WsusServer
+            $script:WsusServer = CommonTestHelper\Get-WsusServerTemplate
         }
     }
 
