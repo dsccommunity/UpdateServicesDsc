@@ -96,8 +96,8 @@ Describe 'MSFT_UpdateServicesCleanup\Get-TargetResource' -Tag 'Get' {
         }
     }
 
-    Context 'When the server is not in the desired state' {
-        Context 'When the server is not configured' {
+    Context 'When the resource is not in the desired state' {
+        Context 'When the resource is not configured' {
             BeforeAll {
                 Mock -CommandName Get-ScheduledTask
             }
@@ -124,7 +124,7 @@ Describe 'MSFT_UpdateServicesCleanup\Get-TargetResource' -Tag 'Get' {
             }
         }
 
-        Context 'When the server is configured incorrectly' {
+        Context 'When the resource is configured incorrectly' {
             BeforeAll {
                 Mock Get-ScheduledTask -MockWith {
                     @{
@@ -413,7 +413,7 @@ Describe 'MSFT_UpdateServicesCleanup\Set-TargetResource' -Tag 'Set' {
             }
         }
 
-        Context 'When Test-TargetResource fails' {
+        Context 'When ''Test-TargetResource'' fails' {
             BeforeAll {
                 Mock -CommandName Get-ScheduledTask -MockWith { $true }
                 Mock -CommandName Unregister-ScheduledTask
