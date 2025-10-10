@@ -420,7 +420,7 @@ Describe 'MSFT_UpdateServicesApprovalRule\Set-TargetResource' -Tag 'Set' {
 
                 $testParams = @{
                     Name           = 'ServerName'
-                    Classification = @('00000000-0000-0000-0000-0000testguid')
+                    Classifications = @('00000000-0000-0000-0000-0000testguid')
                 }
 
                 $errorRecord = Get-InvalidOperationRecord -Message ($script:localizedData.RuleFailedToCreate -f $testParams.Name)

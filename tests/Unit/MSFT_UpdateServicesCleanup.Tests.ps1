@@ -81,7 +81,7 @@ Describe 'MSFT_UpdateServicesCleanup\Get-TargetResource' -Tag 'Get' {
 
                 $result = Get-TargetResource -Ensure 'Present'
 
-                $result.Ensure = 'Present'
+                $result.Ensure | Should -Be 'Present'
                 $result.DeclineSupersededUpdates | Should -BeTrue
                 $result.DeclineExpiredUpdates | Should -BeTrue
                 $result.CleanupObsoleteUpdates | Should -BeTrue
@@ -199,7 +199,7 @@ Describe 'MSFT_UpdateServicesCleanup\Test-TargetResource' -Tag 'Test' {
                         TimeOfDay                         = '04:00:00'
                     }
 
-                    $result = Test-TargetResource @testParams | Should -BeTrue
+                    Test-TargetResource @testParams | Should -BeTrue
                 }
 
                 Should -Invoke -CommandName Get-TargetResource -Exactly -Times 1 -Scope It
