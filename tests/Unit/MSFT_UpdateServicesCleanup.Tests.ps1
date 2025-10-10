@@ -223,7 +223,7 @@ Describe 'MSFT_UpdateServicesCleanup\Test-TargetResource' -Tag 'Test' {
                         Ensure = 'Absent'
                     }
 
-                    $result = Test-TargetResource @testParams | Should -BeTrue
+                    Test-TargetResource @testParams | Should -BeTrue
                 }
 
                 Should -Invoke -CommandName Get-TargetResource -Exactly -Times 1 -Scope It
@@ -257,7 +257,7 @@ Describe 'MSFT_UpdateServicesCleanup\Test-TargetResource' -Tag 'Test' {
                         TimeOfDay                         = '04:00:00'
                     }
 
-                    $result = Test-TargetResource @testParams | Should -BeFalse
+                    Test-TargetResource @testParams | Should -BeFalse
                 }
 
                 Should -Invoke -CommandName Get-TargetResource -Exactly -Times 1 -Scope It
@@ -289,7 +289,7 @@ Describe 'MSFT_UpdateServicesCleanup\Test-TargetResource' -Tag 'Test' {
                         Ensure = 'Absent'
                     }
 
-                    $result = Test-TargetResource @testParams | Should -BeFalse
+                    Test-TargetResource @testParams | Should -BeFalse
                 }
 
                 Should -Invoke -CommandName Get-TargetResource -Exactly -Times 1 -Scope It

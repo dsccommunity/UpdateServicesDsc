@@ -445,7 +445,7 @@ Describe 'MSFT_UpdateServicesApprovalRule\Set-TargetResource' -Tag 'Set' {
 
                     $testParams = @{
                         Name           = 'ServerName'
-                        Classification = @('00000000-0000-0000-0000-0000testguid')
+                        Classifications = @('00000000-0000-0000-0000-0000testguid')
                     }
 
                     $null = Set-TargetResource @testParams
@@ -495,7 +495,7 @@ Describe 'MSFT_UpdateServicesApprovalRule\Set-TargetResource' -Tag 'Set' {
                 $testParams = @{
                     Ensure         = 'Present'
                     Name           = 'ServerName'
-                    Classification = @('00000000-0000-0000-0000-0000testguid')
+                    Classifications = @('00000000-0000-0000-0000-0000testguid')
                     Products       = @('Product')
                     ComputerGroups = @('Computer Target Group')
                     Enabled        = $true
@@ -524,7 +524,7 @@ Describe 'MSFT_UpdateServicesApprovalRule\Set-TargetResource' -Tag 'Set' {
                     $testParams = @{
                         Ensure         = 'Present'
                         Name           = 'ServerName'
-                        Classification = @('00000000-0000-0000-0000-0000testguid')
+                        Classifications = @('00000000-0000-0000-0000-0000testguid')
                         Products       = @('Product')
                         ComputerGroups = @('Computer Target Group')
                         Enabled        = $true
@@ -577,7 +577,7 @@ Describe 'MSFT_UpdateServicesApprovalRule\Set-TargetResource' -Tag 'Set' {
                 $testParams = @{
                     Ensure         = 'Present'
                     Name           = 'ServerName'
-                    Classification = @('00000000-0000-0000-0000-0000testguid')
+                    Classifications = @('00000000-0000-0000-0000-0000testguid')
                     Products       = @('Product')
                     ComputerGroups = @('Computer Target Group')
                     Enabled        = $true
@@ -626,7 +626,7 @@ Describe 'MSFT_UpdateServicesApprovalRule\Set-TargetResource' -Tag 'Set' {
                 $testParams = @{
                     Ensure         = 'Absent'
                     Name           = 'ServerName'
-                    Classification = @('00000000-0000-0000-0000-0000testguid')
+                    Classifications = @('00000000-0000-0000-0000-0000testguid')
                     Products       = @('Product')
                     ComputerGroups = @('Computer Target Group')
                     Enabled        = $true
@@ -660,7 +660,7 @@ Describe 'MSFT_UpdateServicesApprovalRule\Set-TargetResource' -Tag 'Set' {
                 $testParams = @{
                     Ensure         = 'Present'
                     Name           = 'ServerName'
-                    Classification = @('00000000-0000-0000-0000-0000testguid')
+                    Classifications = @('00000000-0000-0000-0000-0000testguid')
                     Products       = @('Product')
                     ComputerGroups = @('Computer Target Group')
                     Enabled        = $true
