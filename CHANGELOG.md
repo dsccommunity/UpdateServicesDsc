@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Rename `Tests` directory to `tests`.
 - Updated Unit tests to Pester 5 DscCommunity format.
 - Update references of `master` branch to `main`.
+- Fix Doc Generation.
 
 ### Added
 
