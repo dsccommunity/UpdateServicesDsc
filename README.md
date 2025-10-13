@@ -37,7 +37,7 @@ A full list of changes in each version can be found in the [change log](CHANGELO
 ## Documentation
 
 The documentation can be found in the [UpdateServicesDsc Wiki](https://github.com/dsccommunity/UpdateServicesDsc/wiki).
-The DSC resources schema files is used to automatically update the
+The DSC resources schema files are used to automatically update the
 documentation on each PR merge.
 
 ## Versions
