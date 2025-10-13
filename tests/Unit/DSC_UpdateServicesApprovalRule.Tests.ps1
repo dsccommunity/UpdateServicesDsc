@@ -26,7 +26,7 @@ BeforeDiscovery {
 
 BeforeAll {
     $script:dscModuleName = 'UpdateServicesDsc'
-    $script:dscResourceName = 'MSFT_UpdateServicesApprovalRule'
+    $script:dscResourceName = 'DSC_UpdateServicesApprovalRule'
 
     $script:testEnvironment = Initialize-TestEnvironment `
         -DSCModuleName $script:dscModuleName `
@@ -58,7 +58,7 @@ AfterAll {
     Get-Module -Name $script:dscResourceName -All | Remove-Module -Force
 }
 
-Describe 'MSFT_UpdateServicesApprovalRule\Get-TargetResource' -Tag 'Get' {
+Describe 'DSC_UpdateServicesApprovalRule\Get-TargetResource' -Tag 'Get' {
     Context 'When the server should be configured with specific classifications, products and computer groups' {
         BeforeAll {
             Mock -CommandName Get-WsusServer -MockWith {
@@ -221,7 +221,7 @@ Describe 'MSFT_UpdateServicesApprovalRule\Get-TargetResource' -Tag 'Get' {
     }
 }
 
-Describe 'MSFT_UpdateServicesApprovalRule\Test-TargetResource' -Tag 'Test' {
+Describe 'DSC_UpdateServicesApprovalRule\Test-TargetResource' -Tag 'Test' {
     Context 'When the resource is in the desired state' {
         Context 'When the resource exists' {
             BeforeAll {
@@ -406,7 +406,7 @@ Describe 'MSFT_UpdateServicesApprovalRule\Test-TargetResource' -Tag 'Test' {
     }
 }
 
-Describe 'MSFT_UpdateServicesApprovalRule\Set-TargetResource' -Tag 'Set' {
+Describe 'DSC_UpdateServicesApprovalRule\Set-TargetResource' -Tag 'Set' {
     Context 'When setting the resource fails' {
         BeforeAll {
             Mock Get-WsusServer -MockWith {
