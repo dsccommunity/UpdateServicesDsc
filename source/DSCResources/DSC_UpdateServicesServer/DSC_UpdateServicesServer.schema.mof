@@ -2,7 +2,7 @@
 class DSC_UpdateServicesServer : OMI_BaseResource
 {
     [Key, Description("An enumerated value that describes if WSUS is configured.\nPresent {default}  \nAbsent   \n"), ValueMap{"Present","Absent"}, Values{"Present","Absent"}] String Ensure;
-    [Write, EmbeddedInstance("DSC_Credential"), Description("Credential to be used to perform the initial configuration.")] String SetupCredential;
+    [Write, EmbeddedInstance("MSFT_Credential"), Description("Credential to be used to perform the initial configuration.")] String SetupCredential;
     [Write, Description("SQL Server for the WSUS database, omit for Windows Internal Database.")] String SQLServer;
     [Write, Description("Folder for WSUS update files.")] String ContentDir;
     [Write, Description("Join the Microsoft Update Improvement Program.")] Boolean UpdateImprovementProgram;
@@ -12,7 +12,7 @@ class DSC_UpdateServicesServer : OMI_BaseResource
     [Write, Description("Replica of upstream WSUS server.")] Boolean UpstreamServerReplica;
     [Write, Description("Proxy server to use when synchronizing, omit for no proxy.")] String ProxyServerName;
     [Write, Description("Proxy server port.")] UInt16 ProxyServerPort;
-    [Write, EmbeddedInstance("DSC_Credential"), Description("Proxy server credential, omit for anonymous.")] String ProxyServerCredential;
+    [Write, EmbeddedInstance("MSFT_Credential"), Description("Proxy server credential, omit for anonymous.")] String ProxyServerCredential;
     [Read, Description("Proxy server credential username.")] String ProxyServerCredentialUsername;
     [Write, Description("Allow proxy server basic authentication.")] Boolean ProxyServerBasicAuthentication;
     [Write, Description("Update languages, * for all.")] String Languages[];
