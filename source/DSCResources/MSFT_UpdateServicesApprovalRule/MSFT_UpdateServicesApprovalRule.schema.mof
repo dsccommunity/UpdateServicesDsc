@@ -1,7 +1,7 @@
 [ClassVersion("1.0.0.0"), FriendlyName("UpdateServicesApprovalRule")]
 class MSFT_UpdateServicesApprovalRule : OMI_BaseResource
 {
-    [Write, Description("An enumerated value that describes if WSUS is configured.\nPresent {default}  \nAbsent   \n"), ValueMap{"Present","Absent"}, Values{"Present","Absent"}] String Ensure;
+    [Write, Description("An enumerated value that describes if WSUS is configured. Default value is 'Present'."), ValueMap{"Present","Absent"}, Values{"Present","Absent"}] String Ensure;
     [Key, Description("Name of the approval rule.")] String Name;
     [Write, Description("Classifications in the approval rule.")] String Classifications[];
     [Write, Description("Products in the approval rule.")] String Products[];
