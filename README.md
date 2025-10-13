@@ -5,6 +5,7 @@
 [![Azure DevOps tests](https://img.shields.io/azure-devops/tests/dsccommunity/UpdateServicesDsc/21/main)](https://dsccommunity.visualstudio.com/UpdateServicesDsc/_test/analytics?definitionId=21&contextType=build)
 [![PowerShell Gallery (with prereleases)](https://img.shields.io/powershellgallery/vpre/UpdateServicesDsc?label=UpdateServicesDsc%20Preview)](https://www.powershellgallery.com/packages/UpdateServicesDsc/)
 [![PowerShell Gallery](https://img.shields.io/powershellgallery/v/UpdateServicesDsc?label=UpdateServicesDsc)](https://www.powershellgallery.com/packages/UpdateServicesDsc/)
+[![codecov](https://codecov.io/gh/dsccommunity/UpdateServicesDsc/branch/main/graph/badge.svg)](https://codecov.io/gh/dsccommunity/UpdateServicesDsc)
 
 The **UpdateServicesDsc** module contains DSC resources
 for deployment and configuration of Windows Server Update Services.
