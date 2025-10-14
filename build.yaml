@@ -76,7 +76,6 @@ Pester:
       CIFormat: Auto
     CodeCoverage:
       CoveragePercentTarget: 50
-      OutputPath: JaCoCo_coverage.xml
       OutputEncoding: ascii
       # There is a bug in Pester when running unit tests for classes when 'UseBreakpoints' is turned off.
       # See error in gist: https://gist.github.com/johlju/c16dfd9587c7e066e8825fc54b33a703
@@ -86,6 +85,16 @@ Pester:
       OutputEncoding: ascii
   ExcludeFromCodeCoverage:
     - Modules/DscResource.Common
+
+####################################################
+#           Code Coverage Configuration            #
+####################################################
+CodeCoverage:
+  # Filename of the file that will be outputted by the task Merge_CodeCoverage_Files.
+  CodeCoverageMergedOutputFile: JaCoCo_coverage.xml
+  # File pattern used to search for files under the ./output/testResults folder
+  # by task Merge_CodeCoverage_Files.
+  CodeCoverageFilePattern: Codecov*.xml
 
 ####################################################
 #      Pester Configuration (DscResource.Test)     #
