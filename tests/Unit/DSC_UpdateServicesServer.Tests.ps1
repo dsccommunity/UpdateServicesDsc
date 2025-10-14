@@ -27,7 +27,7 @@ BeforeDiscovery {
 
 BeforeAll {
     $script:dscModuleName = 'UpdateServicesDsc'
-    $script:dscResourceName = 'MSFT_UpdateServicesServer'
+    $script:dscResourceName = 'DSC_UpdateServicesServer'
 
     $script:testEnvironment = Initialize-TestEnvironment `
         -DSCModuleName $script:dscModuleName `
@@ -59,7 +59,7 @@ AfterAll {
     Get-Module -Name $script:dscResourceName -All | Remove-Module -Force
 }
 
-Describe 'MSFT_UpdateServicesServer\Get-TargetResource' -Tag 'Get' {
+Describe 'DSC_UpdateServicesServer\Get-TargetResource' -Tag 'Get' {
     Context 'When the resource is in the desired state' {
         Context 'When the server exists' {
             BeforeAll {
@@ -317,7 +317,7 @@ Describe 'MSFT_UpdateServicesServer\Get-TargetResource' -Tag 'Get' {
     }
 }
 
-Describe 'MSFT_UpdateServicesServer\Test-TargetResource' -Tag 'Test' {
+Describe 'DSC_UpdateServicesServer\Test-TargetResource' -Tag 'Test' {
     Context 'When the resource is in the desired state' {
         Context 'When the resource should be ''Present''' {
             BeforeAll {
@@ -655,7 +655,7 @@ Describe 'MSFT_UpdateServicesServer\Test-TargetResource' -Tag 'Test' {
     }
 }
 
-Describe 'MSFT_UpdateServicesServer\Set-TargetResource' -Tag 'Set' {
+Describe 'DSC_UpdateServicesServer\Set-TargetResource' -Tag 'Set' {
     BeforeAll {
         Mock -CommandName Test-TargetResource -MockWith { $true }
         Mock -CommandName SaveWsusConfiguration

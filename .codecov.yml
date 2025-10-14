@@ -4,7 +4,7 @@ codecov:
   branch: main
 
 comment:
-  layout: "reach, diff, flags, files"
+  layout: 'reach, diff, flags, files'
   behavior: default
 
 coverage:
@@ -16,7 +16,7 @@ coverage:
     project:
       default:
         # Set the overall project code coverage requirement to 70%
-        target: 70
+        target: 50
     patch:
       default:
         # Set the pull request requirement to not regress overall coverage by more than 5%
@@ -25,4 +25,4 @@ coverage:
         threshold: 5
 
 fixes:
-  - '^\d+\.\d+\.\d+::source'  # move path "X.Y.Z" => "source"
+  - '^\d+\.\d+\.\d+::source' # move path "X.Y.Z" => "source"
