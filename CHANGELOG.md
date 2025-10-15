@@ -29,6 +29,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated scriptanalyzer settings to latest.
 - Rename `Tests` directory to `tests`.
 - Updated Unit tests to Pester 5 DscCommunity format.
+- Update references of `master` branch to `main`.
+- Fix Doc Generation.
+- Update `azure-pipelines` to use latest pattern.
+- Rename resources from MSFT_ to DSC_. Fixes [#87](https://github.com/dsccommunity/UpdateServicesDsc/issues/87).
 
 ### Added
 

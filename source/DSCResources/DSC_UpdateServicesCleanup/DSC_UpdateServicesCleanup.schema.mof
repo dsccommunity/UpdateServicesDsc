@@ -1,7 +1,7 @@
 [ClassVersion("1.0.0.0"), FriendlyName("UpdateServicesCleanup")]
-class MSFT_UpdateServicesCleanup : OMI_BaseResource
+class DSC_UpdateServicesCleanup : OMI_BaseResource
 {
-    [Key, Description("An enumerated value that describes if the WSUS cleanup task exists.\nPresent {default}  \nAbsent   \n"), ValueMap{"Present","Absent"}, Values{"Present","Absent"}] String Ensure;
+    [Key, Description("An enumerated value that describes if the WSUS cleanup task exists. Default value is 'Present'."), ValueMap{"Present","Absent"}, Values{"Present","Absent"}] String Ensure;
     [Write, Description("Decline updates that have not been approved for 30 days or more, are not currently needed by any clients, and are superseded by an approved update.")] Boolean DeclineSupersededUpdates;
     [Write, Description("Decline updates that aren't approved and have been expired by Microsoft.")] Boolean DeclineExpiredUpdates;
     [Write, Description("Delete updates that are expired and have not been approved for 30 days or more, and delete older update revisions that have not been approved for 30 days or more.")] Boolean CleanupObsoleteUpdates;

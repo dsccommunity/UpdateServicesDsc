@@ -26,7 +26,7 @@ BeforeDiscovery {
 
 BeforeAll {
     $script:dscModuleName = 'UpdateServicesDsc'
-    $script:dscResourceName = 'MSFT_UpdateServicesCleanup'
+    $script:dscResourceName = 'DSC_UpdateServicesCleanup'
 
     $script:testEnvironment = Initialize-TestEnvironment `
         -DSCModuleName $script:dscModuleName `
@@ -58,7 +58,7 @@ AfterAll {
     Get-Module -Name $script:dscResourceName -All | Remove-Module -Force
 }
 
-Describe 'MSFT_UpdateServicesCleanup\Get-TargetResource' -Tag 'Get' {
+Describe 'DSC_UpdateServicesCleanup\Get-TargetResource' -Tag 'Get' {
     Context 'When the resource is in the desired state' {
         BeforeAll {
             Mock -CommandName Get-ScheduledTask -MockWith {
@@ -164,7 +164,7 @@ Describe 'MSFT_UpdateServicesCleanup\Get-TargetResource' -Tag 'Get' {
     }
 }
 
-Describe 'MSFT_UpdateServicesCleanup\Test-TargetResource' -Tag 'Test' {
+Describe 'DSC_UpdateServicesCleanup\Test-TargetResource' -Tag 'Test' {
     Context 'When the resource is in the desired state' {
         Context 'When the resource should be present' {
             BeforeAll {
@@ -373,7 +373,7 @@ Describe 'MSFT_UpdateServicesCleanup\Test-TargetResource' -Tag 'Test' {
     }
 }
 
-Describe 'MSFT_UpdateServicesCleanup\Set-TargetResource' -Tag 'Set' {
+Describe 'DSC_UpdateServicesCleanup\Set-TargetResource' -Tag 'Set' {
     Context 'When the resource should be absent' {
         Context 'When the resource is absent' {
             BeforeAll {

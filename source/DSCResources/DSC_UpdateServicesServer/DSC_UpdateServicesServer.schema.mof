@@ -1,7 +1,7 @@
 [ClassVersion("1.0.0.0"), FriendlyName("UpdateServicesServer")]
-class MSFT_UpdateServicesServer : OMI_BaseResource
+class DSC_UpdateServicesServer : OMI_BaseResource
 {
-    [Key, Description("An enumerated value that describes if WSUS is configured.\nPresent {default}  \nAbsent   \n"), ValueMap{"Present","Absent"}, Values{"Present","Absent"}] String Ensure;
+    [Key, Description("An enumerated value that describes if WSUS is configured. Default value is 'Present'."), ValueMap{"Present","Absent"}, Values{"Present","Absent"}] String Ensure;
     [Write, EmbeddedInstance("MSFT_Credential"), Description("Credential to be used to perform the initial configuration.")] String SetupCredential;
     [Write, Description("SQL Server for the WSUS database, omit for Windows Internal Database.")] String SQLServer;
     [Write, Description("Folder for WSUS update files.")] String ContentDir;
@@ -22,5 +22,5 @@ class MSFT_UpdateServicesServer : OMI_BaseResource
     [Write, Description("First synchronization.")] String SynchronizeAutomaticallyTimeOfDay;
     [Write, Description("Synchronizations per day.")] UInt16 SynchronizationsPerDay;
     [Write, Description("Begin initial synchronization.")] Boolean Synchronize;
-    [write, Description("An enumerated value that describes if how the Target Groups are populated.\nClient {default}  \nServer   \n"), ValueMap{"Client","Server"}, Values{"Client","Server"}] String ClientTargetingMode;
+    [write, Description("An enumerated value that describes if how the Target Groups are populated. Default value is 'Client'."), ValueMap{"Client","Server"}, Values{"Client","Server"}] String ClientTargetingMode;
 };
