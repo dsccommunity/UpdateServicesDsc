@@ -322,7 +322,7 @@ function Get-ComputerTargetGroupPath
 
     for ($i=($computerTargetGroupParents.Count - 1); $i -ge 0; $i--)
     {
-        if ("" -ne $computerTargetGroupPath)
+        if (-not [string]::IsNullOrEmpty($computerTargetGroupPath))
         {
             $computerTargetGroupPath += ("/" +  $computerTargetGroupParents[$i])
         }
