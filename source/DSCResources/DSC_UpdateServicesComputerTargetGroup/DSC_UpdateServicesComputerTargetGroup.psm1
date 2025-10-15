@@ -50,7 +50,7 @@ function Get-TargetResource
     if ($null -ne $WsusServer)
     {
         Write-Verbose -Message ($script:localizedData.GetWsusServerSucceeded -f $WsusServer.Name)
-        $ComputerTargetGroup = $WsusServer.GetComputerTargetGroups().Where({ $_.Name -eq $Name })[0]
+        $ComputerTargetGroup = $WsusServer.GetComputerTargetGroups().Where({ $_.Name -eq $Name }) | Select-Object -First 1
 
         if ($null -ne $ComputerTargetGroup)
         {
