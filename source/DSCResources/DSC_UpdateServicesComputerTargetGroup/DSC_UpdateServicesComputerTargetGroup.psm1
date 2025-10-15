@@ -175,21 +175,29 @@ function Set-TargetResource
                     else
                     {
                         # $Ensure -eq 'Absent' - must call the Delete() method on the group itself for removal
+                        $ChildComputerTargetGroup = $ParentComputerTargetGroup.GetChildTargetGroups() | Where-Object {
+                            $_.Name -eq $Name
+                        }
+
+                        if ($null -eq $ChildComputerTargetGroup)
+                        {
+                            # Already absent
+                            Write-Verbose -Message ($script:localizedData.NotFoundComputerTargetGroup -f $Name, $Path)
+                            return
+                        }
+
                         try
                         {
-                            $ChildComputerTargetGroup = $ParentComputerTargetGroup.GetChildTargetGroups() | Where-Object -FilterScript {
-                                $_.Name -eq $Name
-                            }
+                            $childId = $ChildComputerTargetGroup.Id.Guid
                             $ChildComputerTargetGroup.Delete() | Out-Null
-                            Write-Verbose -Message ($script:localizedData.DeleteComputerTargetGroupSuccess -f $Name, `
-                            $ChildComputerTargetGroup.Id.Guid, $Path)
+                            Write-Verbose -Message ($script:localizedData.DeleteComputerTargetGroupSuccess -f $Name, $childId, $Path)
                             return
                         }
                         catch
                         {
+                            $childId = if ($ChildComputerTargetGroup) { $ChildComputerTargetGroup.Id.Guid } else { 'N/A' }
                             New-InvalidOperationException -Message (
-                                $script:localizedData.DeleteComputerTargetGroupFailed -f $Name, `
-                                $ChildComputerTargetGroup.Id.Guid, $Path
+                                $script:localizedData.DeleteComputerTargetGroupFailed -f $Name, $childId, $Path
                             ) -ErrorRecord $_
                         }
                     }
