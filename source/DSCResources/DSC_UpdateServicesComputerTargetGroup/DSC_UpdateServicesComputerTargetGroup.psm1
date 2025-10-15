@@ -143,7 +143,7 @@ function Set-TargetResource
     {
         $ParentComputerTargetGroups = $WsusServer.GetComputerTargetGroups().Where({
             $_.Name -eq $ParentComputerTargetGroupName
-        })
+        }) | Select-Object -First 1
 
         if ($null -ne $ParentComputerTargetGroups)
         {
@@ -177,7 +177,7 @@ function Set-TargetResource
                         # $Ensure -eq 'Absent' - must call the Delete() method on the group itself for removal
                         $ChildComputerTargetGroup = $ParentComputerTargetGroup.GetChildTargetGroups().Where({
                             $_.Name -eq $Name
-                        })
+                        }) | Select-Object -First 1
 
                         if ($null -eq $ChildComputerTargetGroup)
                         {
