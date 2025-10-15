@@ -290,7 +290,7 @@ function Get-ComputerTargetGroupPath
     param
     (
         [Parameter(Mandatory = $true)]
-        [object]
+        [Microsoft.UpdateServices.Internal.BaseApi.ComputerTargetGroup]
         $ComputerTargetGroup
     )
 
