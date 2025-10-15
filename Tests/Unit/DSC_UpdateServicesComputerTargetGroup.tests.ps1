@@ -59,9 +59,10 @@ AfterAll {
 }
 
 #region Function Get-ComputerTargetGroupPath
-Describe "DSC_UpdateServicesComputerTargetGroup\Get-ComputerTargetGroupPath." {
+Describe "DSC_UpdateServicesComputerTargetGroup\Get-ComputerTargetGroupPath" {
     BeforeAll {
         InModuleScope -ScriptBlock {
+            Set-StrictMode -Version 1.0
             $script:WsusServer = CommonTestHelper\Get-WsusServerTemplate
         }
     }
@@ -69,9 +70,9 @@ Describe "DSC_UpdateServicesComputerTargetGroup\Get-ComputerTargetGroupPath." {
     Context 'When getting the path for the "All Computers" ComputerTargetGroup' {
         It 'Should return the correct path' {
             InModuleScope -ScriptBlock {
+                Set-StrictMode -Version 1.0
                 $ComputerTargetGroup = $script:WsusServer.GetComputerTargetGroups() | Where-Object -FilterScript { $_.Name -eq 'All Computers' }
-                $result = Get-ComputerTargetGroupPath -ComputerTargetGroup $ComputerTargetGroup
-                $result | Should -Be 'All Computers'
+                Get-ComputerTargetGroupPath -ComputerTargetGroup $ComputerTargetGroup | Should -Be 'All Computers'
             }
         }
     }
@@ -79,9 +80,9 @@ Describe "DSC_UpdateServicesComputerTargetGroup\Get-ComputerTargetGroupPath." {
     Context 'When getting the path for the "Desktops" ComputerTargetGroup' {
         It 'Should return the correct path' {
             InModuleScope -ScriptBlock {
+                Set-StrictMode -Version 1.0
                 $ComputerTargetGroup = $script:WsusServer.GetComputerTargetGroups() | Where-Object -FilterScript { $_.Name -eq 'Desktops' }
-                $result = Get-ComputerTargetGroupPath -ComputerTargetGroup $ComputerTargetGroup
-                $result | Should -Be 'All Computers/Workstations'
+                Get-ComputerTargetGroupPath -ComputerTargetGroup $ComputerTargetGroup | Should -Be 'All Computers/Workstations'
             }
         }
     }
@@ -89,9 +90,9 @@ Describe "DSC_UpdateServicesComputerTargetGroup\Get-ComputerTargetGroupPath." {
     Context 'When getting the path for the "Workstations" ComputerTargetGroup' {
         It 'Should return the correct path' {
             InModuleScope -ScriptBlock {
+                Set-StrictMode -Version 1.0
                 $ComputerTargetGroup = $script:WsusServer.GetComputerTargetGroups() | Where-Object -FilterScript { $_.Name -eq 'Workstations' }
-                $result = Get-ComputerTargetGroupPath -ComputerTargetGroup $ComputerTargetGroup
-                $result | Should -Be 'All Computers'
+                Get-ComputerTargetGroupPath -ComputerTargetGroup $ComputerTargetGroup | Should -Be 'All Computers'
             }
         }
     }
@@ -99,54 +100,72 @@ Describe "DSC_UpdateServicesComputerTargetGroup\Get-ComputerTargetGroupPath." {
 #endregion
 
 #region Function Get-TargetResource
-Describe "DSC_UpdateServicesComputerTargetGroup\Get-TargetResource." {
+Describe "DSC_UpdateServicesComputerTargetGroup\Get-TargetResource" {
     BeforeEach {
         if (Test-Path -Path variable:script:resource) { Remove-Variable -Scope 'script' -Name 'resource' }
     }
 
     Context 'When an error occurs retrieving WSUS Server configuration information' {
         BeforeAll {
-            Mock -CommandName Get-WsusServer -MockWith { throw 'An error occurred.' }
+            Mock -CommandName Get-WsusServer -MockWith { throw 'An error occurred' }
         }
 
-        It 'Should throw when an error occurs retrieving WSUS Server information.' {
+        It 'Should throw when an error occurs retrieving WSUS Server information' {
             { $script:resource = Get-TargetResource -Name 'Servers' -Path 'All Computers' } | Should -Throw ('*' + $script:localizedData.WSUSConfigurationFailed + '*')
-            $script:resource | Should -Be $null
+            $script:resource | Should -BeNullOrEmpty
             Should -Invoke -CommandName Get-WsusServer -Times 1 -Exactly
         }
     }
 
-    Context 'When the WSUS Server is not yet configured.' {
+    Context 'When the WSUS Server is not yet configured' {
         BeforeAll {
             Mock -CommandName Get-WsusServer
         }
 
-        It 'Should not throw when the WSUS Server is not yet configured / cannot be found.' {
+        It 'Should not throw when the WSUS Server is not yet configured / cannot be found' {
             $script:resource = Get-TargetResource -Name 'Servers' -Path 'All Computers'
             $script:resource.Ensure | Should -Be 'Absent'
-            $script:resource.Id | Should -Be $null
+            $script:resource.Id | Should -BeNullOrEmpty
             $script:resource.Name | Should -Be 'Servers'
             $script:resource.Path | Should -Be 'All Computers'
         }
     }
 
-    Context 'When the Computer Target Group is not in the desired state (specified name does not exist at any path).' {
-        It 'Should return absent when Computer Target Group does not exist at any path.' {
+    Context 'When the Computer Target Group is not in the desired state (specified name does not exist at any path)' {
+        BeforeAll {
+            Mock -CommandName Get-WsusServer -MockWith {
+                return CommonTestHelper\Get-WsusServerTemplate
+            }
+        }
+
+        It 'Should return absent when Computer Target Group does not exist at any path' {
             $resource = Get-TargetResource -Name 'Domain Controllers' -Path 'All Computers'
             $resource.Ensure | Should -Be 'Absent'
         }
     }
 
-    Context 'When the Computer Target Group is not in the desired state (specified name exists but not at the desired path).' {
-        It 'Should throw when Computer Target Group does not exist at the specified path.' {
+    Context 'When the Computer Target Group is not in the desired state (specified name exists but not at the desired path)' {
+        BeforeAll {
+            Mock -CommandName Get-WsusServer -MockWith {
+                return CommonTestHelper\Get-WsusServerTemplate
+            }
+        }
+
+        It 'Should throw when Computer Target Group does not exist at the specified path' {
             { $script:resource = Get-TargetResource -Name 'Desktops' -Path 'All Computers/Servers' } | Should -Throw `
             ('*' + $script:localizedData.DuplicateComputerTargetGroup -f 'Desktops',  'All Computers/Workstations')
-            $script:resource | Should -Be $null
+            $script:resource | Should -BeNullOrEmpty
         }
     }
 
-    Context 'When the Computer Target Group is in the desired state (specified name exists with the desired path).' {
-        It 'Should return present when Computer Target Group does exist at the specified path.' {
+    Context 'When the Computer Target Group is in the desired state (specified name exists with the desired path)' {
+        BeforeAll {
+            Mock -CommandName Get-WsusServer -MockWith {
+                return CommonTestHelper\Get-WsusServerTemplate
+            }
+        }
+
+        It 'Should return present when Computer Target Group does exist at the specified path' {
             $resource = Get-TargetResource -Name 'Desktops' -Path 'All Computers/Workstations'
             $resource.Ensure | Should -Be 'Present'
             $resource.Id | Should -Be '2b77a9ce-f320-41c7-bec7-9b22f67ae5b1'
@@ -156,8 +175,8 @@ Describe "DSC_UpdateServicesComputerTargetGroup\Get-TargetResource." {
 #endregion
 
 #region Function Test-TargetResource
-Describe "DSC_UpdateServicesComputerTargetGroup\Test-TargetResource." {
-    Context 'When the Computer Target Group "Desktops" is "Present" at Path "All Computers/Workstations" which is the desired state.' {
+Describe "DSC_UpdateServicesComputerTargetGroup\Test-TargetResource" {
+    Context 'When the Computer Target Group "Desktops" is "Present" at Path "All Computers/Workstations" which is the desired state' {
         BeforeAll {
             Mock -CommandName Get-TargetResource -MockWith {
                 return @{
@@ -169,13 +188,12 @@ Describe "DSC_UpdateServicesComputerTargetGroup\Test-TargetResource." {
             }
         }
 
-        It 'Should return $true when Computer Target Resource is in the desired state.' {
-            $resource = Test-TargetResource -Name 'Desktops' -Path 'All Computers/Workstations'
-            $resource | Should -BeTrue
+        It 'Should return $true when Computer Target Resource is in the desired state' {
+            Test-TargetResource -Name 'Desktops' -Path 'All Computers/Workstations' | Should -BeTrue
         }
     }
 
-    Context 'When the Computer Target Group "Desktops" is "Absent" at Path "All Computers/Workstations" which is the desired state (Present).' {
+    Context 'When the Computer Target Group "Desktops" is "Absent" at Path "All Computers/Workstations" which is the desired state (Present)' {
         BeforeAll {
             Mock -CommandName Get-TargetResource -MockWith {
                 return @{
@@ -187,13 +205,12 @@ Describe "DSC_UpdateServicesComputerTargetGroup\Test-TargetResource." {
             }
         }
 
-        It 'Should return $true when Computer Target Resource is in the desired state.' {
-            $resource = Test-TargetResource -Name 'Desktops' -Path 'All Computers/Workstations' -Ensure 'Absent'
-            $resource | Should -BeTrue
+        It 'Should return $true when Computer Target Resource is in the desired state' {
+            Test-TargetResource -Name 'Desktops' -Path 'All Computers/Workstations' -Ensure 'Absent'| Should -BeTrue
         }
     }
 
-    Context 'When the Computer Target Group "Desktops" is "Present" at Path "All Computers/Workstations" which is NOT the desired state.' {
+    Context 'When the Computer Target Group "Desktops" is "Present" at Path "All Computers/Workstations" which is NOT the desired state' {
         BeforeAll {
             Mock -CommandName Get-TargetResource -MockWith {
                 return @{
@@ -205,13 +222,12 @@ Describe "DSC_UpdateServicesComputerTargetGroup\Test-TargetResource." {
             }
         }
 
-        It 'Should return $false when Computer Target Resource is NOT in the desired state.' {
-            $resource = Test-TargetResource -Name 'Desktops' -Path 'All Computers/Workstations' -Ensure 'Absent'
-            $resource | Should -BeFalse
+        It 'Should return $false when Computer Target Resource is NOT in the desired state' {
+            Test-TargetResource -Name 'Desktops' -Path 'All Computers/Workstations' -Ensure 'Absent' | Should -BeFalse
         }
     }
 
-    Context 'When the Computer Target Group "Desktops" is "Absent" at Path "All Computers/Workstations" which is NOT the desired state (Present).' {
+    Context 'When the Computer Target Group "Desktops" is "Absent" at Path "All Computers/Workstations" which is NOT the desired state (Present)' {
         BeforeAll {
             Mock -CommandName Get-TargetResource -MockWith {
                 return @{
@@ -223,9 +239,8 @@ Describe "DSC_UpdateServicesComputerTargetGroup\Test-TargetResource." {
             }
         }
 
-        It 'Should return $false when Computer Target Resource is NOT in the desired state.' {
-            $resource = Test-TargetResource -Name 'Desktops' -Path 'All Computers/Workstations' -Ensure 'Present'
-            $resource | Should -BeFalse
+        It 'Should return $false when Computer Target Resource is NOT in the desired state' {
+            Test-TargetResource -Name 'Desktops' -Path 'All Computers/Workstations' -Ensure 'Present' | Should -BeFalse
         }
     }
 }
@@ -237,55 +252,76 @@ Describe "DSC_UpdateServicesComputerTargetGroup\Set-TargetResource" {
         if (Test-Path -Path variable:script:resource) { Remove-Variable -Scope 'script' -Name 'resource' }
     }
 
-    Context 'When an error occurs retrieving WSUS Server configuration information.' {
+    Context 'When an error occurs retrieving WSUS Server configuration information' {
         BeforeAll {
-            Mock -CommandName Get-WsusServer -MockWith { throw 'An error occurred.' }
+            Mock -CommandName Get-WsusServer -MockWith { throw 'An error occurred' }
         }
 
-        It 'Should throw when an error occurs retrieving WSUS Server information.' {
+        It 'Should throw when an error occurs retrieving WSUS Server information' {
             { $script:resource = Set-TargetResource -Name 'Servers' -Path 'All Computers'} | Should -Throw ('*' + $script:localizedData.WSUSConfigurationFailed + '*')
-            $script:resource | Should -Be $null
+            $script:resource | Should -BeNullOrEmpty
             Should -Invoke -CommandName Get-WsusServer -Times 1 -Exactly
         }
     }
 
-    Context 'When the WSUS Server is not yet configured.' {
+    Context 'When the WSUS Server is not yet configured' {
         BeforeAll {
             Mock -CommandName Get-WsusServer
         }
 
-        It 'Should not throw when the WSUS Server is not yet configuration / cannot be found.' {
+        It 'Should not throw when the WSUS Server is not yet configured / cannot be found' {
             $script:resource = Set-TargetResource -Name 'Servers' -Path 'All Computers'
-            $script:resource | Should -Be $null
+            $script:resource | Should -BeNullOrEmpty
         }
     }
 
-    Context 'When the Parent of the Computer Target Group is not present and therefore the new group cannot be created.' {
+    Context 'When the Parent of the Computer Target Group is not present and therefore the new group cannot be created' {
         BeforeAll {
+            Mock -CommandName Get-WsusServer -MockWith {
+                return CommonTestHelper\Get-WsusServerTemplate
+            }
             Mock -CommandName Write-Warning
         }
 
-        It 'Should throw an exception where the Parent of the Computer Target Group does not exist.' {
+        It 'Should throw an exception where the Parent of the Computer Target Group does not exist' {
             { $script:resource = Set-TargetResource -Name 'Win10' -Path 'All Computers/Desktops'} | Should -Throw `
                 ('*' + $script:localizedData.NotFoundParentComputerTargetGroup -f 'Desktops', `
                 'All Computers', 'Win10')
         }
     }
 
-    Context 'When the new Computer Target Group (at Root Level) is successfully created.' {
-        It 'Should create the required group where Computer Target Group (at Root Level) does not exist and Ensure is "Present".' {
+    Context 'When the new Computer Target Group (at Root Level) is successfully created' {
+        BeforeAll {
+            Mock -CommandName Get-WsusServer -MockWith {
+                return CommonTestHelper\Get-WsusServerTemplate
+            }
+        }
+
+        It 'Should create the required group where Computer Target Group (at Root Level) does not exist and Ensure is "Present"' {
             $script:resource = Set-TargetResource -Name 'Member Servers' -Path 'All Computers'
         }
     }
 
-    Context 'When the new Computer Target Group is successfully created.' {
-        It 'Should create the required group where Computer Target Group does not exist and Ensure is "Present".' {
+    Context 'When the new Computer Target Group is successfully created' {
+        BeforeAll {
+            Mock -CommandName Get-WsusServer -MockWith {
+                return CommonTestHelper\Get-WsusServerTemplate
+            }
+        }
+
+        It 'Should create the required group where Computer Target Group does not exist and Ensure is "Present"' {
             $script:resource = Set-TargetResource -Name 'Database' -Path 'All Computers/Servers'
         }
     }
 
-    Context 'When the new Computer Target Group is successfully deleted.' {
-        It 'Should delete the required group where Computer Target Group exists and Ensure is "Absent".' {
+    Context 'When the new Computer Target Group is successfully deleted' {
+        BeforeAll {
+            Mock -CommandName Get-WsusServer -MockWith {
+                return CommonTestHelper\Get-WsusServerTemplate
+            }
+        }
+
+        It 'Should delete the required group where Computer Target Group exists and Ensure is "Absent"' {
             $script:resource = Set-TargetResource -Name 'Web' -Path 'All Computers/Servers' -Ensure 'Absent'
         }
     }
