@@ -50,7 +50,7 @@ function Get-TargetResource
     if ($null -ne $WsusServer)
     {
         Write-Verbose -Message ($script:localizedData.GetWsusServerSucceeded -f $WsusServer.Name)
-        $ComputerTargetGroup = $WsusServer.GetComputerTargetGroups() | Where-Object -FilterScript { $_.Name -eq $Name }
+        $ComputerTargetGroup = $WsusServer.GetComputerTargetGroups().Where({ $_.Name -eq $Name })
 
         if ($null -ne $ComputerTargetGroup)
         {
@@ -141,9 +141,9 @@ function Set-TargetResource
 
     if ($null -ne $WsusServer)
     {
-        $ParentComputerTargetGroups = $WsusServer.GetComputerTargetGroups() | Where-Object -FilterScript {
+        $ParentComputerTargetGroups = $WsusServer.GetComputerTargetGroups().Where({
             $_.Name -eq $ParentComputerTargetGroupName
-        }
+        })
 
         if ($null -ne $ParentComputerTargetGroups)
         {
@@ -161,7 +161,7 @@ function Set-TargetResource
                     {
                         try
                         {
-                            $WsusServer.CreateComputerTargetGroup($Name, $ParentComputerTargetGroup) | Out-Null
+                            $null = $WsusServer.CreateComputerTargetGroup($Name, $ParentComputerTargetGroup)
                             Write-Verbose -Message ($script:localizedData.CreateComputerTargetGroupSuccess -f $Name, $Path)
                             return
                         }
@@ -175,9 +175,9 @@ function Set-TargetResource
                     else
                     {
                         # $Ensure -eq 'Absent' - must call the Delete() method on the group itself for removal
-                        $ChildComputerTargetGroup = $ParentComputerTargetGroup.GetChildTargetGroups() | Where-Object {
+                        $ChildComputerTargetGroup = $ParentComputerTargetGroup.GetChildTargetGroups().Where({
                             $_.Name -eq $Name
-                        }
+                        })
 
                         if ($null -eq $ChildComputerTargetGroup)
                         {
@@ -189,7 +189,7 @@ function Set-TargetResource
                         try
                         {
                             $childId = $ChildComputerTargetGroup.Id.Guid
-                            $ChildComputerTargetGroup.Delete() | Out-Null
+                            $null = $ChildComputerTargetGroup.Delete()
                             Write-Verbose -Message ($script:localizedData.DeleteComputerTargetGroupSuccess -f $Name, $childId, $Path)
                             return
                         }
