@@ -1,5 +1,5 @@
 [ClassVersion("1.0.0.0"), FriendlyName("UpdateServicesComputerTargetGroup")]
-class MSFT_UpdateServicesComputerTargetGroup : OMI_BaseResource
+class DSC_UpdateServicesComputerTargetGroup : OMI_BaseResource
 {
     [Write, Description("An enumerated value that describes if the WSUS Computer Target Group is configured.\nPresent {default}  \nAbsent   \n"), ValueMap{"Present","Absent"}, Values{"Present","Absent"}] String Ensure;
     [Key, Description("Name of the Computer Target Group.")] String Name;

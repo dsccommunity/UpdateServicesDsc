@@ -26,7 +26,7 @@ BeforeDiscovery {
 
 BeforeAll {
     $script:dscModuleName = 'UpdateServicesDsc'
-    $script:dscResourceName = 'MSFT_UpdateServicesComputerTargetGroup'
+    $script:dscResourceName = 'DSC_UpdateServicesComputerTargetGroup'
 
     $script:testEnvironment = Initialize-TestEnvironment `
         -DSCModuleName $script:dscModuleName `
@@ -59,7 +59,7 @@ AfterAll {
 }
 
 #region Function Get-ComputerTargetGroupPath
-Describe "MSFT_UpdateServicesComputerTargetGroup\Get-ComputerTargetGroupPath." {
+Describe "DSC_UpdateServicesComputerTargetGroup\Get-ComputerTargetGroupPath." {
     BeforeAll {
         InModuleScope -ScriptBlock {
             $script:WsusServer = CommonTestHelper\Get-WsusServerTemplate
@@ -99,7 +99,7 @@ Describe "MSFT_UpdateServicesComputerTargetGroup\Get-ComputerTargetGroupPath." {
 #endregion
 
 #region Function Get-TargetResource
-Describe "MSFT_UpdateServicesComputerTargetGroup\Get-TargetResource." {
+Describe "DSC_UpdateServicesComputerTargetGroup\Get-TargetResource." {
     BeforeEach {
         if (Test-Path -Path variable:script:resource) { Remove-Variable -Scope 'script' -Name 'resource' }
     }
@@ -156,7 +156,7 @@ Describe "MSFT_UpdateServicesComputerTargetGroup\Get-TargetResource." {
 #endregion
 
 #region Function Test-TargetResource
-Describe "MSFT_UpdateServicesComputerTargetGroup\Test-TargetResource." {
+Describe "DSC_UpdateServicesComputerTargetGroup\Test-TargetResource." {
     Context 'When the Computer Target Group "Desktops" is "Present" at Path "All Computers/Workstations" which is the desired state.' {
         BeforeAll {
             Mock -CommandName Get-TargetResource -MockWith {
@@ -232,7 +232,7 @@ Describe "MSFT_UpdateServicesComputerTargetGroup\Test-TargetResource." {
 #endregion
 
 #region Function Set-TargetResource
-Describe "MSFT_UpdateServicesComputerTargetGroup\Set-TargetResource" {
+Describe "DSC_UpdateServicesComputerTargetGroup\Set-TargetResource" {
     BeforeEach {
         if (Test-Path -Path variable:script:resource) { Remove-Variable -Scope 'script' -Name 'resource' }
     }
