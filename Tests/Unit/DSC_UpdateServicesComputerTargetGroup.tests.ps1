@@ -108,7 +108,10 @@ Describe "DSC_UpdateServicesComputerTargetGroup\Get-TargetResource" {
 
         It 'Should throw when an error occurs retrieving WSUS Server information' {
             InModuleScope -ScriptBlock {
-                { $result = Get-TargetResource -Name 'Servers' -Path 'All Computers' } | Should -Throw ('*' + $script:localizedData.WSUSConfigurationFailed + '*')
+                $errorRecord = Get-InvalidOperationRecord -Message $script:localizedData.WSUSConfigurationFailed
+
+                { $result = Get-TargetResource -Name 'Servers' -Path 'All Computers' }
+                    | Should -Throw -ExpectedMessage ($errorRecord.Exception.Message + '*')
                 $result | Should -BeNullOrEmpty
                 Should -Invoke -CommandName Get-WsusServer -Times 1 -Exactly
             }
@@ -155,8 +158,11 @@ Describe "DSC_UpdateServicesComputerTargetGroup\Get-TargetResource" {
 
         It 'Should throw when Computer Target Group does not exist at the specified path' {
             InModuleScope -ScriptBlock {
+                $errorRecord = Get-InvalidOperationRecord -Message ($script:localizedData.DuplicateComputerTargetGroup -f `
+                    'Desktops',  'All Computers/Workstations')
+
                 { $result = Get-TargetResource -Name 'Desktops' -Path 'All Computers/Servers' } | Should -Throw `
-                    ('*' + $script:localizedData.DuplicateComputerTargetGroup -f 'Desktops',  'All Computers/Workstations')
+                    -ExpectedMessage ($errorRecord.Exception.Message + '*')
                 $result | Should -BeNullOrEmpty
             }
         }
@@ -269,7 +275,10 @@ Describe "DSC_UpdateServicesComputerTargetGroup\Set-TargetResource" {
 
         It 'Should throw when an error occurs retrieving WSUS Server information' {
             InModuleScope -ScriptBlock {
-                { $result = Set-TargetResource -Name 'Servers' -Path 'All Computers' } | Should -Throw ('*' + $script:localizedData.WSUSConfigurationFailed + '*')
+                $errorRecord = Get-InvalidOperationRecord -Message $script:localizedData.WSUSConfigurationFailed
+
+                { $result = Set-TargetResource -Name 'Servers' -Path 'All Computers' }
+                    | Should -Throw -ExpectedMessage ($errorRecord.Exception.Message + '*')
                 $result | Should -BeNullOrEmpty
                 Should -Invoke -CommandName Get-WsusServer -Times 1 -Exactly
             }
@@ -300,9 +309,11 @@ Describe "DSC_UpdateServicesComputerTargetGroup\Set-TargetResource" {
 
         It 'Should throw an exception where the Parent of the Computer Target Group does not exist' {
             InModuleScope -ScriptBlock {
-                { $result = Set-TargetResource -Name 'Win10' -Path 'All Computers/Desktops' } | Should -Throw `
-                    ('*' + $script:localizedData.NotFoundParentComputerTargetGroup -f 'Desktops', `
-                    'All Computers', 'Win10')
+                $errorRecord = Get-InvalidOperationRecord -Message ($script:localizedData.NotFoundParentComputerTargetGroup -f `
+                    'Desktops', 'All Computers', 'Win10')
+
+                { $result = Set-TargetResource -Name 'Win10' -Path 'All Computers/Desktops' }
+                    | Should -Throw -ExpectedMessage ($errorRecord.Exception.Message + '*')
             }
         }
     }
