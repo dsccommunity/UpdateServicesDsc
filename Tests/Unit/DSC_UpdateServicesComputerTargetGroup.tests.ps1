@@ -101,19 +101,17 @@ Describe "DSC_UpdateServicesComputerTargetGroup\Get-ComputerTargetGroupPath" {
 
 #region Function Get-TargetResource
 Describe "DSC_UpdateServicesComputerTargetGroup\Get-TargetResource" {
-    BeforeEach {
-        if (Test-Path -Path variable:script:resource) { Remove-Variable -Scope 'script' -Name 'resource' }
-    }
-
     Context 'When an error occurs retrieving WSUS Server configuration information' {
         BeforeAll {
             Mock -CommandName Get-WsusServer -MockWith { throw 'An error occurred' }
         }
 
         It 'Should throw when an error occurs retrieving WSUS Server information' {
-            { $script:resource = Get-TargetResource -Name 'Servers' -Path 'All Computers' } | Should -Throw ('*' + $script:localizedData.WSUSConfigurationFailed + '*')
-            $script:resource | Should -BeNullOrEmpty
-            Should -Invoke -CommandName Get-WsusServer -Times 1 -Exactly
+            InModuleScope -ScriptBlock {
+                { $result = Get-TargetResource -Name 'Servers' -Path 'All Computers' } | Should -Throw ('*' + $script:localizedData.WSUSConfigurationFailed + '*')
+                $result | Should -BeNullOrEmpty
+                Should -Invoke -CommandName Get-WsusServer -Times 1 -Exactly
+            }
         }
     }
 
@@ -123,11 +121,13 @@ Describe "DSC_UpdateServicesComputerTargetGroup\Get-TargetResource" {
         }
 
         It 'Should not throw when the WSUS Server is not yet configured / cannot be found' {
-            $script:resource = Get-TargetResource -Name 'Servers' -Path 'All Computers'
-            $script:resource.Ensure | Should -Be 'Absent'
-            $script:resource.Id | Should -BeNullOrEmpty
-            $script:resource.Name | Should -Be 'Servers'
-            $script:resource.Path | Should -Be 'All Computers'
+            InModuleScope -ScriptBlock {
+                $result = Get-TargetResource -Name 'Servers' -Path 'All Computers'
+                $result.Ensure | Should -Be 'Absent'
+                $result.Id | Should -BeNullOrEmpty
+                $result.Name | Should -Be 'Servers'
+                $result.Path | Should -Be 'All Computers'
+            }
         }
     }
 
@@ -139,8 +139,10 @@ Describe "DSC_UpdateServicesComputerTargetGroup\Get-TargetResource" {
         }
 
         It 'Should return absent when Computer Target Group does not exist at any path' {
-            $resource = Get-TargetResource -Name 'Domain Controllers' -Path 'All Computers'
-            $resource.Ensure | Should -Be 'Absent'
+            InModuleScope -ScriptBlock {
+                $result = Get-TargetResource -Name 'Domain Controllers' -Path 'All Computers'
+                $result.Ensure | Should -Be 'Absent'
+            }
         }
     }
 
@@ -152,9 +154,11 @@ Describe "DSC_UpdateServicesComputerTargetGroup\Get-TargetResource" {
         }
 
         It 'Should throw when Computer Target Group does not exist at the specified path' {
-            { $script:resource = Get-TargetResource -Name 'Desktops' -Path 'All Computers/Servers' } | Should -Throw `
-            ('*' + $script:localizedData.DuplicateComputerTargetGroup -f 'Desktops',  'All Computers/Workstations')
-            $script:resource | Should -BeNullOrEmpty
+            InModuleScope -ScriptBlock {
+                { $result = Get-TargetResource -Name 'Desktops' -Path 'All Computers/Servers' } | Should -Throw `
+                    ('*' + $script:localizedData.DuplicateComputerTargetGroup -f 'Desktops',  'All Computers/Workstations')
+                $result | Should -BeNullOrEmpty
+            }
         }
     }
 
@@ -166,9 +170,11 @@ Describe "DSC_UpdateServicesComputerTargetGroup\Get-TargetResource" {
         }
 
         It 'Should return present when Computer Target Group does exist at the specified path' {
-            $resource = Get-TargetResource -Name 'Desktops' -Path 'All Computers/Workstations'
-            $resource.Ensure | Should -Be 'Present'
-            $resource.Id | Should -Be '2b77a9ce-f320-41c7-bec7-9b22f67ae5b1'
+            InModuleScope -ScriptBlock {
+                $result = Get-TargetResource -Name 'Desktops' -Path 'All Computers/Workstations'
+                $result.Ensure | Should -Be 'Present'
+                $result.Id | Should -Be '2b77a9ce-f320-41c7-bec7-9b22f67ae5b1'
+            }
         }
     }
 }
@@ -189,7 +195,9 @@ Describe "DSC_UpdateServicesComputerTargetGroup\Test-TargetResource" {
         }
 
         It 'Should return $true when Computer Target Resource is in the desired state' {
-            Test-TargetResource -Name 'Desktops' -Path 'All Computers/Workstations' | Should -BeTrue
+            InModuleScope -ScriptBlock {
+                Test-TargetResource -Name 'Desktops' -Path 'All Computers/Workstations' | Should -BeTrue
+            }
         }
     }
 
@@ -206,7 +214,9 @@ Describe "DSC_UpdateServicesComputerTargetGroup\Test-TargetResource" {
         }
 
         It 'Should return $true when Computer Target Resource is in the desired state' {
-            Test-TargetResource -Name 'Desktops' -Path 'All Computers/Workstations' -Ensure 'Absent'| Should -BeTrue
+            InModuleScope -ScriptBlock {
+                Test-TargetResource -Name 'Desktops' -Path 'All Computers/Workstations' -Ensure 'Absent'| Should -BeTrue
+            }
         }
     }
 
@@ -223,7 +233,9 @@ Describe "DSC_UpdateServicesComputerTargetGroup\Test-TargetResource" {
         }
 
         It 'Should return $false when Computer Target Resource is NOT in the desired state' {
-            Test-TargetResource -Name 'Desktops' -Path 'All Computers/Workstations' -Ensure 'Absent' | Should -BeFalse
+            InModuleScope -ScriptBlock {
+                Test-TargetResource -Name 'Desktops' -Path 'All Computers/Workstations' -Ensure 'Absent' | Should -BeFalse
+            }
         }
     }
 
@@ -240,7 +252,9 @@ Describe "DSC_UpdateServicesComputerTargetGroup\Test-TargetResource" {
         }
 
         It 'Should return $false when Computer Target Resource is NOT in the desired state' {
-            Test-TargetResource -Name 'Desktops' -Path 'All Computers/Workstations' -Ensure 'Present' | Should -BeFalse
+            InModuleScope -ScriptBlock {
+                Test-TargetResource -Name 'Desktops' -Path 'All Computers/Workstations' -Ensure 'Present' | Should -BeFalse
+            }
         }
     }
 }
@@ -248,19 +262,17 @@ Describe "DSC_UpdateServicesComputerTargetGroup\Test-TargetResource" {
 
 #region Function Set-TargetResource
 Describe "DSC_UpdateServicesComputerTargetGroup\Set-TargetResource" {
-    BeforeEach {
-        if (Test-Path -Path variable:script:resource) { Remove-Variable -Scope 'script' -Name 'resource' }
-    }
-
     Context 'When an error occurs retrieving WSUS Server configuration information' {
         BeforeAll {
             Mock -CommandName Get-WsusServer -MockWith { throw 'An error occurred' }
         }
 
         It 'Should throw when an error occurs retrieving WSUS Server information' {
-            { $script:resource = Set-TargetResource -Name 'Servers' -Path 'All Computers'} | Should -Throw ('*' + $script:localizedData.WSUSConfigurationFailed + '*')
-            $script:resource | Should -BeNullOrEmpty
-            Should -Invoke -CommandName Get-WsusServer -Times 1 -Exactly
+            InModuleScope -ScriptBlock {
+                { $result = Set-TargetResource -Name 'Servers' -Path 'All Computers' } | Should -Throw ('*' + $script:localizedData.WSUSConfigurationFailed + '*')
+                $result | Should -BeNullOrEmpty
+                Should -Invoke -CommandName Get-WsusServer -Times 1 -Exactly
+            }
         }
     }
 
@@ -270,8 +282,11 @@ Describe "DSC_UpdateServicesComputerTargetGroup\Set-TargetResource" {
         }
 
         It 'Should not throw when the WSUS Server is not yet configured / cannot be found' {
-            $script:resource = Set-TargetResource -Name 'Servers' -Path 'All Computers'
-            $script:resource | Should -BeNullOrEmpty
+            InModuleScope -ScriptBlock {
+                $result = Set-TargetResource -Name 'Servers' -Path 'All Computers'
+                $result | Should -BeNullOrEmpty
+            }
+
         }
     }
 
@@ -284,9 +299,11 @@ Describe "DSC_UpdateServicesComputerTargetGroup\Set-TargetResource" {
         }
 
         It 'Should throw an exception where the Parent of the Computer Target Group does not exist' {
-            { $script:resource = Set-TargetResource -Name 'Win10' -Path 'All Computers/Desktops'} | Should -Throw `
-                ('*' + $script:localizedData.NotFoundParentComputerTargetGroup -f 'Desktops', `
-                'All Computers', 'Win10')
+            InModuleScope -ScriptBlock {
+                { $result = Set-TargetResource -Name 'Win10' -Path 'All Computers/Desktops' } | Should -Throw `
+                    ('*' + $script:localizedData.NotFoundParentComputerTargetGroup -f 'Desktops', `
+                    'All Computers', 'Win10')
+            }
         }
     }
 
@@ -298,7 +315,9 @@ Describe "DSC_UpdateServicesComputerTargetGroup\Set-TargetResource" {
         }
 
         It 'Should create the required group where Computer Target Group (at Root Level) does not exist and Ensure is "Present"' {
-            $script:resource = Set-TargetResource -Name 'Member Servers' -Path 'All Computers'
+            InModuleScope -ScriptBlock {
+                $result = Set-TargetResource -Name 'Member Servers' -Path 'All Computers'
+            }
         }
     }
 
@@ -310,7 +329,9 @@ Describe "DSC_UpdateServicesComputerTargetGroup\Set-TargetResource" {
         }
 
         It 'Should create the required group where Computer Target Group does not exist and Ensure is "Present"' {
-            $script:resource = Set-TargetResource -Name 'Database' -Path 'All Computers/Servers'
+            InModuleScope -ScriptBlock {
+                $result = Set-TargetResource -Name 'Database' -Path 'All Computers/Servers'
+            }
         }
     }
 
@@ -322,7 +343,9 @@ Describe "DSC_UpdateServicesComputerTargetGroup\Set-TargetResource" {
         }
 
         It 'Should delete the required group where Computer Target Group exists and Ensure is "Absent"' {
-            $script:resource = Set-TargetResource -Name 'Web' -Path 'All Computers/Servers' -Ensure 'Absent'
+            InModuleScope -ScriptBlock {
+                $result = Set-TargetResource -Name 'Web' -Path 'All Computers/Servers' -Ensure 'Absent'
+            }
         }
     }
 }
