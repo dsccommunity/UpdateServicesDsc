@@ -58,8 +58,7 @@ AfterAll {
     Get-Module -Name $script:dscResourceName -All | Remove-Module -Force
 }
 
-#region Function Get-ComputerTargetGroupPath
-Describe "DSC_UpdateServicesComputerTargetGroup\Get-ComputerTargetGroupPath" {
+Describe 'DSC_UpdateServicesComputerTargetGroup\Get-ComputerTargetGroupPath' -Tag 'Get' {
     BeforeAll {
         InModuleScope -ScriptBlock {
             Set-StrictMode -Version 1.0
@@ -100,7 +99,7 @@ Describe "DSC_UpdateServicesComputerTargetGroup\Get-ComputerTargetGroupPath" {
 #endregion
 
 #region Function Get-TargetResource
-Describe "DSC_UpdateServicesComputerTargetGroup\Get-TargetResource" {
+Describe 'DSC_UpdateServicesComputerTargetGroup\Get-TargetResource' {
     Context 'When an error occurs retrieving WSUS Server configuration information' {
         BeforeAll {
             Mock -CommandName Get-WsusServer -MockWith { throw 'An error occurred' }
@@ -111,7 +110,7 @@ Describe "DSC_UpdateServicesComputerTargetGroup\Get-TargetResource" {
                 $errorRecord = Get-InvalidOperationRecord -Message $script:localizedData.WSUSConfigurationFailed
 
                 { $result = Get-TargetResource -Name 'Servers' -Path 'All Computers' }
-                    | Should -Throw -ExpectedMessage ($errorRecord.Exception.Message + '*')
+                | Should -Throw -ExpectedMessage ($errorRecord.Exception.Message + '*')
                 $result | Should -BeNullOrEmpty
                 Should -Invoke -CommandName Get-WsusServer -Times 1 -Exactly
             }
@@ -159,7 +158,7 @@ Describe "DSC_UpdateServicesComputerTargetGroup\Get-TargetResource" {
         It 'Should throw when Computer Target Group does not exist at the specified path' {
             InModuleScope -ScriptBlock {
                 $errorRecord = Get-InvalidOperationRecord -Message ($script:localizedData.DuplicateComputerTargetGroup -f `
-                    'Desktops',  'All Computers/Workstations')
+                        'Desktops', 'All Computers/Workstations')
 
                 { $result = Get-TargetResource -Name 'Desktops' -Path 'All Computers/Servers' } | Should -Throw `
                     -ExpectedMessage ($errorRecord.Exception.Message + '*')
@@ -187,15 +186,15 @@ Describe "DSC_UpdateServicesComputerTargetGroup\Get-TargetResource" {
 #endregion
 
 #region Function Test-TargetResource
-Describe "DSC_UpdateServicesComputerTargetGroup\Test-TargetResource" {
+Describe 'DSC_UpdateServicesComputerTargetGroup\Test-TargetResource' {
     Context 'When the Computer Target Group "Desktops" is "Present" at Path "All Computers/Workstations" which is the desired state' {
         BeforeAll {
             Mock -CommandName Get-TargetResource -MockWith {
                 return @{
-                    Ensure          = 'Present'
-                    Name            = 'Desktops'
-                    Path            = 'All Computers/Workstations'
-                    Id              = '2b77a9ce-f320-41c7-bec7-9b22f67ae5b1'
+                    Ensure = 'Present'
+                    Name   = 'Desktops'
+                    Path   = 'All Computers/Workstations'
+                    Id     = '2b77a9ce-f320-41c7-bec7-9b22f67ae5b1'
                 }
             }
         }
@@ -211,17 +210,17 @@ Describe "DSC_UpdateServicesComputerTargetGroup\Test-TargetResource" {
         BeforeAll {
             Mock -CommandName Get-TargetResource -MockWith {
                 return @{
-                    Ensure          = 'Absent'
-                    Name            = 'Desktops'
-                    Path            = 'All Computers/Workstations'
-                    Id              = $null
+                    Ensure = 'Absent'
+                    Name   = 'Desktops'
+                    Path   = 'All Computers/Workstations'
+                    Id     = $null
                 }
             }
         }
 
         It 'Should return $true when Computer Target Resource is in the desired state' {
             InModuleScope -ScriptBlock {
-                Test-TargetResource -Name 'Desktops' -Path 'All Computers/Workstations' -Ensure 'Absent'| Should -BeTrue
+                Test-TargetResource -Name 'Desktops' -Path 'All Computers/Workstations' -Ensure 'Absent' | Should -BeTrue
             }
         }
     }
@@ -230,10 +229,10 @@ Describe "DSC_UpdateServicesComputerTargetGroup\Test-TargetResource" {
         BeforeAll {
             Mock -CommandName Get-TargetResource -MockWith {
                 return @{
-                    Ensure          = 'Present'
-                    Name            = 'Desktops'
-                    Path            = 'All Computers/Workstations'
-                    Id              = '2b77a9ce-f320-41c7-bec7-9b22f67ae5b1'
+                    Ensure = 'Present'
+                    Name   = 'Desktops'
+                    Path   = 'All Computers/Workstations'
+                    Id     = '2b77a9ce-f320-41c7-bec7-9b22f67ae5b1'
                 }
             }
         }
@@ -249,10 +248,10 @@ Describe "DSC_UpdateServicesComputerTargetGroup\Test-TargetResource" {
         BeforeAll {
             Mock -CommandName Get-TargetResource -MockWith {
                 return @{
-                    Ensure          = 'Absent'
-                    Name            = 'Desktops'
-                    Path            = 'All Computers/Workstations'
-                    Id              = $null
+                    Ensure = 'Absent'
+                    Name   = 'Desktops'
+                    Path   = 'All Computers/Workstations'
+                    Id     = $null
                 }
             }
         }
@@ -267,7 +266,7 @@ Describe "DSC_UpdateServicesComputerTargetGroup\Test-TargetResource" {
 #endregion
 
 #region Function Set-TargetResource
-Describe "DSC_UpdateServicesComputerTargetGroup\Set-TargetResource" {
+Describe 'DSC_UpdateServicesComputerTargetGroup\Set-TargetResource' {
     Context 'When an error occurs retrieving WSUS Server configuration information' {
         BeforeAll {
             Mock -CommandName Get-WsusServer -MockWith { throw 'An error occurred' }
@@ -278,7 +277,7 @@ Describe "DSC_UpdateServicesComputerTargetGroup\Set-TargetResource" {
                 $errorRecord = Get-InvalidOperationRecord -Message $script:localizedData.WSUSConfigurationFailed
 
                 { $result = Set-TargetResource -Name 'Servers' -Path 'All Computers' }
-                    | Should -Throw -ExpectedMessage ($errorRecord.Exception.Message + '*')
+                | Should -Throw -ExpectedMessage ($errorRecord.Exception.Message + '*')
                 $result | Should -BeNullOrEmpty
                 Should -Invoke -CommandName Get-WsusServer -Times 1 -Exactly
             }
@@ -310,10 +309,10 @@ Describe "DSC_UpdateServicesComputerTargetGroup\Set-TargetResource" {
         It 'Should throw an exception where the Parent of the Computer Target Group does not exist' {
             InModuleScope -ScriptBlock {
                 $errorRecord = Get-InvalidOperationRecord -Message ($script:localizedData.NotFoundParentComputerTargetGroup -f `
-                    'Desktops', 'All Computers', 'Win10')
+                        'Desktops', 'All Computers', 'Win10')
 
                 { $result = Set-TargetResource -Name 'Win10' -Path 'All Computers/Desktops' }
-                    | Should -Throw -ExpectedMessage ($errorRecord.Exception.Message + '*')
+                | Should -Throw -ExpectedMessage ($errorRecord.Exception.Message + '*')
             }
         }
     }
