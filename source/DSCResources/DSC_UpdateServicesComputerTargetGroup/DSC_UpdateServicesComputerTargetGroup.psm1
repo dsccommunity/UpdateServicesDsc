@@ -79,10 +79,10 @@ function Get-TargetResource
     }
 
     $returnValue = @{
-        Ensure          = $Ensure
-        Name            = $Name
-        Path            = $Path
-        Id              = $Id
+        Ensure = $Ensure
+        Name   = $Name
+        Path   = $Path
+        Id     = $Id
     }
 
     return $returnValue
@@ -136,14 +136,14 @@ function Set-TargetResource
     }
 
     # break down path to identify the parent computer target group based on name and its own unique path
-    $ParentComputerTargetGroupName = (($Path -split "/")[-1])
-    $ParentComputerTargetGroupPath = ($Path -replace "[/]$ParentComputerTargetGroupName", "")
+    $ParentComputerTargetGroupName = (($Path -split '/')[-1])
+    $ParentComputerTargetGroupPath = ($Path -replace "[/]$ParentComputerTargetGroupName", '')
 
     if ($null -ne $WsusServer)
     {
         $ParentComputerTargetGroups = $WsusServer.GetComputerTargetGroups().Where({
-            $_.Name -eq $ParentComputerTargetGroupName
-        }) | Select-Object -First 1
+                $_.Name -eq $ParentComputerTargetGroupName
+            }) | Select-Object -First 1
 
         if ($null -ne $ParentComputerTargetGroups)
         {
@@ -154,7 +154,7 @@ function Set-TargetResource
                 {
                     # parent Computer Target Group Exists
                     Write-Verbose -Message ($script:localizedData.FoundParentComputerTargetGroup -f $ParentComputerTargetGroupName, `
-                    $ParentComputerTargetGroupPath, $ParentComputerTargetGroup.Id.Guid)
+                            $ParentComputerTargetGroupPath, $ParentComputerTargetGroup.Id.Guid)
 
                     # create the new Computer Target Group if Ensure -eq 'Present'
                     if ($Ensure -eq 'Present')
@@ -176,8 +176,8 @@ function Set-TargetResource
                     {
                         # $Ensure -eq 'Absent' - must call the Delete() method on the group itself for removal
                         $ChildComputerTargetGroup = $ParentComputerTargetGroup.GetChildTargetGroups().Where({
-                            $_.Name -eq $Name
-                        }) | Select-Object -First 1
+                                $_.Name -eq $Name
+                            }) | Select-Object -First 1
 
                         if ($null -eq $ChildComputerTargetGroup)
                         {
@@ -195,7 +195,14 @@ function Set-TargetResource
                         }
                         catch
                         {
-                            $childId = if ($ChildComputerTargetGroup) { $ChildComputerTargetGroup.Id.Guid } else { 'N/A' }
+                            $childId = if ($ChildComputerTargetGroup)
+                            {
+                                $ChildComputerTargetGroup.Id.Guid 
+                            }
+                            else
+                            {
+                                'N/A' 
+                            }
                             New-InvalidOperationException -Message (
                                 $script:localizedData.DeleteComputerTargetGroupFailed -f $Name, $childId, $Path
                             ) -ErrorRecord $_
@@ -206,7 +213,7 @@ function Set-TargetResource
         }
 
         New-InvalidOperationException -Message ($script:localizedData.NotFoundParentComputerTargetGroup -f $ParentComputerTargetGroupName, `
-        $ParentComputerTargetGroupPath, $Name)
+                $ParentComputerTargetGroupPath, $Name)
     }
     else
     {
@@ -296,10 +303,10 @@ function Get-ComputerTargetGroupPath
 
     if ($ComputerTargetGroup.Name -eq 'All Computers')
     {
-        return "All Computers"
+        return 'All Computers'
     }
 
-    $computerTargetGroupPath = ""
+    $computerTargetGroupPath = ''
     $computerTargetGroupParents = @()
     $moreParentContainers = $true
     $x = 0
@@ -320,11 +327,11 @@ function Get-ComputerTargetGroupPath
         $x++
     } while ($moreParentContainers -and ($x -lt 20))
 
-    for ($i=($computerTargetGroupParents.Count - 1); $i -ge 0; $i--)
+    for ($i = ($computerTargetGroupParents.Count - 1); $i -ge 0; $i--)
     {
         if (-not [string]::IsNullOrEmpty($computerTargetGroupPath))
         {
-            $computerTargetGroupPath += ("/" +  $computerTargetGroupParents[$i])
+            $computerTargetGroupPath += ('/' + $computerTargetGroupParents[$i])
         }
         else
         {
