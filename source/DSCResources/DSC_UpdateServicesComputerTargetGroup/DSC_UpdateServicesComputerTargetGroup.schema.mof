@@ -1,0 +1,8 @@
+[ClassVersion("1.0.0.0"), FriendlyName("UpdateServicesComputerTargetGroup")]
+class DSC_UpdateServicesComputerTargetGroup : OMI_BaseResource
+{
+    [Write, Description("An enumerated value that describes if the WSUS Computer Target Group is configured. Default value is 'Present'."), ValueMap{"Present","Absent"}, Values{"Present","Absent"}] String Ensure;
+    [Key, Description("Name of the Computer Target Group.")] String Name;
+    [Key, Description("Path to the Computer Target Group.")] String Path;
+    [Read, Description("ID / GUID of the Computer Target Group.")] String Id;
+};

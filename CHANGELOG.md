@@ -36,10 +36,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added UpdateServicesComputerTargetGroup Resource to manage computer target
+  groups ([issue #44](https://github.com/dsccommunity/UpdateServicesDsc/issues/44))
 - Added TestKitchen files for integration tests
 - Added required modules, Sampler.GitHubTasks, powershell-yaml
 - Added wildcard support in Products parameter of UpdatesServicesServer resource.
- (issue #13)
+  ([issue #13](https://github.com/dsccommunity/UpdateServicesDsc/issues/13))
 
 ### Fixed
 
