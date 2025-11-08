@@ -16,7 +16,7 @@ Describe "Tests installation with all products" {
 
     Context "Wsus service is correctly configured" {
         It "Should can the informations of update service" {
-            {$script:wuServer = Get-WsusServer}| Should -Not -Throw
+            $script:wuServer = Get-WsusServer
         }
 
         It "Should product are correctly configured" {
