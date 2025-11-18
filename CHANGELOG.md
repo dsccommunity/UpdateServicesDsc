@@ -73,7 +73,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Before running, ensure that UpdateServices PowerShell module is installed.
   - Updated error handling to specifically catch errors if WSUS Server is unavailable.
   - Added check to make sure Post Install was successful before trying to get resource.
-  - Fix issue [#64](https://github.com/dsccommunity/UpdateServicesDsc/issues/61)
+  - Fix issue [#63](https://github.com/dsccommunity/UpdateServicesDsc/issues/63)
+    Broken verbose output for WSUS server name.
+  - Fix issue [#61](https://github.com/dsccommunity/UpdateServicesDsc/issues/61)
     Allow multiple product categories with same name (e.g. "Windows Admin Center")
   - Removed ErrorRecord from New-InvalidOperationException outside of try / catch.
 - UpdateServicesCleanup
