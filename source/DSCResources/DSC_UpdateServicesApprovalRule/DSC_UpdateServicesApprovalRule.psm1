@@ -46,16 +46,27 @@ function Get-TargetResource
         $Name
     )
 
+    Assert-Module -ModuleName UpdateServices
+
     try
     {
         $WsusServer = Get-WsusServer
-        $Ensure = 'Absent'
-        $Classifications = $null
-        $Products = $null
-        $ComputerGroups = $null
-        $Enabled = $null
+    }
+    catch
+    {
+        Write-Verbose -Message $script:localizedData.GetWsusServerFailed
+    }
 
-        if ($null -ne $WsusServer)
+    $Ensure = 'Absent'
+    $Classifications = $null
+    $Products = $null
+    $ComputerGroups = $null
+    $Enabled = $null
+
+    try {
+        if (($null -ne $WsusServer) -and `
+            (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Update Services\Server\Setup\Installed Role Services" `
+                -Name 'UpdateServices-Services' -ErrorAction Stop).'UpdateServices-Services' -eq '2')
         {
             Write-Verbose -Message ('Identified WSUS server information: {0}' -f $WsusServer.Name)
 
@@ -177,6 +188,8 @@ function Set-TargetResource
         $RunRuleNow
     )
 
+    Assert-Module -ModuleName UpdateServices
+
     try
     {
         if ($WsusServer = Get-WsusServer)
@@ -220,11 +233,14 @@ function Set-TargetResource
                         $ApprovalRule.Save()
 
                         $ProductCollection = New-Object -TypeName Microsoft.UpdateServices.Administration.UpdateCategoryCollection
+                        $AllWsusProducts = $WsusServer.GetUpdateCategories()
                         foreach ($Product in $Products)
                         {
-                            if ($WsusProduct = Get-WsusProduct | Where-Object -FilterScript { $_.Product.Title -eq $Product })
+                            if ($WsusProduct = $AllWsusProducts | Where-Object -FilterScript { $_.Title -eq $Product })
                             {
-                                $ProductCollection.Add($WsusServer.GetUpdateCategory($WsusProduct.Product.Id))
+                                $WsusProduct | Foreach-Object {
+                                    $ProductCollection.Add($_)
+                                }
                             }
                         }
 
@@ -262,7 +278,7 @@ function Set-TargetResource
                     {
                         New-InvalidOperationException -Message (
                             $script:localizedData.RuleFailedToCreate -f $Name
-                        ) -ErrorRecord $_
+                        )
                     }
                 }
                 'Absent'
@@ -385,6 +401,8 @@ function Test-TargetResource
         [System.Boolean]
         $RunRuleNow
     )
+
+    Assert-Module -ModuleName UpdateServices
 
     $result = $true
 
