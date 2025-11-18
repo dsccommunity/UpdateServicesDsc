@@ -713,7 +713,7 @@ function Start-Win32Process
         {
             throw $err
         }
-        Wait-Win32ProcessStart @GetArguments
+        Wait-Win32ProcessStart @GetArguments | Out-Null
     }
     else
     {
