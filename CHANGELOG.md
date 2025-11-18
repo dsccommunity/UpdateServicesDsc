@@ -78,6 +78,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Fix issue [#61](https://github.com/dsccommunity/UpdateServicesDsc/issues/61)
     Allow multiple product categories with same name (e.g. "Windows Admin Center")
   - Removed ErrorRecord from New-InvalidOperationException outside of try / catch.
+  - Fixed verbose logging to use language strings.
 - UpdateServicesCleanup
   - Fix issue [#93](https://github.com/dsccommunity/UpdateServicesDsc/issues/93)
     Allow UpdateServicesCleanup resource to test and update TimeOfDay as needed.
