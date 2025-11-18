@@ -90,9 +90,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Updated error handling to specifically catch errors if WSUS Server is unavailable.
   - Added check to make sure Post Install was successful before trying to get resource.
   - Update setting dependency logic to stop incompatible settings being set / returned.
-  - Get Languages as a string array instead of comma separated values.
+  - Get Languages as a string array instead of comma-separated values.
     Fix issue [#76](https://github.com/dsccommunity/UpdateServicesDsc/issues/76)
-- Stopped PDT.psm1 returning boolean 'true' alongside normal output as creating process.    
+- Stopped PDT.psm1 returning boolean 'true' alongside normal output when creating a process.
 - Fix deploy job in AzurePipeline, Added Sampler.GithubTasks in build.yaml
 - Fix issue #61 and #67, with add a foreach loop when `Set-TargetResource` found
 multiple products for the same `Title`.
