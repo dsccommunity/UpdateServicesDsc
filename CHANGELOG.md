@@ -12,7 +12,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     rather than defaulting to hardcoded values if left undefined.
     In particular set ContentDir, Languages, Products, Classifications as needed.
     Fixes [issue #55](https://github.com/dsccommunity/UpdateServicesDsc/issues/55)
-    
 - Updated initial offline package sync WSUS.cab.
 - Changed azure pipeline to use latest version of ubuntu and change the management
   of pipeline artifact
