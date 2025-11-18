@@ -68,7 +68,7 @@ function Get-TargetResource
             (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Update Services\Server\Setup\Installed Role Services" `
                 -Name 'UpdateServices-Services' -ErrorAction Stop).'UpdateServices-Services' -eq '2')
         {
-            Write-Verbose -Message ('Identified WSUS server information: {0}' -f $WsusServer.Name)
+            Write-Verbose -Message ($script:localizedData.IdentifiedWsusServer -f $WsusServer.Name)
 
             $ApprovalRule = $WsusServer.GetInstallApprovalRules() | Where-Object -FilterScript { $_.Name -eq $Name }
 
@@ -96,7 +96,7 @@ function Get-TargetResource
         }
         else
         {
-            Write-Verbose -Message 'Did not identify an instance of WSUS'
+            Write-Verbose -Message $script:localizedData.NotIdentifiedWsusServer
         }
     }
     catch
