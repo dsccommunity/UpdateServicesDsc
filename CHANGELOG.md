@@ -42,6 +42,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added required modules, Sampler.GitHubTasks, powershell-yaml
 - Added wildcard support in Products parameter of UpdatesServicesServer resource.
   ([issue #13](https://github.com/dsccommunity/UpdateServicesDsc/issues/13))
+- Added missing README for ComputerTargetGroup.
 
 ### Fixed
 
@@ -55,6 +56,7 @@ multiple products for the same `Title`.
 - Fix issue [#63](https://github.com/dsccommunity/UpdateServicesDsc/issues/63),
  Fixed verbose output of WSUS server in UpdateServicesApprovalRule
 - Fixed the `azure-pipelines.yml` to trigger on main not master.
+- Added WikiContent path to config.
 
 ## [1.2.0] - 2020-05-18
 
