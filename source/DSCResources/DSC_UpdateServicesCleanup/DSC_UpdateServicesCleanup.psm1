@@ -66,7 +66,7 @@ function Get-TargetResource
                     }
                 }
             }
-            $TimeOfDay = $Task.Triggers.StartBoundary.Split('T')[1]
+            $TimeOfDay = ([datetimeoffset]$Task.Triggers[0].StartBoundary).TimeOfDay.ToString('c')
         }
         else
         {
@@ -361,6 +361,12 @@ function Test-TargetResource
         if ($CleanupTask.CleanupLocalPublishedContentFiles -ne $CleanupLocalPublishedContentFiles)
         {
             Write-Verbose -Message $script:localizedData.CleanupPublishedTestFailed
+            $result = $false
+        }
+
+        if ($CleanupTask.TimeOfDay -ne $TimeOfDay)
+        {
+            Write-Verbose -Message $script:localizedData.TimeOfDayTestFailed
             $result = $false
         }
     }

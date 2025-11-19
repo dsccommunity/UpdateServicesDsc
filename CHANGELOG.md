@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- UpdateServicesServer
+  - BREAKING CHANGE: All parameters will now only be set when specifically applied
+    rather than defaulting to hardcoded values if left undefined.
+    In particular set ContentDir, Languages, Products, Classifications as needed.
+    Fixes [issue #55](https://github.com/dsccommunity/UpdateServicesDsc/issues/55)
 - Updated initial offline package sync WSUS.cab.
 - Changed azure pipeline to use latest version of ubuntu and change the management
   of pipeline artifact
@@ -36,6 +41,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- UpdateServicesServer
+  - Added support for the following settings:
+    - ContentDir can be set to empty string for clients to download from Microsoft Update.
+    - Updates are downloaded only when they are approved.
+    - Express installation packages should be downloaded.
+    - Update binaries are downloaded from Microsoft Update instead of from the
+      upstream server.
+      Fixes [issue #39](https://github.com/dsccommunity/UpdateServicesDsc/issues/39)
+    - WSUS infrastructure updates are approved automatically.
+    - The latest revision of an update should be approved automatically.
+    - An update should be automatically declined when it is revised to be expired
+      and AutoRefreshUpdateApprovals is enabled.
+    - The downstream server should roll up detailed computer and update status information.
+    - Email status notifications and SMTP settings, including status notifications DST fix.
+      Fixes [issue #15](https://github.com/dsccommunity/UpdateServicesDsc/issues/15)
+    - Use Xpress Encoding to compress update metadata.
+    - Use foreground priority for BITS downloads
+    - The maximum .cab file size (in megabytes) that Local Publishing will create.
+    - The maximum number of concurrent update downloads.
 - Added UpdateServicesComputerTargetGroup Resource to manage computer target
   groups ([issue #44](https://github.com/dsccommunity/UpdateServicesDsc/issues/44))
 - Added TestKitchen files for integration tests
@@ -46,6 +70,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- UpdateServicesApprovalRule
+  - Before running, ensure that UpdateServices PowerShell module is installed.
+  - Updated error handling to specifically catch errors if WSUS Server is unavailable.
+  - Added check to make sure Post Install was successful before trying to get resource.
+  - Fix issue [#63](https://github.com/dsccommunity/UpdateServicesDsc/issues/63)
+    Broken verbose output for WSUS server name.
+  - Fix issue [#61](https://github.com/dsccommunity/UpdateServicesDsc/issues/61)
+    Allow multiple product categories with same name (e.g. "Windows Admin Center")
+  - Removed ErrorRecord from New-InvalidOperationException outside of try / catch.
+  - Fixed verbose logging to use language strings.
+- UpdateServicesCleanup
+  - Fix issue [#93](https://github.com/dsccommunity/UpdateServicesDsc/issues/93)
+    Allow UpdateServicesCleanup resource to test and update TimeOfDay as needed.
+- UpdateServicesComputerTargetGroup
+  - Before running, ensure that UpdateServices PowerShell module is installed.
+  - Updated error handling to specifically catch errors if WSUS Server is unavailable.
+  - Added check to make sure Post Install was successful before trying to get resource.
+- UpdateServicesServer
+  - Before running, ensure that UpdateServices PowerShell module is installed.
+  - Updated error handling to specifically catch errors if WSUS Server is unavailable.
+  - Added check to make sure Post Install was successful before trying to get resource.
+  - Update setting dependency logic to stop incompatible settings being set / returned.
+  - Get Languages as a string array instead of comma-separated values.
+    Fix issue [#76](https://github.com/dsccommunity/UpdateServicesDsc/issues/76)
+- Stopped PDT.psm1 returning boolean 'true' alongside normal output when creating a process.
 - Fix deploy job in AzurePipeline, Added Sampler.GithubTasks in build.yaml
 - Fix issue #61 and #67, with add a foreach loop when `Set-TargetResource` found
 multiple products for the same `Title`.
