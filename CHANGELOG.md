@@ -5,9 +5,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] - 2025-12-05
+
 ### Changed
 
-- Updated initial offline package sync WSUS.cab.
 - Changed azure pipeline to use latest version of ubuntu and change the management
   of pipeline artifact
 - Updated build.ps1 script and build.yaml.
@@ -57,6 +58,10 @@ multiple products for the same `Title`.
  Fixed verbose output of WSUS server in UpdateServicesApprovalRule
 - Fixed the `azure-pipelines.yml` to trigger on main not master.
 - Added WikiContent path to config.
+
+## [1.2.1] - 2020-05-21
+
+- Updated initial offline package sync WSUS.cab.
 
 ## [1.2.0] - 2020-05-18
 
