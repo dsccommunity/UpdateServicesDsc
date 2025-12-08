@@ -5,6 +5,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- UpdateServicesServer
+  - BREAKING CHANGE: All parameters will now only be set when specifically applied
+    rather than defaulting to hardcoded values if left undefined.
+    In particular set ContentDir, Languages, Products, Classifications as needed.
+    Fixes [issue #55](https://github.com/dsccommunity/UpdateServicesDsc/issues/55)
+
 ### Added
 
 - UpdateServicesServer
@@ -26,14 +34,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Use foreground priority for BITS downloads
     - The maximum .cab file size (in megabytes) that Local Publishing will create.
     - The maximum number of concurrent update downloads.
-
-### Changed
-
-- UpdateServicesServer
-  - BREAKING CHANGE: All parameters will now only be set when specifically applied
-    rather than defaulting to hardcoded values if left undefined.
-    In particular set ContentDir, Languages, Products, Classifications as needed.
-    Fixes [issue #55](https://github.com/dsccommunity/UpdateServicesDsc/issues/55)
 
 ### Fixed
 
