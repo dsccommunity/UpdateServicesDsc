@@ -12,5 +12,6 @@ CleanupObsoleteCptTestFailed= Cleanup Obsolete Computers test failed.
 CleanupContentTestFailed    = Cleanup Unneeded Content Files test failed.
 CleanupPublishedTestFailed  = Cleanup Local Published Content Files test failed.
 TimeOfDayTestFailed         = Time of Day test failed.
+TimeOfDayParseFailed        = Unable to determine Time of Day from scheduled task trigger '{0}'.
 TestFailedAfterSet          = Test-TargetResource returned false after calling set.
 '@

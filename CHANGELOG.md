@@ -50,6 +50,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - UpdateServicesCleanup
   - Fix issue [#93](https://github.com/dsccommunity/UpdateServicesDsc/issues/93)
     Allow UpdateServicesCleanup resource to test and update TimeOfDay as needed.
+  - Handle scheduled task with no triggers, or an unparseable trigger StartBoundary,
+    when reading TimeOfDay.
 - UpdateServicesComputerTargetGroup
   - Before running, ensure that UpdateServices PowerShell module is installed.
   - Updated error handling to specifically catch errors if WSUS Server is unavailable.

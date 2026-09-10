@@ -66,7 +66,18 @@ function Get-TargetResource
                     }
                 }
             }
-            $TimeOfDay = ([datetimeoffset]$Task.Triggers[0].StartBoundary).TimeOfDay.ToString('c')
+            $Triggers = @($Task.Triggers)
+            if ($Triggers.Count -ge 1)
+            {
+                try
+                {
+                    $TimeOfDay = ([datetimeoffset] $Triggers[0].StartBoundary).TimeOfDay.ToString('hh\:mm\:ss')
+                }
+                catch
+                {
+                    Write-Verbose -Message ($script:localizedData.TimeOfDayParseFailed -f $Triggers[0].StartBoundary)
+                }
+            }
         }
         else
         {

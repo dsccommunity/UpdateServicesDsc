@@ -68,9 +68,11 @@ Describe 'DSC_UpdateServicesCleanup\Get-TargetResource' -Tag 'Get' {
                         Execute   = "$($env:SystemRoot)\System32\WindowsPowerShell\v1.0\powershell.exe"
                         Arguments = 'foo"$DeclineSupersededUpdates = $True;$DeclineExpiredUpdates = $True;$CleanupObsoleteUpdates = $True;$CompressUpdates = $True;$CleanupObsoleteComputers = $True;$CleanupUnneededContentFiles = $True;$CleanupLocalPublishedContentFiles = $True'
                     }
-                    Triggers = @{
-                        StartBoundary = '20160101T04:00:00'
-                    }
+                    Triggers = @(
+                        @{
+                            StartBoundary = '2016-01-01T04:00:00'
+                        }
+                    )
                 }
             }
         }
@@ -89,7 +91,7 @@ Describe 'DSC_UpdateServicesCleanup\Get-TargetResource' -Tag 'Get' {
                 $result.CleanupObsoleteComputers | Should -BeTrue
                 $result.CleanupUnneededContentFiles | Should -BeTrue
                 $result.CleanupLocalPublishedContentFiles | Should -BeTrue
-                $result.TimeOfDay | Should -Be ('20160101T04:00:00'.Split('T')[1])
+                $result.TimeOfDay | Should -Be ('2016-01-01T04:00:00'.Split('T')[1])
 
                 Should -Invoke -CommandName Get-ScheduledTask -Exactly -Times 1 -Scope It
             }
@@ -325,6 +327,10 @@ Describe 'DSC_UpdateServicesCleanup\Test-TargetResource' -Tag 'Test' {
                 @{
                     Setting      = 'CleanupLocalPublishedContentFiles'
                     CurrentValue = $false
+                },
+                @{
+                    Setting      = 'TimeOfDay'
+                    CurrentValue = '05:00:00'
                 }
             )
         }
