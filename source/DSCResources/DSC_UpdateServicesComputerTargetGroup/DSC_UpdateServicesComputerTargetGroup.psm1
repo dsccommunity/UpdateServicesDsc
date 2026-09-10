@@ -49,38 +49,41 @@ function Get-TargetResource
     $Ensure = 'Absent'
     $Id = $null
 
-    try {
-        if (($null -ne $WsusServer) -and `
+    try
+    {
+        $WsusConfigured = ($null -ne $WsusServer) -and
             (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Update Services\Server\Setup\Installed Role Services" `
-                -Name 'UpdateServices-Services' -ErrorAction Stop).'UpdateServices-Services' -eq '2')
-        {
-            Write-Verbose -Message ($script:localizedData.GetWsusServerSucceeded -f $WsusServer.Name)
-            $ComputerTargetGroup = $WsusServer.GetComputerTargetGroups().Where({ $_.Name -eq $Name }) | Select-Object -First 1
-
-            if ($null -ne $ComputerTargetGroup)
-            {
-                $ComputerTargetGroupPath = Get-ComputerTargetGroupPath -ComputerTargetGroup $ComputerTargetGroup
-                if ($Path -eq $ComputerTargetGroupPath)
-                {
-                    $Ensure = 'Present'
-                    $Id = $ComputerTargetGroup.Id.Guid
-                    Write-Verbose -Message ($script:localizedData.FoundComputerTargetGroup -f $Name, $Path, $Id)
-                }
-                else
-                {
-                    # ComputerTargetGroup Names must be unique within the overall hierarchy
-                    New-InvalidOperationException -Message ($script:localizedData.DuplicateComputerTargetGroup -f $ComputerTargetGroup.Name, $ComputerTargetGroupPath)
-                }
-            }
-        }
-        else
-        {
-            Write-Verbose -Message $script:localizedData.GetWsusServerFailed
-        }
+                -Name 'UpdateServices-Services' -ErrorAction Stop).'UpdateServices-Services' -eq '2'
     }
     catch
     {
         New-InvalidOperationException -Message $script:localizedData.WSUSConfigurationFailed -ErrorRecord $_
+    }
+
+    if ($WsusConfigured)
+    {
+        Write-Verbose -Message ($script:localizedData.GetWsusServerSucceeded -f $WsusServer.Name)
+        $ComputerTargetGroup = $WsusServer.GetComputerTargetGroups().Where({ $_.Name -eq $Name }) | Select-Object -First 1
+
+        if ($null -ne $ComputerTargetGroup)
+        {
+            $ComputerTargetGroupPath = Get-ComputerTargetGroupPath -ComputerTargetGroup $ComputerTargetGroup
+            if ($Path -eq $ComputerTargetGroupPath)
+            {
+                $Ensure = 'Present'
+                $Id = $ComputerTargetGroup.Id.Guid
+                Write-Verbose -Message ($script:localizedData.FoundComputerTargetGroup -f $Name, $Path, $Id)
+            }
+            else
+            {
+                # ComputerTargetGroup Names must be unique within the overall hierarchy
+                New-InvalidOperationException -Message ($script:localizedData.DuplicateComputerTargetGroup -f $ComputerTargetGroup.Name, $ComputerTargetGroupPath)
+            }
+        }
+    }
+    else
+    {
+        Write-Verbose -Message $script:localizedData.GetWsusServerFailed
     }
 
     if ($null -eq $Id)
@@ -141,95 +144,95 @@ function Set-TargetResource
     try
     {
         $WsusServer = Get-WsusServer
-
-        # break down path to identify the parent computer target group based on name and its own unique path
-        $ParentComputerTargetGroupName = (($Path -split '/')[-1])
-        $ParentComputerTargetGroupPath = ($Path -replace "[/]$ParentComputerTargetGroupName", '')
-
-        if ($null -ne $WsusServer)
-        {
-            $ParentComputerTargetGroups = $WsusServer.GetComputerTargetGroups().Where({
-                $_.Name -eq $ParentComputerTargetGroupName
-            }) | Select-Object -First 1
-
-            if ($null -ne $ParentComputerTargetGroups)
-            {
-                foreach ($ParentComputerTargetGroup in $ParentComputerTargetGroups)
-                {
-                    $ComputerTargetGroupPath = Get-ComputerTargetGroupPath -ComputerTargetGroup $ParentComputerTargetGroup
-                    if ($ParentComputerTargetGroupPath -eq $ComputerTargetGroupPath)
-                    {
-                        # parent Computer Target Group Exists
-                        Write-Verbose -Message ($script:localizedData.FoundParentComputerTargetGroup -f $ParentComputerTargetGroupName, `
-                        $ParentComputerTargetGroupPath, $ParentComputerTargetGroup.Id.Guid)
-
-                        # create the new Computer Target Group if Ensure -eq 'Present'
-                        if ($Ensure -eq 'Present')
-                        {
-                            try
-                            {
-                                $null = $WsusServer.CreateComputerTargetGroup($Name, $ParentComputerTargetGroup)
-                                Write-Verbose -Message ($script:localizedData.CreateComputerTargetGroupSuccess -f $Name, $Path)
-                                return
-                            }
-                            catch
-                            {
-                                New-InvalidOperationException -Message (
-                                    $script:localizedData.CreateComputerTargetGroupFailed -f $Name, $Path
-                                ) -ErrorRecord $_
-                            }
-                        }
-                        else
-                        {
-                            # $Ensure -eq 'Absent' - must call the Delete() method on the group itself for removal
-                            $ChildComputerTargetGroup = $ParentComputerTargetGroup.GetChildTargetGroups().Where({
-                                $_.Name -eq $Name
-                            }) | Select-Object -First 1
-
-                            if ($null -eq $ChildComputerTargetGroup)
-                            {
-                                # Already absent
-                                Write-Verbose -Message ($script:localizedData.NotFoundComputerTargetGroup -f $Name, $Path)
-                                return
-                            }
-
-                            try
-                            {
-                                $childId = $ChildComputerTargetGroup.Id.Guid
-                                $null = $ChildComputerTargetGroup.Delete()
-                                Write-Verbose -Message ($script:localizedData.DeleteComputerTargetGroupSuccess -f $Name, $childId, $Path)
-                                return
-                            }
-                            catch
-                            {
-                                $childId = if ($ChildComputerTargetGroup)
-                                {
-                                    $ChildComputerTargetGroup.Id.Guid 
-                                }
-                                else
-                                {
-                                    'N/A' 
-                                }
-                                New-InvalidOperationException -Message (
-                                    $script:localizedData.DeleteComputerTargetGroupFailed -f $Name, $childId, $Path
-                                ) -ErrorRecord $_
-                            }
-                        }
-                    }
-                }
-            }
-
-            New-InvalidOperationException -Message ($script:localizedData.NotFoundParentComputerTargetGroup -f $ParentComputerTargetGroupName, `
-                $ParentComputerTargetGroupPath, $Name)
-        }
-        else
-        {
-            Write-Verbose -Message $script:localizedData.GetWsusServerFailed
-        }
     }
     catch
     {
         New-InvalidOperationException -Message $script:localizedData.WSUSConfigurationFailed -ErrorRecord $_
+    }
+
+    # break down path to identify the parent computer target group based on name and its own unique path
+    $ParentComputerTargetGroupName = (($Path -split '/')[-1])
+    $ParentComputerTargetGroupPath = ($Path -replace "[/]$ParentComputerTargetGroupName", '')
+
+    if ($null -ne $WsusServer)
+    {
+        $ParentComputerTargetGroups = $WsusServer.GetComputerTargetGroups().Where({
+            $_.Name -eq $ParentComputerTargetGroupName
+        }) | Select-Object -First 1
+
+        if ($null -ne $ParentComputerTargetGroups)
+        {
+            foreach ($ParentComputerTargetGroup in $ParentComputerTargetGroups)
+            {
+                $ComputerTargetGroupPath = Get-ComputerTargetGroupPath -ComputerTargetGroup $ParentComputerTargetGroup
+                if ($ParentComputerTargetGroupPath -eq $ComputerTargetGroupPath)
+                {
+                    # parent Computer Target Group Exists
+                    Write-Verbose -Message ($script:localizedData.FoundParentComputerTargetGroup -f $ParentComputerTargetGroupName, `
+                    $ParentComputerTargetGroupPath, $ParentComputerTargetGroup.Id.Guid)
+
+                    # create the new Computer Target Group if Ensure -eq 'Present'
+                    if ($Ensure -eq 'Present')
+                    {
+                        try
+                        {
+                            $null = $WsusServer.CreateComputerTargetGroup($Name, $ParentComputerTargetGroup)
+                            Write-Verbose -Message ($script:localizedData.CreateComputerTargetGroupSuccess -f $Name, $Path)
+                            return
+                        }
+                        catch
+                        {
+                            New-InvalidOperationException -Message (
+                                $script:localizedData.CreateComputerTargetGroupFailed -f $Name, $Path
+                            ) -ErrorRecord $_
+                        }
+                    }
+                    else
+                    {
+                        # $Ensure -eq 'Absent' - must call the Delete() method on the group itself for removal
+                        $ChildComputerTargetGroup = $ParentComputerTargetGroup.GetChildTargetGroups().Where({
+                            $_.Name -eq $Name
+                        }) | Select-Object -First 1
+
+                        if ($null -eq $ChildComputerTargetGroup)
+                        {
+                            # Already absent
+                            Write-Verbose -Message ($script:localizedData.NotFoundComputerTargetGroup -f $Name, $Path)
+                            return
+                        }
+
+                        try
+                        {
+                            $childId = $ChildComputerTargetGroup.Id.Guid
+                            $null = $ChildComputerTargetGroup.Delete()
+                            Write-Verbose -Message ($script:localizedData.DeleteComputerTargetGroupSuccess -f $Name, $childId, $Path)
+                            return
+                        }
+                        catch
+                        {
+                            $childId = if ($ChildComputerTargetGroup)
+                            {
+                                $ChildComputerTargetGroup.Id.Guid
+                            }
+                            else
+                            {
+                                'N/A'
+                            }
+                            New-InvalidOperationException -Message (
+                                $script:localizedData.DeleteComputerTargetGroupFailed -f $Name, $childId, $Path
+                            ) -ErrorRecord $_
+                        }
+                    }
+                }
+            }
+        }
+
+        New-InvalidOperationException -Message ($script:localizedData.NotFoundParentComputerTargetGroup -f $ParentComputerTargetGroupName, `
+            $ParentComputerTargetGroupPath, $Name)
+    }
+    else
+    {
+        Write-Verbose -Message $script:localizedData.GetWsusServerFailed
     }
 }
 

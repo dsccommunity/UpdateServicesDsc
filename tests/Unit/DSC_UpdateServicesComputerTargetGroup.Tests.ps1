@@ -157,6 +157,12 @@ Describe 'DSC_UpdateServicesComputerTargetGroup\Get-TargetResource' -Tag 'Get' {
             Mock -CommandName Get-WsusServer -MockWith {
                 return CommonTestHelper\Get-WsusServerTemplate
             }
+
+            Mock -CommandName Get-ItemProperty -MockWith {
+                return @{
+                    'UpdateServices-Services' = '2'
+                }
+            }
         }
 
         It 'Should return the correct result' {
@@ -183,6 +189,12 @@ Describe 'DSC_UpdateServicesComputerTargetGroup\Get-TargetResource' -Tag 'Get' {
             Mock -CommandName Get-WsusServer -MockWith {
                 return CommonTestHelper\Get-WsusServerTemplate
             }
+
+            Mock -CommandName Get-ItemProperty -MockWith {
+                return @{
+                    'UpdateServices-Services' = '2'
+                }
+            }
         }
 
         It 'Should throw the correct exception' {
@@ -206,6 +218,12 @@ Describe 'DSC_UpdateServicesComputerTargetGroup\Get-TargetResource' -Tag 'Get' {
         BeforeAll {
             Mock -CommandName Get-WsusServer -MockWith {
                 return CommonTestHelper\Get-WsusServerTemplate
+            }
+
+            Mock -CommandName Get-ItemProperty -MockWith {
+                return @{
+                    'UpdateServices-Services' = '2'
+                }
             }
         }
 
