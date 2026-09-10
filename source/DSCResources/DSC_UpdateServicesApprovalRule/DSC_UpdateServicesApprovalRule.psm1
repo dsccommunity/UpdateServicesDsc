@@ -63,45 +63,48 @@ function Get-TargetResource
     $ComputerGroups = $null
     $Enabled = $null
 
-    try {
-        if (($null -ne $WsusServer) -and `
+    try
+    {
+        $WsusConfigured = ($null -ne $WsusServer) -and
             (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Update Services\Server\Setup\Installed Role Services" `
-                -Name 'UpdateServices-Services' -ErrorAction Stop).'UpdateServices-Services' -eq '2')
-        {
-            Write-Verbose -Message ($script:localizedData.IdentifiedWsusServer -f $WsusServer.Name)
-
-            $ApprovalRule = $WsusServer.GetInstallApprovalRules() | Where-Object -FilterScript { $_.Name -eq $Name }
-
-            if ($null -ne $ApprovalRule)
-            {
-                $Ensure = 'Present'
-
-                if ( -Not ($Classifications = @($ApprovalRule.GetUpdateClassifications().ID.Guid)))
-                {
-                    $Classifications = @('All Classifications')
-                }
-
-                if ( -Not ($Products = @($ApprovalRule.GetCategories().Title)))
-                {
-                    $Products = @('All Products')
-                }
-
-                if ( -Not ($ComputerGroups = @($ApprovalRule.GetComputerTargetGroups().Name)))
-                {
-                    $ComputerGroups = @('All Computers')
-                }
-
-                $Enabled = $ApprovalRule.Enabled
-            }
-        }
-        else
-        {
-            Write-Verbose -Message $script:localizedData.NotIdentifiedWsusServer
-        }
+                -Name 'UpdateServices-Services' -ErrorAction Stop).'UpdateServices-Services' -eq '2'
     }
     catch
     {
         New-InvalidOperationException -Message $script:localizedData.WSUSConfigurationFailed -ErrorRecord $_
+    }
+
+    if ($WsusConfigured)
+    {
+        Write-Verbose -Message ($script:localizedData.IdentifiedWsusServer -f $WsusServer.Name)
+
+        $ApprovalRule = $WsusServer.GetInstallApprovalRules() | Where-Object -FilterScript { $_.Name -eq $Name }
+
+        if ($null -ne $ApprovalRule)
+        {
+            $Ensure = 'Present'
+
+            if ( -Not ($Classifications = @($ApprovalRule.GetUpdateClassifications().ID.Guid)))
+            {
+                $Classifications = @('All Classifications')
+            }
+
+            if ( -Not ($Products = @($ApprovalRule.GetCategories().Title)))
+            {
+                $Products = @('All Products')
+            }
+
+            if ( -Not ($ComputerGroups = @($ApprovalRule.GetComputerTargetGroups().Name)))
+            {
+                $ComputerGroups = @('All Computers')
+            }
+
+            $Enabled = $ApprovalRule.Enabled
+        }
+    }
+    else
+    {
+        Write-Verbose -Message $script:localizedData.NotIdentifiedWsusServer
     }
 
     $returnValue = @{
