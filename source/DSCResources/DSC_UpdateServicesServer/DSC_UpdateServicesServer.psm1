@@ -1162,7 +1162,7 @@ function Set-TargetResource
 
         # Save configuration - avoid 'Operation is not valid due to the current state of the object' when DoDetailedRollup is being set
         Save-WsusConfiguration
-   
+
         # If this is not a replica server
         if (-not $UpstreamServerReplica)
         {
@@ -2249,12 +2249,19 @@ function Test-TargetResource
     .SYNOPSIS
         Saves the WSUS configuration
 
+    .PARAMETER Attempts
+        The number of times to retry saving the configuration before failing.
 #>
 function Save-WsusConfiguration
 {
-    param(
-        [int]$Attempts = 30
+    [CmdletBinding()]
+    param
+    (
+        [Parameter()]
+        [System.Int32]
+        $Attempts = 30
     )
+
     $Count = 0
     do
     {
