@@ -21,9 +21,12 @@
 # Upgrades           = 3689BDC8-B205-4AF4-8D4A-A63924C5E9D5
 
 
-# Load Common Module
+# Load Common Modules
 $script:resourceHelperModulePath = Join-Path -Path $PSScriptRoot -ChildPath '..\..\Modules\DscResource.Common'
 Import-Module -Name $script:resourceHelperModulePath
+
+$script:updateServicesDscCommonModulePath = Join-Path -Path $PSScriptRoot -ChildPath '..\..\Modules\UpdateServicesDsc.Common'
+Import-Module -Name $script:updateServicesDscCommonModulePath
 
 $script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
 
@@ -48,6 +51,7 @@ function Get-TargetResource
 
     Assert-Module -ModuleName UpdateServices
 
+    $WsusServer = $null
     try
     {
         $WsusServer = Get-WsusServer
@@ -63,18 +67,7 @@ function Get-TargetResource
     $ComputerGroups = $null
     $Enabled = $null
 
-    try
-    {
-        $WsusConfigured = ($null -ne $WsusServer) -and
-            (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Update Services\Server\Setup\Installed Role Services" `
-                -Name 'UpdateServices-Services' -ErrorAction Stop).'UpdateServices-Services' -eq '2'
-    }
-    catch
-    {
-        New-InvalidOperationException -Message $script:localizedData.WSUSConfigurationFailed -ErrorRecord $_
-    }
-
-    if ($WsusConfigured)
+    if (($null -ne $WsusServer) -and (Test-WsusConfigured))
     {
         Write-Verbose -Message ($script:localizedData.IdentifiedWsusServer -f $WsusServer.Name)
 

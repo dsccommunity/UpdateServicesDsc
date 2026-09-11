@@ -103,23 +103,26 @@ Describe 'DSC_UpdateServicesComputerTargetGroup\Get-ComputerTargetGroupPath' -Ta
 
 
 Describe 'DSC_UpdateServicesComputerTargetGroup\Get-TargetResource' -Tag 'Get' {
-    Context 'When an error occurs retrieving WSUS Server configuration information' {
+    Context 'When Get-WsusServer throws an error' {
         BeforeAll {
             Mock -CommandName Get-WsusServer -MockWith { throw 'An error occurred' }
         }
 
-        It 'Should throw when an error occurs retrieving WSUS Server information' {
+        It 'Should not throw, and should return the correct result' {
             InModuleScope -ScriptBlock {
                 Set-StrictMode -Version 1.0
-
-                $errorRecord = Get-InvalidOperationRecord -Message $script:localizedData.WSUSConfigurationFailed
 
                 $testParams = @{
                     Name = 'Servers'
                     Path = 'All Computers'
                 }
 
-                { Get-TargetResource @testParams } | Should -Throw -ExpectedMessage ($errorRecord.Exception.Message + '*')
+                $result = Get-TargetResource @testParams
+
+                $result.Ensure | Should -Be 'Absent'
+                $result.Id | Should -BeNullOrEmpty
+                $result.Name | Should -Be 'Servers'
+                $result.Path | Should -Be 'All Computers'
             }
 
             Should -Invoke -CommandName Get-WsusServer -Times 1 -Exactly -Scope It
@@ -158,11 +161,7 @@ Describe 'DSC_UpdateServicesComputerTargetGroup\Get-TargetResource' -Tag 'Get' {
                 return CommonTestHelper\Get-WsusServerTemplate
             }
 
-            Mock -CommandName Get-ItemProperty -MockWith {
-                return @{
-                    'UpdateServices-Services' = '2'
-                }
-            }
+            Mock -CommandName Test-WsusConfigured -MockWith { $true }
         }
 
         It 'Should return the correct result' {
@@ -190,11 +189,7 @@ Describe 'DSC_UpdateServicesComputerTargetGroup\Get-TargetResource' -Tag 'Get' {
                 return CommonTestHelper\Get-WsusServerTemplate
             }
 
-            Mock -CommandName Get-ItemProperty -MockWith {
-                return @{
-                    'UpdateServices-Services' = '2'
-                }
-            }
+            Mock -CommandName Test-WsusConfigured -MockWith { $true }
         }
 
         It 'Should throw the correct exception' {
@@ -220,11 +215,7 @@ Describe 'DSC_UpdateServicesComputerTargetGroup\Get-TargetResource' -Tag 'Get' {
                 return CommonTestHelper\Get-WsusServerTemplate
             }
 
-            Mock -CommandName Get-ItemProperty -MockWith {
-                return @{
-                    'UpdateServices-Services' = '2'
-                }
-            }
+            Mock -CommandName Test-WsusConfigured -MockWith { $true }
         }
 
         It 'Should return the correct result' {

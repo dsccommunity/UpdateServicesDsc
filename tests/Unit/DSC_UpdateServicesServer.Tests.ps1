@@ -82,6 +82,8 @@ Describe 'DSC_UpdateServicesServer\Get-TargetResource' -Tag 'Get' {
                         ContentDir = 'C:\WSUSContent\'
                     }
                 }
+
+                Mock -CommandName Test-WsusConfigured -MockWith { $true }
             }
 
             It 'Should return the correct result' {
@@ -176,6 +178,8 @@ Describe 'DSC_UpdateServicesServer\Get-TargetResource' -Tag 'Get' {
                         ContentDir = 'C:\WSUSContent\'
                     }
                 }
+
+                Mock -CommandName Test-WsusConfigured -MockWith { $true }
             }
 
             It 'Should return the correct result' {
@@ -269,6 +273,8 @@ Describe 'DSC_UpdateServicesServer\Get-TargetResource' -Tag 'Get' {
                     ContentDir = 'C:\WSUSContent\'
                 }
             }
+
+            Mock -CommandName Test-WsusConfigured -MockWith { $true }
         }
 
         It 'Should return the correct result' {

@@ -65,11 +65,7 @@ Describe 'DSC_UpdateServicesApprovalRule\Get-TargetResource' -Tag 'Get' {
                 return CommonTestHelper\Get-WsusServerTemplate
             }
 
-            Mock -CommandName Get-ItemProperty -MockWith {
-                return @{
-                    'UpdateServices-Services' = '2'
-                }
-            }
+            Mock -CommandName Test-WsusConfigured -MockWith { $true }
         }
 
         It 'Should return the correct result' {
@@ -111,11 +107,7 @@ Describe 'DSC_UpdateServicesApprovalRule\Get-TargetResource' -Tag 'Get' {
                 return $obj
             }
 
-            Mock -CommandName Get-ItemProperty -MockWith {
-                return @{
-                    'UpdateServices-Services' = '2'
-                }
-            }
+            Mock -CommandName Test-WsusConfigured -MockWith { $true }
         }
 
         It 'Should return the correct result' {
@@ -194,11 +186,7 @@ Describe 'DSC_UpdateServicesApprovalRule\Get-TargetResource' -Tag 'Get' {
                 return $obj
             }
 
-            Mock -CommandName Get-ItemProperty -MockWith {
-                return @{
-                    'UpdateServices-Services' = '2'
-                }
-            }
+            Mock -CommandName Test-WsusConfigured -MockWith { $true }
         }
 
         It 'Should return the correct result' {
@@ -218,20 +206,24 @@ Describe 'DSC_UpdateServicesApprovalRule\Get-TargetResource' -Tag 'Get' {
         }
     }
 
-    Context 'When the server throws an error' {
+    Context 'When Get-WsusServer throws an error' {
         BeforeAll {
             Mock -CommandName Get-WsusServer -MockWith {
                 throw 'Some error'
             }
         }
 
-        It 'Should throw the correct error' {
+        It 'Should not throw, and should return the correct result' {
             InModuleScope -ScriptBlock {
                 Set-StrictMode -Version 1.0
 
-                $errorRecord = Get-InvalidOperationRecord -Message $script:localizedData.WSUSConfigurationFailed
+                $result = Get-TargetResource -Name 'ServerName'
 
-                { Get-TargetResource -Name 'ServerName' } | Should -Throw -ExpectedMessage ($errorRecord.Exception.Message + '*')
+                $result.Ensure | Should -Be 'Absent'
+                $result.Classifications | Should -BeNullOrEmpty
+                $result.Products | Should -BeNullOrEmpty
+                $result.ComputerGroups | Should -BeNullOrEmpty
+                $result.Enabled | Should -BeNullOrEmpty
             }
 
             Should -Invoke -CommandName Get-WsusServer -Exactly -Times 1 -Scope It
