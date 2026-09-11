@@ -102,7 +102,7 @@ Describe 'DSC_UpdateServicesServer\Get-TargetResource' -Tag 'Get' {
                     $result.UpstreamServerSSL | Should -BeNullOrEmpty
                     $result.UpstreamServerReplica | Should -BeNullOrEmpty
                     $result.ProxyServerName | Should -BeNullOrEmpty
-                    $result.ProxyServerPort | Should -BeNullOrEmpty
+                    $result.ProxyServerPort | Should -Be 0
                     $result.ProxyServerCredentialUsername | Should -BeNullOrEmpty
                     $result.ProxyServerBasicAuthentication | Should -BeNullOrEmpty
                     $result.Languages | Should -Be '*'
@@ -198,7 +198,7 @@ Describe 'DSC_UpdateServicesServer\Get-TargetResource' -Tag 'Get' {
                     $result.UpstreamServerSSL | Should -BeNullOrEmpty
                     $result.UpstreamServerReplica | Should -BeNullOrEmpty
                     $result.ProxyServerName | Should -BeNullOrEmpty
-                    $result.ProxyServerPort | Should -BeNullOrEmpty
+                    $result.ProxyServerPort | Should -Be 0
                     $result.ProxyServerCredentialUsername | Should -BeNullOrEmpty
                     $result.ProxyServerBasicAuthentication | Should -BeNullOrEmpty
                     $result.Languages | Should -Be '*'
@@ -447,7 +447,7 @@ Describe 'DSC_UpdateServicesServer\Test-TargetResource' -Tag 'Test' {
                 }
 
                 Should -Invoke -CommandName Get-TargetResource -Exactly -Times 1 -Scope It
-                Should -Invoke -CommandName Get-WsusServer -Exactly -Times 1 -Scope It
+                Should -Invoke -CommandName Get-WsusServer -Exactly -Times 0 -Scope It
             }
         }
 
@@ -664,9 +664,17 @@ Describe 'DSC_UpdateServicesServer\Test-TargetResource' -Tag 'Test' {
 Describe 'DSC_UpdateServicesServer\Set-TargetResource' -Tag 'Set' {
     BeforeAll {
         Mock -CommandName Test-TargetResource -MockWith { $true }
-        Mock -CommandName SaveWsusConfiguration
+        Mock -CommandName Save-WsusConfiguration
         Mock -CommandName Get-WsusServer -MockWith {
             return CommonTestHelper\Get-WsusServerTemplate
+        }
+
+        Mock -CommandName Test-WsusConfigured -MockWith { $true }
+
+        Mock -CommandName New-Object -MockWith {
+            $obj = [PSCustomObject] @{}
+            $obj | Add-Member -Force -MemberType ScriptMethod -Name Add -Value { return }
+            return $obj
         }
     }
 
@@ -700,7 +708,7 @@ Describe 'DSC_UpdateServicesServer\Set-TargetResource' -Tag 'Set' {
             }
 
             Should -Invoke -CommandName Test-TargetResource -Exactly -Times 1 -Scope It
-            Should -Invoke -CommandName SaveWsusConfiguration -Exactly -Times 2 -Scope It
+            Should -Invoke -CommandName Save-WsusConfiguration -Exactly -Times 3 -Scope It
             Should -Invoke -CommandName Get-WsusServer -Exactly -Times 2 -Scope It
         }
     }
@@ -735,7 +743,7 @@ Describe 'DSC_UpdateServicesServer\Set-TargetResource' -Tag 'Set' {
             }
 
             Should -Invoke -CommandName Test-TargetResource -Exactly -Times 1 -Scope It
-            Should -Invoke -CommandName SaveWsusConfiguration -Exactly -Times 2 -Scope It
+            Should -Invoke -CommandName Save-WsusConfiguration -Exactly -Times 3 -Scope It
             Should -Invoke -CommandName Get-WsusServer -Exactly -Times 2 -Scope It
         }
     }
