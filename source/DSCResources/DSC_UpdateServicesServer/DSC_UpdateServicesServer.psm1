@@ -757,7 +757,6 @@ function Set-TargetResource
 
     Assert-Module -ModuleName UpdateServices
 
-    # Check whether the post installation tasks for the WSUS Services role still need to be run
     $WsusServer = $null
     try
     {
@@ -768,10 +767,8 @@ function Set-TargetResource
         Write-Verbose -Message $script:localizedData.GetWsusServerFailed
     }
 
-    $PostInstall = -not (($null -ne $WsusServer) -and (Test-WsusConfigured))
-
-    # Complete initial configuration
-    if ($PostInstall)
+    # If the WSUS Services role has not finished installing, complete the initial configuration
+    if (($null -eq $WsusServer) -or -not (Test-WsusConfigured))
     {
         Write-Verbose -Message $script:localizedData.RunningWsusPostInstall
 
