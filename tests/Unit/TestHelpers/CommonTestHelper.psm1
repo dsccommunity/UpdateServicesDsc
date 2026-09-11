@@ -108,6 +108,19 @@ function Get-WsusServerTemplate
                     }
                 }
             },
+            # Name deliberately contains characters that are meaningful in a regular expression
+            [pscustomobject] @{
+                Name = 'Servers (UK)'
+                Id = [pscustomobject] @{
+                    GUID = 'c8b8a5a6-6f1e-4f66-9d3e-3f3c3dbb0a11'
+                }
+                ParentTargetGroup = [pscustomobject] @{
+                    Name = 'All Computers'
+                    Id = [pscustomobject] @{
+                        GUID = '4be27a8d-b969-4a8a-9cae-ec6b3a282b0b'
+                    }
+                }
+            },
             [pscustomobject] @{
                 Name = 'Desktops'
                 Id = [pscustomobject] @{

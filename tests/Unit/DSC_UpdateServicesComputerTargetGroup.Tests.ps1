@@ -477,6 +477,29 @@ Describe 'DSC_UpdateServicesComputerTargetGroup\Set-TargetResource' -Tag 'Set' {
         }
     }
 
+    Context 'When the Parent Computer Target Group name contains regular expression characters' {
+        BeforeAll {
+            Mock -CommandName Get-WsusServer -MockWith {
+                return CommonTestHelper\Get-WsusServerTemplate
+            }
+        }
+
+        It 'Should call the correct mocks' {
+            InModuleScope -ScriptBlock {
+                Set-StrictMode -Version 1.0
+
+                $testParams = @{
+                    Name = 'Database'
+                    Path = 'All Computers/Servers (UK)'
+                }
+
+                { Set-TargetResource @testParams } | Should -Not -Throw
+            }
+
+            Should -Invoke -CommandName Get-WsusServer -Times 1 -Exactly -Scope It
+        }
+    }
+
     Context 'When the new Computer Target Group is successfully deleted' {
         BeforeAll {
             Mock -CommandName Get-WsusServer -MockWith {

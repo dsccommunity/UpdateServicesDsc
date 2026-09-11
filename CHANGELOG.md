@@ -56,6 +56,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Before running, ensure that UpdateServices PowerShell module is installed.
   - Updated error handling to specifically catch errors if WSUS Server is unavailable.
   - Added check to make sure Post Install was successful before trying to get resource.
+  - Fix parent Computer Target Group not being found when its name contains characters
+    that are meaningful in a regular expression, such as parentheses.
 - UpdateServicesServer
   - Before running, ensure that UpdateServices PowerShell module is installed.
   - Updated error handling to specifically catch errors if WSUS Server is unavailable.

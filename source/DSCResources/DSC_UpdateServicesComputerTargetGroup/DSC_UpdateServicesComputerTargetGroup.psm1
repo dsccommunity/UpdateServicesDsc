@@ -146,7 +146,7 @@ function Set-TargetResource
 
     # break down path to identify the parent computer target group based on name and its own unique path
     $ParentComputerTargetGroupName = (($Path -split '/')[-1])
-    $ParentComputerTargetGroupPath = ($Path -replace "[/]$ParentComputerTargetGroupName", '')
+    $ParentComputerTargetGroupPath = ($Path -replace "[/]$([regex]::Escape($ParentComputerTargetGroupName))", '')
 
     if ($null -ne $WsusServer)
     {
