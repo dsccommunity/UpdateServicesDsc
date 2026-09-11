@@ -42,6 +42,8 @@ BeforeAll {
     $PSDefaultParameterValues['InModuleScope:ModuleName'] = $script:dscResourceName
     $PSDefaultParameterValues['Mock:ModuleName'] = $script:dscResourceName
     $PSDefaultParameterValues['Should:ModuleName'] = $script:dscResourceName
+
+    Mock -CommandName Assert-Module
 }
 
 AfterAll {
@@ -82,6 +84,8 @@ Describe 'DSC_UpdateServicesServer\Get-TargetResource' -Tag 'Get' {
                         ContentDir = 'C:\WSUSContent\'
                     }
                 }
+
+                Mock -CommandName Test-WsusConfigured -MockWith { $true }
             }
 
             It 'Should return the correct result' {
@@ -100,7 +104,7 @@ Describe 'DSC_UpdateServicesServer\Get-TargetResource' -Tag 'Get' {
                     $result.UpstreamServerSSL | Should -BeNullOrEmpty
                     $result.UpstreamServerReplica | Should -BeNullOrEmpty
                     $result.ProxyServerName | Should -BeNullOrEmpty
-                    $result.ProxyServerPort | Should -BeNullOrEmpty
+                    $result.ProxyServerPort | Should -Be 0
                     $result.ProxyServerCredentialUsername | Should -BeNullOrEmpty
                     $result.ProxyServerBasicAuthentication | Should -BeNullOrEmpty
                     $result.Languages | Should -Be '*'
@@ -176,6 +180,8 @@ Describe 'DSC_UpdateServicesServer\Get-TargetResource' -Tag 'Get' {
                         ContentDir = 'C:\WSUSContent\'
                     }
                 }
+
+                Mock -CommandName Test-WsusConfigured -MockWith { $true }
             }
 
             It 'Should return the correct result' {
@@ -194,7 +200,7 @@ Describe 'DSC_UpdateServicesServer\Get-TargetResource' -Tag 'Get' {
                     $result.UpstreamServerSSL | Should -BeNullOrEmpty
                     $result.UpstreamServerReplica | Should -BeNullOrEmpty
                     $result.ProxyServerName | Should -BeNullOrEmpty
-                    $result.ProxyServerPort | Should -BeNullOrEmpty
+                    $result.ProxyServerPort | Should -Be 0
                     $result.ProxyServerCredentialUsername | Should -BeNullOrEmpty
                     $result.ProxyServerBasicAuthentication | Should -BeNullOrEmpty
                     $result.Languages | Should -Be '*'
@@ -269,6 +275,8 @@ Describe 'DSC_UpdateServicesServer\Get-TargetResource' -Tag 'Get' {
                     ContentDir = 'C:\WSUSContent\'
                 }
             }
+
+            Mock -CommandName Test-WsusConfigured -MockWith { $true }
         }
 
         It 'Should return the correct result' {
@@ -441,7 +449,7 @@ Describe 'DSC_UpdateServicesServer\Test-TargetResource' -Tag 'Test' {
                 }
 
                 Should -Invoke -CommandName Get-TargetResource -Exactly -Times 1 -Scope It
-                Should -Invoke -CommandName Get-WsusServer -Exactly -Times 1 -Scope It
+                Should -Invoke -CommandName Get-WsusServer -Exactly -Times 0 -Scope It
             }
         }
 
@@ -504,6 +512,113 @@ Describe 'DSC_UpdateServicesServer\Test-TargetResource' -Tag 'Test' {
 
                 Should -Invoke -CommandName Get-TargetResource -Exactly -Times 1 -Scope It
                 Should -Invoke -CommandName Get-WsusServer -Exactly -Times 1 -Scope It
+            }
+        }
+
+        Context 'When the ContentDir property is an empty string' {
+            BeforeAll {
+                Mock -CommandName Get-TargetResource -MockWith {
+                    @{
+                        Ensure             = 'Present'
+                        ContentDir         = ''
+                        UpstreamServerName = ''
+                    }
+                }
+            }
+
+            It 'Should return the correct result' {
+                InModuleScope -ScriptBlock {
+                    Set-StrictMode -Version 1.0
+
+                    Test-TargetResource -Ensure 'Present' -ContentDir '' | Should -BeTrue
+                }
+
+                Should -Invoke -CommandName Get-TargetResource -Exactly -Times 1 -Scope It
+            }
+
+            It 'Should return the correct result when the server hosts the content locally' {
+                InModuleScope -ScriptBlock {
+                    Set-StrictMode -Version 1.0
+
+                    Mock -CommandName Get-TargetResource -MockWith {
+                        @{
+                            Ensure             = 'Present'
+                            ContentDir         = 'C:\WSUSContent\'
+                            UpstreamServerName = ''
+                        }
+                    }
+
+                    Test-TargetResource -Ensure 'Present' -ContentDir '' | Should -BeFalse
+                }
+            }
+        }
+
+        Context 'When the GetContentFromMU property is used' {
+            BeforeAll {
+                Mock -CommandName Get-TargetResource -MockWith {
+                    @{
+                        Ensure             = 'Present'
+                        ContentDir         = 'C:\WSUSContent\'
+                        UpstreamServerName = 'UpstreamServer'
+                        UpstreamServerPort = 8530
+                        UpstreamServerSSL  = $false
+                        GetContentFromMU   = $false
+                    }
+                }
+            }
+
+            It 'Should return the correct result when the setting matches' {
+                InModuleScope -ScriptBlock {
+                    Set-StrictMode -Version 1.0
+
+                    $testParams = @{
+                        Ensure             = 'Present'
+                        ContentDir         = 'C:\WSUSContent\'
+                        UpstreamServerName = 'UpstreamServer'
+                        GetContentFromMU   = $false
+                    }
+
+                    Test-TargetResource @testParams | Should -BeTrue
+                }
+            }
+
+            It 'Should return the correct result when the setting does not match' {
+                InModuleScope -ScriptBlock {
+                    Set-StrictMode -Version 1.0
+
+                    $testParams = @{
+                        Ensure             = 'Present'
+                        ContentDir         = 'C:\WSUSContent\'
+                        UpstreamServerName = 'UpstreamServer'
+                        GetContentFromMU   = $true
+                    }
+
+                    Test-TargetResource @testParams | Should -BeFalse
+                }
+            }
+
+            It 'Should ignore the setting when no upstream server is configured' {
+                InModuleScope -ScriptBlock {
+                    Set-StrictMode -Version 1.0
+
+                    Mock -CommandName Get-TargetResource -MockWith {
+                        @{
+                            Ensure             = 'Present'
+                            ContentDir         = 'C:\WSUSContent\'
+                            UpstreamServerName = ''
+                            GetContentFromMU   = $null
+                        }
+                    }
+
+                    $testParams = @{
+                        Ensure             = 'Present'
+                        ContentDir         = 'C:\WSUSContent\'
+                        UpstreamServerName = ''
+                        GetContentFromMU   = $true
+                    }
+
+                    Test-TargetResource @testParams | Should -BeTrue
+                }
             }
         }
     }
@@ -658,9 +773,17 @@ Describe 'DSC_UpdateServicesServer\Test-TargetResource' -Tag 'Test' {
 Describe 'DSC_UpdateServicesServer\Set-TargetResource' -Tag 'Set' {
     BeforeAll {
         Mock -CommandName Test-TargetResource -MockWith { $true }
-        Mock -CommandName SaveWsusConfiguration
+        Mock -CommandName Save-WsusConfiguration
         Mock -CommandName Get-WsusServer -MockWith {
             return CommonTestHelper\Get-WsusServerTemplate
+        }
+
+        Mock -CommandName Test-WsusConfigured -MockWith { $true }
+
+        Mock -CommandName New-Object -MockWith {
+            $obj = [PSCustomObject] @{}
+            $obj | Add-Member -Force -MemberType ScriptMethod -Name Add -Value { return }
+            return $obj
         }
     }
 
@@ -694,7 +817,7 @@ Describe 'DSC_UpdateServicesServer\Set-TargetResource' -Tag 'Set' {
             }
 
             Should -Invoke -CommandName Test-TargetResource -Exactly -Times 1 -Scope It
-            Should -Invoke -CommandName SaveWsusConfiguration -Exactly -Times 2 -Scope It
+            Should -Invoke -CommandName Save-WsusConfiguration -Exactly -Times 3 -Scope It
             Should -Invoke -CommandName Get-WsusServer -Exactly -Times 2 -Scope It
         }
     }
@@ -729,8 +852,52 @@ Describe 'DSC_UpdateServicesServer\Set-TargetResource' -Tag 'Set' {
             }
 
             Should -Invoke -CommandName Test-TargetResource -Exactly -Times 1 -Scope It
-            Should -Invoke -CommandName SaveWsusConfiguration -Exactly -Times 2 -Scope It
+            Should -Invoke -CommandName Save-WsusConfiguration -Exactly -Times 3 -Scope It
             Should -Invoke -CommandName Get-WsusServer -Exactly -Times 2 -Scope It
+        }
+    }
+
+    Context 'When the WSUS Services role is already configured but the initial synchronization has never completed, and Synchronize is not requested' {
+        BeforeAll {
+            $parentModule = Get-Module -Name $script:dscModuleName -ListAvailable | Select-Object -First 1
+            Import-Module (Join-Path -Path $parentModule.ModuleBase -ChildPath 'Modules\PDT\PDT.psm1') -Force
+
+            Mock -CommandName Get-WsusServer -MockWith {
+                $wsusServer = CommonTestHelper\Get-WsusServerTemplate
+
+                $wsusServer | Add-Member -Force -MemberType ScriptMethod -Name GetConfiguration -Value {
+                    $configuration = @{
+                        OobeInitialized           = $false
+                        AllUpdateLanguagesEnabled = $true
+                    }
+                    $configuration | Add-Member -MemberType ScriptMethod -Name Save -Value {}
+
+                    return $configuration
+                }
+
+                return $wsusServer
+            }
+
+            Mock -CommandName Invoke-ResolvePath -MockWith { 'C:\Program Files\Update Services\Tools\WsusUtil.exe' }
+            Mock -CommandName Start-Win32Process -MockWith { 'Process started' }
+            Mock -CommandName Wait-Win32ProcessEnd
+        }
+
+        It 'Should resolve WsusUtil.exe before running the offline synchronization' {
+            InModuleScope -ScriptBlock {
+                Set-StrictMode -Version 1.0
+
+                $testParams = @{
+                    Ensure = 'Present'
+                }
+
+                { $null = Set-TargetResource @testParams } | Should -Not -Throw
+            }
+
+            Should -Invoke -CommandName Invoke-ResolvePath -Exactly -Times 1 -Scope It
+            Should -Invoke -CommandName Start-Win32Process -ParameterFilter {
+                -not [String]::IsNullOrEmpty($Path)
+            } -Exactly -Times 1 -Scope It
         }
     }
 }

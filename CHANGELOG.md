@@ -5,6 +5,72 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- UpdateServicesServer
+  - BREAKING CHANGE: Parameters are now only applied when explicitly specified
+    instead of defaulting to hardcoded values when omitted.
+    In particular, set ContentDir, Languages, Products, and Classifications as needed.
+    Fixes [issue #55](https://github.com/dsccommunity/UpdateServicesDsc/issues/55).
+
+### Added
+
+- UpdateServicesServer
+  - Added support for the following settings:
+    - ContentDir can be set to an empty string for clients to download from Microsoft Update.
+    - Updates are downloaded only when they are approved.
+    - Express installation packages should be downloaded.
+    - Update binaries are downloaded from Microsoft Update instead of from the
+      upstream server.
+      Fixes [issue #39](https://github.com/dsccommunity/UpdateServicesDsc/issues/39)
+    - WSUS infrastructure updates are approved automatically.
+    - The latest revision of an update should be approved automatically.
+    - An update should be automatically declined when it is revised to be expired
+      and AutoRefreshUpdateApprovals is enabled.
+    - The downstream server should roll up detailed computer and update status information.
+    - Email status notifications and SMTP settings, including a status notifications DST fix.
+      Fixes [issue #15](https://github.com/dsccommunity/UpdateServicesDsc/issues/15).
+    - Use Xpress Encoding to compress update metadata.
+    - Use foreground priority for BITS downloads.
+    - The maximum .cab file size (in megabytes) that Local Publishing will create.
+    - The maximum number of concurrent update downloads.
+
+### Fixed
+
+- UpdateServicesApprovalRule
+  - Before running, ensure that UpdateServices PowerShell module is installed.
+  - Updated error handling to specifically catch errors if WSUS Server is unavailable.
+  - Added check to make sure Post Install was successful before trying to get resource.
+  - Fix issue [#63](https://github.com/dsccommunity/UpdateServicesDsc/issues/63)
+    Broken verbose output for WSUS server name.
+  - Fix issue [#61](https://github.com/dsccommunity/UpdateServicesDsc/issues/61)
+    Allow multiple product categories with same name (e.g. "Windows Admin Center")
+  - Removed ErrorRecord from New-InvalidOperationException outside of try / catch.
+  - Fixed verbose logging to use language strings.
+  - Do not modify an approval rule on a server where the WSUS Services role has
+    not completed installation.
+- UpdateServicesCleanup
+  - Fix issue [#93](https://github.com/dsccommunity/UpdateServicesDsc/issues/93)
+    Allow UpdateServicesCleanup resource to test and update TimeOfDay as needed.
+  - Handle scheduled task with no triggers, or an unparseable trigger StartBoundary,
+    when reading TimeOfDay.
+- UpdateServicesComputerTargetGroup
+  - Before running, ensure that UpdateServices PowerShell module is installed.
+  - Updated error handling to specifically catch errors if WSUS Server is unavailable.
+  - Added check to make sure Post Install was successful before trying to get resource.
+  - Fix parent Computer Target Group not being found when its name contains characters
+    that are meaningful in a regular expression, such as parentheses.
+  - Do not create or delete a Computer Target Group on a server where the WSUS
+    Services role has not completed installation.
+- UpdateServicesServer
+  - Before running, ensure that UpdateServices PowerShell module is installed.
+  - Updated error handling to specifically catch errors if WSUS Server is unavailable.
+  - Added check to make sure Post Install was successful before trying to get resource.
+  - Update setting dependency logic to stop incompatible settings being set / returned.
+  - Get Languages as a string array instead of comma-separated values.
+    Fix issue [#76](https://github.com/dsccommunity/UpdateServicesDsc/issues/76)
+- Stopped PDT.psm1 returning boolean 'true' alongside normal output when creating a process, now throws if the process fails to start.
+
 ## [1.3.0] - 2025-12-05
 
 ### Changed

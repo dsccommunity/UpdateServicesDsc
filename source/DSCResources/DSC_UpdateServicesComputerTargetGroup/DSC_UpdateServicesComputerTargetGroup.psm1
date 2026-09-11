@@ -1,8 +1,12 @@
 # DSC resource to manage WSUS Computer Target Groups.
 
-# Load Common Module
+# Load Common Modules
 $script:resourceHelperModulePath = Join-Path -Path $PSScriptRoot -ChildPath '..\..\Modules\DscResource.Common'
 Import-Module -Name $script:resourceHelperModulePath
+
+$script:updateServicesDscCommonModulePath = Join-Path -Path $PSScriptRoot -ChildPath '..\..\Modules\UpdateServicesDsc.Common'
+Import-Module -Name $script:updateServicesDscCommonModulePath
+
 $script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
 
 
@@ -35,19 +39,22 @@ function Get-TargetResource
         $Path
     )
 
+    Assert-Module -ModuleName UpdateServices
+
+    $WsusServer = $null
     try
     {
         $WsusServer = Get-WsusServer
     }
     catch
     {
-        New-InvalidOperationException -Message $script:localizedData.WSUSConfigurationFailed -ErrorRecord $_
+        Write-Verbose -Message $script:localizedData.GetWsusServerFailed
     }
 
     $Ensure = 'Absent'
     $Id = $null
 
-    if ($null -ne $WsusServer)
+    if (($null -ne $WsusServer) -and (Test-WsusConfigured))
     {
         Write-Verbose -Message ($script:localizedData.GetWsusServerSucceeded -f $WsusServer.Name)
         $ComputerTargetGroup = $WsusServer.GetComputerTargetGroups().Where({ $_.Name -eq $Name }) | Select-Object -First 1
@@ -126,6 +133,8 @@ function Set-TargetResource
         $Path
     )
 
+    Assert-Module -ModuleName UpdateServices
+
     try
     {
         $WsusServer = Get-WsusServer
@@ -137,13 +146,18 @@ function Set-TargetResource
 
     # break down path to identify the parent computer target group based on name and its own unique path
     $ParentComputerTargetGroupName = (($Path -split '/')[-1])
-    $ParentComputerTargetGroupPath = ($Path -replace "[/]$ParentComputerTargetGroupName", '')
+    $ParentComputerTargetGroupPath = ($Path -replace "[/]$([regex]::Escape($ParentComputerTargetGroupName))", '')
 
     if ($null -ne $WsusServer)
     {
+        if (-not (Test-WsusConfigured))
+        {
+            New-InvalidOperationException -Message $script:localizedData.WSUSConfigurationFailed
+        }
+
         $ParentComputerTargetGroups = $WsusServer.GetComputerTargetGroups().Where({
-                $_.Name -eq $ParentComputerTargetGroupName
-            }) | Select-Object -First 1
+            $_.Name -eq $ParentComputerTargetGroupName
+        }) | Select-Object -First 1
 
         if ($null -ne $ParentComputerTargetGroups)
         {
@@ -154,7 +168,7 @@ function Set-TargetResource
                 {
                     # parent Computer Target Group Exists
                     Write-Verbose -Message ($script:localizedData.FoundParentComputerTargetGroup -f $ParentComputerTargetGroupName, `
-                            $ParentComputerTargetGroupPath, $ParentComputerTargetGroup.Id.Guid)
+                    $ParentComputerTargetGroupPath, $ParentComputerTargetGroup.Id.Guid)
 
                     # create the new Computer Target Group if Ensure -eq 'Present'
                     if ($Ensure -eq 'Present')
@@ -176,8 +190,8 @@ function Set-TargetResource
                     {
                         # $Ensure -eq 'Absent' - must call the Delete() method on the group itself for removal
                         $ChildComputerTargetGroup = $ParentComputerTargetGroup.GetChildTargetGroups().Where({
-                                $_.Name -eq $Name
-                            }) | Select-Object -First 1
+                            $_.Name -eq $Name
+                        }) | Select-Object -First 1
 
                         if ($null -eq $ChildComputerTargetGroup)
                         {
@@ -197,11 +211,11 @@ function Set-TargetResource
                         {
                             $childId = if ($ChildComputerTargetGroup)
                             {
-                                $ChildComputerTargetGroup.Id.Guid 
+                                $ChildComputerTargetGroup.Id.Guid
                             }
                             else
                             {
-                                'N/A' 
+                                'N/A'
                             }
                             New-InvalidOperationException -Message (
                                 $script:localizedData.DeleteComputerTargetGroupFailed -f $Name, $childId, $Path
@@ -213,7 +227,7 @@ function Set-TargetResource
         }
 
         New-InvalidOperationException -Message ($script:localizedData.NotFoundParentComputerTargetGroup -f $ParentComputerTargetGroupName, `
-                $ParentComputerTargetGroupPath, $Name)
+            $ParentComputerTargetGroupPath, $Name)
     }
     else
     {
@@ -258,6 +272,8 @@ function Test-TargetResource
         [System.String]
         $Path
     )
+
+    Assert-Module -ModuleName UpdateServices
 
     $result = Get-TargetResource -Name $Name -Path $Path
 

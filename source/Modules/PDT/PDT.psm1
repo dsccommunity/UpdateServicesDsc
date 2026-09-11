@@ -713,7 +713,14 @@ function Start-Win32Process
         {
             throw $err
         }
-        Wait-Win32ProcessStart @GetArguments
+
+        if (-not (Wait-Win32ProcessStart @getArguments))
+        {
+            $errorMessage = (
+                $script:localizedData.ProcessFailedToStartError -f @($Path, $Arguments)
+            )
+            New-ArgumentException -ArgumentName 'Path' -Message $errorMessage
+        }
     }
     else
     {

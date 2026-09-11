@@ -108,6 +108,19 @@ function Get-WsusServerTemplate
                     }
                 }
             },
+            # Name deliberately contains characters that are meaningful in a regular expression
+            [pscustomobject] @{
+                Name = 'Servers (UK)'
+                Id = [pscustomobject] @{
+                    GUID = 'c8b8a5a6-6f1e-4f66-9d3e-3f3c3dbb0a11'
+                }
+                ParentTargetGroup = [pscustomobject] @{
+                    Name = 'All Computers'
+                    Id = [pscustomobject] @{
+                        GUID = '4be27a8d-b969-4a8a-9cae-ec6b3a282b0b'
+                    }
+                }
+            },
             [pscustomobject] @{
                 Name = 'Desktops'
                 Id = [pscustomobject] @{
@@ -176,6 +189,8 @@ function Get-WsusServerTemplate
 
     $WsusServer | Add-Member -MemberType ScriptMethod -Name GetUpdateClassification -Value {}
 
+    $WsusServer | Add-Member -MemberType ScriptMethod -Name GetUpdateCategory -Value {}
+
     $WsusServer | Add-Member -MemberType ScriptMethod -Name GetComputerTargetGroups -Value $ComputerTargetGroups
 
     $WsusServer | Add-Member -MemberType ScriptMethod -Name DeleteInstallApprovalRule -Value {}
@@ -210,11 +225,19 @@ function Get-WsusServerTemplate
                 return $Categories
             }
 
+            $Subscription | Add-Member -MemberType ScriptMethod -Name SetUpdateCategories -Value {}
+
+            $Subscription | Add-Member -MemberType ScriptMethod -Name SetUpdateClassifications -Value {}
+
+            $Subscription | Add-Member -MemberType ScriptMethod -Name Save -Value {}
+
             return $Subscription
     }
 
     $WsusServer | Add-Member -MemberType ScriptMethod -Name GetConfiguration -Value {
         $Configuration = @{
+            OobeInitialized = $true
+            UseProxy = $false
             ProxyName = ''
             ProxyServerPort = $null
             ProxyServerBasicAuthentication = $false
@@ -227,7 +250,46 @@ function Get-WsusServerTemplate
         }
         $Configuration | Add-Member -MemberType ScriptMethod -Name GetEnabledUpdateLanguages -Value {}
 
+        $Configuration | Add-Member -MemberType ScriptMethod -Name SetEnabledUpdateLanguages -Value {}
+
+        $Configuration | Add-Member -MemberType ScriptMethod -Name SetProxyPassword -Value {}
+
+        $Configuration | Add-Member -MemberType ScriptMethod -Name Save -Value {}
+
         return $Configuration
+    }
+
+    $WsusServer | Add-Member -MemberType ScriptMethod -Name GetDatabaseConfiguration -Value {
+        $DatabaseConfiguration = [PSCustomObject] @{
+            IsUsingWindowsInternalDatabase = $false
+            ServerName                     = 'SQLServer'
+        }
+
+        return $DatabaseConfiguration
+    }
+
+    $WsusServer | Add-Member -MemberType ScriptMethod -Name GetEmailNotificationConfiguration -Value {
+        $EmailNotificationConfiguration = [PSCustomObject] @{
+            SendSyncNotification             = $false
+            SyncNotificationRecipients       = @()
+            SendStatusNotification           = $false
+            StatusNotificationFrequency      = 'Daily'
+            StatusNotificationTimeOfDay      = [TimeSpan] '09:00:00'
+            StatusNotificationRecipients     = @()
+            EmailLanguage                    = 'en'
+            SmtpHostName                     = ''
+            SmtpPort                         = 25
+            SenderDisplayName                = ''
+            SenderEmailAddress               = ''
+            SmtpServerRequiresAuthentication = $false
+            SmtpUserName                     = ''
+        }
+
+        $EmailNotificationConfiguration | Add-Member -MemberType ScriptMethod -Name SetSmtpUserPassword -Value {}
+
+        $EmailNotificationConfiguration | Add-Member -MemberType ScriptMethod -Name Save -Value {}
+
+        return $EmailNotificationConfiguration
     }
 
     $WsusServer | Add-Member -MemberType ScriptMethod -Name GetUpdateClassifications -Value {
@@ -319,6 +381,12 @@ function Get-WsusServerMockWildCardPrdt
 
             return $Categories
         }
+
+        $Subscription | Add-Member -MemberType ScriptMethod -Name SetUpdateCategories -Value {}
+
+        $Subscription | Add-Member -MemberType ScriptMethod -Name SetUpdateClassifications -Value {}
+
+        $Subscription | Add-Member -MemberType ScriptMethod -Name Save -Value {}
 
         return $Subscription
     }

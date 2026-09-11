@@ -41,6 +41,8 @@ BeforeAll {
     $PSDefaultParameterValues['InModuleScope:ModuleName'] = $script:dscResourceName
     $PSDefaultParameterValues['Mock:ModuleName'] = $script:dscResourceName
     $PSDefaultParameterValues['Should:ModuleName'] = $script:dscResourceName
+
+    Mock -CommandName Assert-Module
 }
 
 AfterAll {
@@ -64,6 +66,8 @@ Describe 'DSC_UpdateServicesApprovalRule\Get-TargetResource' -Tag 'Get' {
             Mock -CommandName Get-WsusServer -MockWith {
                 return CommonTestHelper\Get-WsusServerTemplate
             }
+
+            Mock -CommandName Test-WsusConfigured -MockWith { $true }
         }
 
         It 'Should return the correct result' {
@@ -104,6 +108,8 @@ Describe 'DSC_UpdateServicesApprovalRule\Get-TargetResource' -Tag 'Get' {
 
                 return $obj
             }
+
+            Mock -CommandName Test-WsusConfigured -MockWith { $true }
         }
 
         It 'Should return the correct result' {
@@ -182,38 +188,44 @@ Describe 'DSC_UpdateServicesApprovalRule\Get-TargetResource' -Tag 'Get' {
                 return $obj
             }
 
-            It 'Should return the correct result' {
-                InModuleScope -ScriptBlock {
-                    Set-StrictMode -Version 1.0
+            Mock -CommandName Test-WsusConfigured -MockWith { $true }
+        }
 
-                    $result = Get-TargetResource -Name 'Foo'
+        It 'Should return the correct result' {
+            InModuleScope -ScriptBlock {
+                Set-StrictMode -Version 1.0
 
-                    $result.Ensure | Should -Be 'Absent'
-                    $result.Classifications | Should -BeNullOrEmpty
-                    $result.Products | Should -BeNullOrEmpty
-                    $result.ComputerGroups | Should -BeNullOrEmpty
-                    $result.Enabled | Should -BeNullOrEmpty
-                }
+                $result = Get-TargetResource -Name 'Foo'
 
-                Should -Invoke -CommandName Get-WsusServer -Exactly -Times 1 -Scope It
+                $result.Ensure | Should -Be 'Absent'
+                $result.Classifications | Should -BeNullOrEmpty
+                $result.Products | Should -BeNullOrEmpty
+                $result.ComputerGroups | Should -BeNullOrEmpty
+                $result.Enabled | Should -BeNullOrEmpty
             }
+
+            Should -Invoke -CommandName Get-WsusServer -Exactly -Times 1 -Scope It
         }
     }
 
-    Context 'When the server throws an error' {
+    Context 'When Get-WsusServer throws an error' {
         BeforeAll {
             Mock -CommandName Get-WsusServer -MockWith {
                 throw 'Some error'
             }
         }
 
-        It 'Should throw the correct error' {
+        It 'Should not throw, and should return the correct result' {
             InModuleScope -ScriptBlock {
                 Set-StrictMode -Version 1.0
 
-                $errorRecord = Get-InvalidOperationRecord -Message $script:localizedData.WSUSConfigurationFailed
+                $result = Get-TargetResource -Name 'ServerName'
 
-                { Get-TargetResource -Name 'ServerName' } | Should -Throw -ExpectedMessage ($errorRecord.Exception.Message + '*')
+                $result.Ensure | Should -Be 'Absent'
+                $result.Classifications | Should -BeNullOrEmpty
+                $result.Products | Should -BeNullOrEmpty
+                $result.ComputerGroups | Should -BeNullOrEmpty
+                $result.Enabled | Should -BeNullOrEmpty
             }
 
             Should -Invoke -CommandName Get-WsusServer -Exactly -Times 1 -Scope It
@@ -407,6 +419,10 @@ Describe 'DSC_UpdateServicesApprovalRule\Test-TargetResource' -Tag 'Test' {
 }
 
 Describe 'DSC_UpdateServicesApprovalRule\Set-TargetResource' -Tag 'Set' {
+    BeforeAll {
+        Mock -CommandName Test-WsusConfigured -MockWith { $true }
+    }
+
     Context 'When setting the resource fails' {
         BeforeAll {
             Mock Get-WsusServer -MockWith {
@@ -457,10 +473,42 @@ Describe 'DSC_UpdateServicesApprovalRule\Set-TargetResource' -Tag 'Set' {
         }
     }
 
-    Context 'When the approval rule already exists' {
+    Context 'When the WSUS Server is reachable but has not completed installation' {
         BeforeAll {
             Mock -CommandName Get-WsusServer -MockWith {
                 return CommonTestHelper\Get-WsusServerTemplate
+            }
+
+            Mock -CommandName Test-WsusConfigured -MockWith { $false }
+        }
+
+        It 'Should throw the correct exception' {
+            InModuleScope -ScriptBlock {
+                Set-StrictMode -Version 1.0
+
+                $errorRecord = Get-InvalidOperationRecord -Message $script:localizedData.WSUSConfigurationFailed
+
+                $testParams = @{
+                    Name            = 'ServerName'
+                    Classifications = @('00000000-0000-0000-0000-0000testguid')
+                }
+
+                { Set-TargetResource @testParams } | Should -Throw -ExpectedMessage ($errorRecord.Exception.Message + '*')
+            }
+        }
+    }
+
+    Context 'When the approval rule already exists' {
+        BeforeAll {
+            Mock -CommandName Get-WsusServer -MockWith {
+                $template = CommonTestHelper\Get-WsusServerTemplate
+                $template | Add-Member -Force -MemberType ScriptMethod -Name GetUpdateCategories -Value {
+                    return [PSCustomObject] @{
+                        Title = 'Product'
+                    }
+                }
+
+                return $template
             }
 
             Mock -CommandName New-Object -MockWith {
@@ -479,12 +527,6 @@ Describe 'DSC_UpdateServicesApprovalRule\Set-TargetResource' -Tag 'Set' {
                 }
             }
 
-            Mock -CommandName Get-WsusProduct -MockWith {
-                return [PSCustomObject] @{
-                    Title = 'Product'
-                    Id    = 'SomeId'
-                }
-            }
             Mock -CommandName Test-TargetResource -MockWith { $true }
         }
 
@@ -506,14 +548,12 @@ Describe 'DSC_UpdateServicesApprovalRule\Set-TargetResource' -Tag 'Set' {
 
             Should -Invoke -CommandName Get-WsusServer -Exactly -Times 1 -Scope It
             Should -Invoke -CommandName Get-WsusClassification -Exactly -Times 1 -Scope It
-            Should -Invoke -CommandName Get-WsusProduct -Exactly -Times 1 -Scope It
             Should -Invoke -CommandName Test-TargetResource -Exactly -Times 1 -Scope It
         }
 
         Context 'When the classification does not exist' {
             BeforeAll {
                 Mock -CommandName Get-WsusClassification
-                Mock -CommandName Get-WsusProduct
                 Mock -CommandName Test-TargetResource -MockWith { $true }
             }
 
@@ -535,7 +575,6 @@ Describe 'DSC_UpdateServicesApprovalRule\Set-TargetResource' -Tag 'Set' {
 
                 Should -Invoke -CommandName Get-WsusServer -Exactly -Times 1 -Scope It
                 Should -Invoke -CommandName Get-WsusClassification -Exactly -Times 1 -Scope It
-                Should -Invoke -CommandName Get-WsusProduct -Exactly -Times 1 -Scope It
                 Should -Invoke -CommandName Test-TargetResource -Exactly -Times 1 -Scope It
             }
         }
@@ -546,6 +585,7 @@ Describe 'DSC_UpdateServicesApprovalRule\Set-TargetResource' -Tag 'Set' {
             Mock -CommandName Get-WsusServer -MockWith {
                 $template = CommonTestHelper\Get-WsusServerTemplate
                 $template | Add-Member -Force -MemberType ScriptMethod -Name GetInstallApprovalRules -Value { return }
+                $template | Add-Member -Force -MemberType ScriptMethod -Name GetUpdateCategories -Value { return }
 
                 return $template
             }
@@ -566,7 +606,6 @@ Describe 'DSC_UpdateServicesApprovalRule\Set-TargetResource' -Tag 'Set' {
                 }
             }
 
-            Mock -CommandName Get-WsusProduct
             Mock -CommandName Test-TargetResource -MockWith { $true }
         }
 
@@ -588,7 +627,6 @@ Describe 'DSC_UpdateServicesApprovalRule\Set-TargetResource' -Tag 'Set' {
 
             Should -Invoke -CommandName Get-WsusServer -Exactly -Times 1 -Scope It
             Should -Invoke -CommandName Get-WsusClassification -Exactly -Times 1 -Scope It
-            Should -Invoke -CommandName Get-WsusProduct -Exactly -Times 1 -Scope It
             Should -Invoke -CommandName Test-TargetResource -Exactly -Times 1 -Scope It
         }
     }
