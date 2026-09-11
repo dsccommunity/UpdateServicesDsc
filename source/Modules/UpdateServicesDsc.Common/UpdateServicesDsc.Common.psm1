@@ -1,3 +1,7 @@
+$script:resourceHelperModulePath = Join-Path -Path $PSScriptRoot -ChildPath '..\..\Modules\DscResource.Common'
+Import-Module -Name $script:resourceHelperModulePath -ErrorAction Stop
+$script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
+
 <#
     .SYNOPSIS
         Tests whether the WSUS Services role has completed installation and is
@@ -27,13 +31,24 @@ function Test-WsusConfigured
 
     try
     {
-        return (Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Update Services\Server\Setup\Installed Role Services' `
+        $wsusConfigured = (Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Update Services\Server\Setup\Installed Role Services' `
                 -Name 'UpdateServices-Services' -ErrorAction Stop).'UpdateServices-Services' -eq '2'
     }
     catch
     {
-        return $false
+        $wsusConfigured = $false
     }
+
+    if ($wsusConfigured)
+    {
+        Write-Verbose -Message $script:localizedData.WsusConfigured
+    }
+    else
+    {
+        Write-Verbose -Message $script:localizedData.WsusNotConfigured
+    }
+
+    return $wsusConfigured
 }
 
 Export-ModuleMember -Function Test-WsusConfigured
