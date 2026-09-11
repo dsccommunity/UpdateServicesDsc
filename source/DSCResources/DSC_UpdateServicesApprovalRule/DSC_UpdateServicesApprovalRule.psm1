@@ -186,9 +186,11 @@ function Set-TargetResource
 
     Assert-Module -ModuleName UpdateServices
 
+    $WsusNotConfigured = $false
+
     try
     {
-        if ($WsusServer = Get-WsusServer)
+        if (($WsusServer = Get-WsusServer) -and (Test-WsusConfigured))
         {
             switch ($Ensure)
             {
@@ -290,6 +292,10 @@ function Set-TargetResource
                 }
             }
         }
+        elseif ($WsusServer)
+        {
+            $WsusNotConfigured = $true
+        }
         else
         {
             Write-Verbose -Message $script:localizedData.GetWsusServerFailed
@@ -299,6 +305,11 @@ function Set-TargetResource
     {
         $errorMessage = $script:localizedData.RuleFailedToCreate -f $Name
         New-InvalidOperationException -Message $errorMessage -ErrorRecord $_
+    }
+
+    if ($WsusNotConfigured)
+    {
+        New-InvalidOperationException -Message $script:localizedData.WSUSConfigurationFailed
     }
 
     if ( -Not (Test-TargetResource @PSBoundParameters))

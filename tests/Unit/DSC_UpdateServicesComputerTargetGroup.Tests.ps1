@@ -359,6 +359,10 @@ Describe 'DSC_UpdateServicesComputerTargetGroup\Test-TargetResource' -Tag 'Test'
 }
 
 Describe 'DSC_UpdateServicesComputerTargetGroup\Set-TargetResource' -Tag 'Set' {
+    BeforeAll {
+        Mock -CommandName Test-WsusConfigured -MockWith { $true }
+    }
+
     Context 'When an error occurs retrieving WSUS Server configuration information' {
         BeforeAll {
             Mock -CommandName Get-WsusServer -MockWith { throw 'An error occurred' }
@@ -400,6 +404,31 @@ Describe 'DSC_UpdateServicesComputerTargetGroup\Set-TargetResource' -Tag 'Set' {
             }
 
             Should -Invoke -CommandName Get-WsusServer -Times 1 -Exactly -Scope It
+        }
+    }
+
+    Context 'When the WSUS Server is reachable but has not completed installation' {
+        BeforeAll {
+            Mock -CommandName Get-WsusServer -MockWith {
+                return CommonTestHelper\Get-WsusServerTemplate
+            }
+
+            Mock -CommandName Test-WsusConfigured -MockWith { $false }
+        }
+
+        It 'Should throw the correct exception' {
+            InModuleScope -ScriptBlock {
+                Set-StrictMode -Version 1.0
+
+                $errorRecord = Get-InvalidOperationRecord -Message $script:localizedData.WSUSConfigurationFailed
+
+                $testParams = @{
+                    Name = 'Database'
+                    Path = 'All Computers/Servers'
+                }
+
+                { Set-TargetResource @testParams } | Should -Throw -ExpectedMessage ($errorRecord.Exception.Message + '*')
+            }
         }
     }
 

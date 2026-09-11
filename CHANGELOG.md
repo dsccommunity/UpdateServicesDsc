@@ -47,6 +47,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     Allow multiple product categories with same name (e.g. "Windows Admin Center")
   - Removed ErrorRecord from New-InvalidOperationException outside of try / catch.
   - Fixed verbose logging to use language strings.
+  - Do not modify an approval rule on a server where the WSUS Services role has
+    not completed installation.
 - UpdateServicesCleanup
   - Fix issue [#93](https://github.com/dsccommunity/UpdateServicesDsc/issues/93)
     Allow UpdateServicesCleanup resource to test and update TimeOfDay as needed.
@@ -58,6 +60,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added check to make sure Post Install was successful before trying to get resource.
   - Fix parent Computer Target Group not being found when its name contains characters
     that are meaningful in a regular expression, such as parentheses.
+  - Do not create or delete a Computer Target Group on a server where the WSUS
+    Services role has not completed installation.
 - UpdateServicesServer
   - Before running, ensure that UpdateServices PowerShell module is installed.
   - Updated error handling to specifically catch errors if WSUS Server is unavailable.

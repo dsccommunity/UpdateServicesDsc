@@ -8,6 +8,7 @@ ClassificationNotFound  = Classification {0} not found.
 GetWsusServerFailed     = Get-WsusServer failed.
 IdentifiedWsusServer    = Identified WSUS server information: {0}
 NotIdentifiedWsusServer = Did not identify an instance of WSUS
+WSUSConfigurationFailed = WSUS approval rule configuration failed.
 RuleFailedToCreate      = Failed to create approval rule {0}.
 RuleFailedToApply       = Failed to apply approval rule {0}.
 EnsureTestFailed        = Ensure tests failed.

@@ -150,6 +150,11 @@ function Set-TargetResource
 
     if ($null -ne $WsusServer)
     {
+        if (-not (Test-WsusConfigured))
+        {
+            New-InvalidOperationException -Message $script:localizedData.WSUSConfigurationFailed
+        }
+
         $ParentComputerTargetGroups = $WsusServer.GetComputerTargetGroups().Where({
             $_.Name -eq $ParentComputerTargetGroupName
         }) | Select-Object -First 1
