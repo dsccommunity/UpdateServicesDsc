@@ -1840,15 +1840,15 @@ function Test-TargetResource
                 }
                 if ($PSBoundParameters.ContainsKey('ProxyServerCredential'))
                 {
-                    # Ensure that ProxyServerCredential is returned as string - if empty, otherwise returns $null
-                    if ($Wsus.ProxyServerCredentialUserName -ne [String]$ProxyServerCredential.UserName)
-                    {
-                        Write-Verbose -Message $script:localizedData.ProxyCredTestFailed
-                        $testTargetResourceReturnValue = $false
-                    }
-        
                     if ($ProxyServerCredential)
                     {
+                        # Ensure that ProxyServerCredential is returned as string - if empty, otherwise returns $null
+                        if ($Wsus.ProxyServerCredentialUserName -ne [String]$ProxyServerCredential.UserName)
+                        {
+                            Write-Verbose -Message $script:localizedData.ProxyCredTestFailed
+                            $testTargetResourceReturnValue = $false
+                        }
+
                         if ($PSBoundParameters.ContainsKey('ProxyServerBasicAuthentication'))
                         {
                             if ($Wsus.ProxyServerBasicAuthentication -ne $ProxyServerBasicAuthentication)
@@ -1857,6 +1857,12 @@ function Test-TargetResource
                                 $testTargetResourceReturnValue = $false
                             }
                         }
+                    }
+                    elseif ($Wsus.ProxyServerCredentialUserName)
+                    {
+                        # No credential requested, but one is currently set on the server
+                        Write-Verbose -Message $script:localizedData.ProxyCredSetTestFailed
+                        $testTargetResourceReturnValue = $false
                     }
                 }
             }
