@@ -1231,6 +1231,17 @@ function Set-TargetResource
             {
                 Write-Verbose -Message $script:localizedData.RunningInitOfflineSync
 
+                <#
+                    Resolve WsusUtil.exe here too - the initial configuration above (where it is
+                    otherwise resolved) is skipped on a server where the WSUS Services role is
+                    already configured but the initial synchronization has never completed.
+                #>
+                Import-Module $PSScriptRoot\..\..\Modules\PDT\PDT.psm1
+
+                $Path = "$($env:ProgramFiles)\Update Services\Tools\WsusUtil.exe"
+                $Path = Invoke-ResolvePath $Path
+                Write-Verbose -Message ($script:localizedData.ResolveWsusUtilExePath -f $Path)
+
                 $TempFile = [IO.Path]::GetTempFileName()
 
                 $CABPath = Join-Path -Path $PSScriptRoot -ChildPath '\WSUS.cab'

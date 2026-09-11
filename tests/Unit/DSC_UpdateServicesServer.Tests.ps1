@@ -854,4 +854,48 @@ Describe 'DSC_UpdateServicesServer\Set-TargetResource' -Tag 'Set' {
             Should -Invoke -CommandName Get-WsusServer -Exactly -Times 2 -Scope It
         }
     }
+
+    Context 'When the WSUS Services role is already configured but the initial synchronization has never completed, and Synchronize is not requested' {
+        BeforeAll {
+            $parentModule = Get-Module -Name $script:dscModuleName -ListAvailable | Select-Object -First 1
+            Import-Module (Join-Path -Path $parentModule.ModuleBase -ChildPath 'Modules\PDT\PDT.psm1') -Force
+
+            Mock -CommandName Get-WsusServer -MockWith {
+                $wsusServer = CommonTestHelper\Get-WsusServerTemplate
+
+                $wsusServer | Add-Member -Force -MemberType ScriptMethod -Name GetConfiguration -Value {
+                    $configuration = @{
+                        OobeInitialized           = $false
+                        AllUpdateLanguagesEnabled = $true
+                    }
+                    $configuration | Add-Member -MemberType ScriptMethod -Name Save -Value {}
+
+                    return $configuration
+                }
+
+                return $wsusServer
+            }
+
+            Mock -CommandName Invoke-ResolvePath -MockWith { 'C:\Program Files\Update Services\Tools\WsusUtil.exe' }
+            Mock -CommandName Start-Win32Process -MockWith { 'Process started' }
+            Mock -CommandName Wait-Win32ProcessEnd
+        }
+
+        It 'Should resolve WsusUtil.exe before running the offline synchronization' {
+            InModuleScope -ScriptBlock {
+                Set-StrictMode -Version 1.0
+
+                $testParams = @{
+                    Ensure = 'Present'
+                }
+
+                { $null = Set-TargetResource @testParams } | Should -Not -Throw
+            }
+
+            Should -Invoke -CommandName Invoke-ResolvePath -Exactly -Times 1 -Scope It
+            Should -Invoke -CommandName Start-Win32Process -ParameterFilter {
+                -not [String]::IsNullOrEmpty($Path)
+            } -Exactly -Times 1 -Scope It
+        }
+    }
 }
