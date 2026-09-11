@@ -875,7 +875,7 @@ function Set-TargetResource
             {
                 if (-not $UpstreamServerReplica) # If no upstream server is configured, only set this if it is $false
                 {
-                    Write-Verbose -Message $script:localizedData.ConfiguringUpstreamServerReplica
+                    Write-Verbose -Message $script:localizedData.ConfiguringNoUpstreamServerReplica
                     $WsusConfiguration.IsReplicaServer = $UpstreamServerReplica
                 }
             }
