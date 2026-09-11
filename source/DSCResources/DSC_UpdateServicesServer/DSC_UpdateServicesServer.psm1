@@ -1871,7 +1871,25 @@ function Test-TargetResource
         # Test Update Files
         if ($PSBoundParameters.ContainsKey('ContentDir'))
         {
-            if ((Join-Path $Wsus.ContentDir '') -ne (Join-Path $ContentDir ''))
+            $currentContentDir = if ($Wsus.ContentDir)
+            {
+                Join-Path -Path $Wsus.ContentDir -ChildPath ''
+            }
+            else
+            {
+                ''
+            }
+
+            $desiredContentDir = if ($ContentDir)
+            {
+                Join-Path -Path $ContentDir -ChildPath ''
+            }
+            else
+            {
+                ''
+            }
+
+            if ($currentContentDir -ne $desiredContentDir)
             {
                 Write-Verbose -Message $script:localizedData.ContentDirTestFailed
                 $testTargetResourceReturnValue = $false

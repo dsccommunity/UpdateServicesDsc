@@ -512,6 +512,44 @@ Describe 'DSC_UpdateServicesServer\Test-TargetResource' -Tag 'Test' {
                 Should -Invoke -CommandName Get-WsusServer -Exactly -Times 1 -Scope It
             }
         }
+
+        Context 'When the ContentDir property is an empty string' {
+            BeforeAll {
+                Mock -CommandName Get-TargetResource -MockWith {
+                    @{
+                        Ensure             = 'Present'
+                        ContentDir         = ''
+                        UpstreamServerName = ''
+                    }
+                }
+            }
+
+            It 'Should return the correct result' {
+                InModuleScope -ScriptBlock {
+                    Set-StrictMode -Version 1.0
+
+                    Test-TargetResource -Ensure 'Present' -ContentDir '' | Should -BeTrue
+                }
+
+                Should -Invoke -CommandName Get-TargetResource -Exactly -Times 1 -Scope It
+            }
+
+            It 'Should return the correct result when the server hosts the content locally' {
+                InModuleScope -ScriptBlock {
+                    Set-StrictMode -Version 1.0
+
+                    Mock -CommandName Get-TargetResource -MockWith {
+                        @{
+                            Ensure             = 'Present'
+                            ContentDir         = 'C:\WSUSContent\'
+                            UpstreamServerName = ''
+                        }
+                    }
+
+                    Test-TargetResource -Ensure 'Present' -ContentDir '' | Should -BeFalse
+                }
+            }
+        }
     }
 
     Context 'When the resource is not in the desired state' {
