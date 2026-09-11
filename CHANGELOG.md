@@ -8,16 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - UpdateServicesServer
-  - BREAKING CHANGE: All parameters will now only be set when specifically applied
-    rather than defaulting to hardcoded values if left undefined.
-    In particular set ContentDir, Languages, Products, Classifications as needed.
-    Fixes [issue #55](https://github.com/dsccommunity/UpdateServicesDsc/issues/55)
+  - BREAKING CHANGE: Parameters are now only applied when explicitly specified
+    instead of defaulting to hardcoded values when omitted.
+    In particular, set ContentDir, Languages, Products, and Classifications as needed.
+    Fixes [issue #55](https://github.com/dsccommunity/UpdateServicesDsc/issues/55).
 
 ### Added
 
 - UpdateServicesServer
   - Added support for the following settings:
-    - ContentDir can be set to empty string for clients to download from Microsoft Update.
+    - ContentDir can be set to an empty string for clients to download from Microsoft Update.
     - Updates are downloaded only when they are approved.
     - Express installation packages should be downloaded.
     - Update binaries are downloaded from Microsoft Update instead of from the
@@ -28,10 +28,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - An update should be automatically declined when it is revised to be expired
       and AutoRefreshUpdateApprovals is enabled.
     - The downstream server should roll up detailed computer and update status information.
-    - Email status notifications and SMTP settings, including status notifications DST fix.
-      Fixes [issue #15](https://github.com/dsccommunity/UpdateServicesDsc/issues/15)
+    - Email status notifications and SMTP settings, including a status notifications DST fix.
+      Fixes [issue #15](https://github.com/dsccommunity/UpdateServicesDsc/issues/15).
     - Use Xpress Encoding to compress update metadata.
-    - Use foreground priority for BITS downloads
+    - Use foreground priority for BITS downloads.
     - The maximum .cab file size (in megabytes) that Local Publishing will create.
     - The maximum number of concurrent update downloads.
 
