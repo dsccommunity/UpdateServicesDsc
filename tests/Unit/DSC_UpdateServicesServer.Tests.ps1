@@ -550,6 +550,75 @@ Describe 'DSC_UpdateServicesServer\Test-TargetResource' -Tag 'Test' {
                 }
             }
         }
+
+        Context 'When the GetContentFromMU property is used' {
+            BeforeAll {
+                Mock -CommandName Get-TargetResource -MockWith {
+                    @{
+                        Ensure             = 'Present'
+                        ContentDir         = 'C:\WSUSContent\'
+                        UpstreamServerName = 'UpstreamServer'
+                        UpstreamServerPort = 8530
+                        UpstreamServerSSL  = $false
+                        GetContentFromMU   = $false
+                    }
+                }
+            }
+
+            It 'Should return the correct result when the setting matches' {
+                InModuleScope -ScriptBlock {
+                    Set-StrictMode -Version 1.0
+
+                    $testParams = @{
+                        Ensure             = 'Present'
+                        ContentDir         = 'C:\WSUSContent\'
+                        UpstreamServerName = 'UpstreamServer'
+                        GetContentFromMU   = $false
+                    }
+
+                    Test-TargetResource @testParams | Should -BeTrue
+                }
+            }
+
+            It 'Should return the correct result when the setting does not match' {
+                InModuleScope -ScriptBlock {
+                    Set-StrictMode -Version 1.0
+
+                    $testParams = @{
+                        Ensure             = 'Present'
+                        ContentDir         = 'C:\WSUSContent\'
+                        UpstreamServerName = 'UpstreamServer'
+                        GetContentFromMU   = $true
+                    }
+
+                    Test-TargetResource @testParams | Should -BeFalse
+                }
+            }
+
+            It 'Should ignore the setting when no upstream server is configured' {
+                InModuleScope -ScriptBlock {
+                    Set-StrictMode -Version 1.0
+
+                    Mock -CommandName Get-TargetResource -MockWith {
+                        @{
+                            Ensure             = 'Present'
+                            ContentDir         = 'C:\WSUSContent\'
+                            UpstreamServerName = ''
+                            GetContentFromMU   = $null
+                        }
+                    }
+
+                    $testParams = @{
+                        Ensure             = 'Present'
+                        ContentDir         = 'C:\WSUSContent\'
+                        UpstreamServerName = ''
+                        GetContentFromMU   = $true
+                    }
+
+                    Test-TargetResource @testParams | Should -BeTrue
+                }
+            }
+        }
     }
 
     Context 'When the resource is not in the desired state' {

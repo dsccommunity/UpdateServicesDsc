@@ -1913,7 +1913,8 @@ function Test-TargetResource
                         $testTargetResourceReturnValue = $false
                     }
                 }
-                if ($UpstreamServerName -eq '')
+                # If we have an upstream server configured - otherwise no point configuring this
+                if ($UpstreamServerName)
                 {
                     if ($PSBoundParameters.ContainsKey('GetContentFromMU'))
                     {
