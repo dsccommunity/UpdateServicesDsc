@@ -41,6 +41,8 @@ BeforeAll {
     $PSDefaultParameterValues['InModuleScope:ModuleName'] = $script:dscResourceName
     $PSDefaultParameterValues['Mock:ModuleName'] = $script:dscResourceName
     $PSDefaultParameterValues['Should:ModuleName'] = $script:dscResourceName
+
+    Mock -CommandName Assert-Module
 }
 
 AfterAll {
@@ -103,23 +105,26 @@ Describe 'DSC_UpdateServicesComputerTargetGroup\Get-ComputerTargetGroupPath' -Ta
 
 
 Describe 'DSC_UpdateServicesComputerTargetGroup\Get-TargetResource' -Tag 'Get' {
-    Context 'When an error occurs retrieving WSUS Server configuration information' {
+    Context 'When Get-WsusServer throws an error' {
         BeforeAll {
             Mock -CommandName Get-WsusServer -MockWith { throw 'An error occurred' }
         }
 
-        It 'Should throw when an error occurs retrieving WSUS Server information' {
+        It 'Should not throw, and should return the correct result' {
             InModuleScope -ScriptBlock {
                 Set-StrictMode -Version 1.0
-
-                $errorRecord = Get-InvalidOperationRecord -Message $script:localizedData.WSUSConfigurationFailed
 
                 $testParams = @{
                     Name = 'Servers'
                     Path = 'All Computers'
                 }
 
-                { Get-TargetResource @testParams } | Should -Throw -ExpectedMessage ($errorRecord.Exception.Message + '*')
+                $result = Get-TargetResource @testParams
+
+                $result.Ensure | Should -Be 'Absent'
+                $result.Id | Should -BeNullOrEmpty
+                $result.Name | Should -Be 'Servers'
+                $result.Path | Should -Be 'All Computers'
             }
 
             Should -Invoke -CommandName Get-WsusServer -Times 1 -Exactly -Scope It
@@ -157,6 +162,8 @@ Describe 'DSC_UpdateServicesComputerTargetGroup\Get-TargetResource' -Tag 'Get' {
             Mock -CommandName Get-WsusServer -MockWith {
                 return CommonTestHelper\Get-WsusServerTemplate
             }
+
+            Mock -CommandName Test-WsusConfigured -MockWith { $true }
         }
 
         It 'Should return the correct result' {
@@ -183,6 +190,8 @@ Describe 'DSC_UpdateServicesComputerTargetGroup\Get-TargetResource' -Tag 'Get' {
             Mock -CommandName Get-WsusServer -MockWith {
                 return CommonTestHelper\Get-WsusServerTemplate
             }
+
+            Mock -CommandName Test-WsusConfigured -MockWith { $true }
         }
 
         It 'Should throw the correct exception' {
@@ -207,6 +216,8 @@ Describe 'DSC_UpdateServicesComputerTargetGroup\Get-TargetResource' -Tag 'Get' {
             Mock -CommandName Get-WsusServer -MockWith {
                 return CommonTestHelper\Get-WsusServerTemplate
             }
+
+            Mock -CommandName Test-WsusConfigured -MockWith { $true }
         }
 
         It 'Should return the correct result' {
@@ -348,6 +359,10 @@ Describe 'DSC_UpdateServicesComputerTargetGroup\Test-TargetResource' -Tag 'Test'
 }
 
 Describe 'DSC_UpdateServicesComputerTargetGroup\Set-TargetResource' -Tag 'Set' {
+    BeforeAll {
+        Mock -CommandName Test-WsusConfigured -MockWith { $true }
+    }
+
     Context 'When an error occurs retrieving WSUS Server configuration information' {
         BeforeAll {
             Mock -CommandName Get-WsusServer -MockWith { throw 'An error occurred' }
@@ -389,6 +404,31 @@ Describe 'DSC_UpdateServicesComputerTargetGroup\Set-TargetResource' -Tag 'Set' {
             }
 
             Should -Invoke -CommandName Get-WsusServer -Times 1 -Exactly -Scope It
+        }
+    }
+
+    Context 'When the WSUS Server is reachable but has not completed installation' {
+        BeforeAll {
+            Mock -CommandName Get-WsusServer -MockWith {
+                return CommonTestHelper\Get-WsusServerTemplate
+            }
+
+            Mock -CommandName Test-WsusConfigured -MockWith { $false }
+        }
+
+        It 'Should throw the correct exception' {
+            InModuleScope -ScriptBlock {
+                Set-StrictMode -Version 1.0
+
+                $errorRecord = Get-InvalidOperationRecord -Message $script:localizedData.WSUSConfigurationFailed
+
+                $testParams = @{
+                    Name = 'Database'
+                    Path = 'All Computers/Servers'
+                }
+
+                { Set-TargetResource @testParams } | Should -Throw -ExpectedMessage ($errorRecord.Exception.Message + '*')
+            }
         }
     }
 
@@ -468,6 +508,29 @@ Describe 'DSC_UpdateServicesComputerTargetGroup\Set-TargetResource' -Tag 'Set' {
         }
     }
 
+    Context 'When the Parent Computer Target Group name contains regular expression characters' {
+        BeforeAll {
+            Mock -CommandName Get-WsusServer -MockWith {
+                return CommonTestHelper\Get-WsusServerTemplate
+            }
+        }
+
+        It 'Should call the correct mocks' {
+            InModuleScope -ScriptBlock {
+                Set-StrictMode -Version 1.0
+
+                $testParams = @{
+                    Name = 'Database'
+                    Path = 'All Computers/Servers (UK)'
+                }
+
+                $null = Set-TargetResource @testParams
+            }
+
+            Should -Invoke -CommandName Get-WsusServer -Times 1 -Exactly -Scope It
+        }
+    }
+
     Context 'When the new Computer Target Group is successfully deleted' {
         BeforeAll {
             Mock -CommandName Get-WsusServer -MockWith {
@@ -489,6 +552,72 @@ Describe 'DSC_UpdateServicesComputerTargetGroup\Set-TargetResource' -Tag 'Set' {
             }
 
             Should -Invoke -CommandName Get-WsusServer -Times 1 -Exactly -Scope It
+        }
+    }
+
+    Context 'When the Computer Target Group cannot be deleted' {
+        BeforeAll {
+            Mock -CommandName Get-WsusServer -MockWith {
+                $childComputerTargetGroup = [pscustomobject] @{
+                    Name = 'Web'
+                    Id   = [pscustomobject] @{
+                        GUID = 'f4aa59c7-e6a0-4e6d-97b0-293d00a0dc60'
+                    }
+                }
+                $childComputerTargetGroup | Add-Member -MemberType ScriptMethod -Name Delete -Value {
+                    throw 'An error occurred'
+                }
+
+                $computerTargetGroup = [pscustomobject] @{
+                    Name              = 'Servers'
+                    Id                = [pscustomobject] @{
+                        GUID = '14adceba-ddf3-4299-9c1a-e4cf8bd56c47'
+                    }
+                    ParentTargetGroup = [pscustomobject] @{
+                        Name = 'All Computers'
+                    }
+                    ChildTargetGroup  = $childComputerTargetGroup
+                }
+                $computerTargetGroup | Add-Member -MemberType ScriptMethod -Name GetParentTargetGroup -Value {
+                    return $this.ParentTargetGroup
+                }
+                $computerTargetGroup | Add-Member -MemberType ScriptMethod -Name GetChildTargetGroups -Value {
+                    return $this.ChildTargetGroup
+                }
+
+                # 'All Computers' throws when GetParentTargetGroup() is called
+                $computerTargetGroup.ParentTargetGroup | Add-Member -MemberType ScriptMethod -Name GetParentTargetGroup -Value {
+                    throw 'No parent'
+                }
+
+                $wsusServer = [pscustomobject] @{
+                    Name                = 'ServerName'
+                    ComputerTargetGroup = $computerTargetGroup
+                }
+                $wsusServer | Add-Member -MemberType ScriptMethod -Name GetComputerTargetGroups -Value {
+                    return @($this.ComputerTargetGroup)
+                }
+
+                return $wsusServer
+            }
+        }
+
+        It 'Should throw the correct exception' {
+            InModuleScope -ScriptBlock {
+                Set-StrictMode -Version 1.0
+
+                $errorRecord = Get-InvalidOperationRecord -Message (
+                    $script:localizedData.DeleteComputerTargetGroupFailed -f 'Web', 'f4aa59c7-e6a0-4e6d-97b0-293d00a0dc60', 'All Computers/Servers'
+                )
+
+                $testParams = @{
+                    Name   = 'Web'
+                    Path   = 'All Computers/Servers'
+                    Ensure = 'Absent'
+                }
+
+                { Set-TargetResource @testParams } | Should -Throw -ExpectedMessage ($errorRecord.Exception.Message + '*')
+            }
         }
     }
 }

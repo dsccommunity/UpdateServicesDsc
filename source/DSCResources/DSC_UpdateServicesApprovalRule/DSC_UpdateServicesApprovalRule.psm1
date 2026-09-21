@@ -21,9 +21,12 @@
 # Upgrades           = 3689BDC8-B205-4AF4-8D4A-A63924C5E9D5
 
 
-# Load Common Module
+# Load Common Modules
 $script:resourceHelperModulePath = Join-Path -Path $PSScriptRoot -ChildPath '..\..\Modules\DscResource.Common'
 Import-Module -Name $script:resourceHelperModulePath
+
+$script:updateServicesDscCommonModulePath = Join-Path -Path $PSScriptRoot -ChildPath '..\..\Modules\UpdateServicesDsc.Common'
+Import-Module -Name $script:updateServicesDscCommonModulePath
 
 $script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
 
@@ -46,51 +49,55 @@ function Get-TargetResource
         $Name
     )
 
+    Assert-Module -ModuleName UpdateServices
+
+    $WsusServer = $null
     try
     {
         $WsusServer = Get-WsusServer
-        $Ensure = 'Absent'
-        $Classifications = $null
-        $Products = $null
-        $ComputerGroups = $null
-        $Enabled = $null
-
-        if ($null -ne $WsusServer)
-        {
-            Write-Verbose -Message ('Identified WSUS server information: {0}' -f $WsusServer.Name)
-
-            $ApprovalRule = $WsusServer.GetInstallApprovalRules() | Where-Object -FilterScript { $_.Name -eq $Name }
-
-            if ($null -ne $ApprovalRule)
-            {
-                $Ensure = 'Present'
-
-                if ( -Not ($Classifications = @($ApprovalRule.GetUpdateClassifications().ID.Guid)))
-                {
-                    $Classifications = @('All Classifications')
-                }
-
-                if ( -Not ($Products = @($ApprovalRule.GetCategories().Title)))
-                {
-                    $Products = @('All Products')
-                }
-
-                if ( -Not ($ComputerGroups = @($ApprovalRule.GetComputerTargetGroups().Name)))
-                {
-                    $ComputerGroups = @('All Computers')
-                }
-
-                $Enabled = $ApprovalRule.Enabled
-            }
-        }
-        else
-        {
-            Write-Verbose -Message 'Did not identify an instance of WSUS'
-        }
     }
     catch
     {
-        New-InvalidOperationException -Message $script:localizedData.WSUSConfigurationFailed -ErrorRecord $_
+        Write-Verbose -Message $script:localizedData.GetWsusServerFailed
+    }
+
+    $Ensure = 'Absent'
+    $Classifications = $null
+    $Products = $null
+    $ComputerGroups = $null
+    $Enabled = $null
+
+    if (($null -ne $WsusServer) -and (Test-WsusConfigured))
+    {
+        Write-Verbose -Message ($script:localizedData.IdentifiedWsusServer -f $WsusServer.Name)
+
+        $ApprovalRule = $WsusServer.GetInstallApprovalRules() | Where-Object -FilterScript { $_.Name -eq $Name }
+
+        if ($null -ne $ApprovalRule)
+        {
+            $Ensure = 'Present'
+
+            if ( -Not ($Classifications = @($ApprovalRule.GetUpdateClassifications().ID.Guid)))
+            {
+                $Classifications = @('All Classifications')
+            }
+
+            if ( -Not ($Products = @($ApprovalRule.GetCategories().Title)))
+            {
+                $Products = @('All Products')
+            }
+
+            if ( -Not ($ComputerGroups = @($ApprovalRule.GetComputerTargetGroups().Name)))
+            {
+                $ComputerGroups = @('All Computers')
+            }
+
+            $Enabled = $ApprovalRule.Enabled
+        }
+    }
+    else
+    {
+        Write-Verbose -Message $script:localizedData.NotIdentifiedWsusServer
     }
 
     $returnValue = @{
@@ -177,9 +184,13 @@ function Set-TargetResource
         $RunRuleNow
     )
 
+    Assert-Module -ModuleName UpdateServices
+
+    $WsusNotConfigured = $false
+
     try
     {
-        if ($WsusServer = Get-WsusServer)
+        if (($WsusServer = Get-WsusServer) -and (Test-WsusConfigured))
         {
             switch ($Ensure)
             {
@@ -220,11 +231,14 @@ function Set-TargetResource
                         $ApprovalRule.Save()
 
                         $ProductCollection = New-Object -TypeName Microsoft.UpdateServices.Administration.UpdateCategoryCollection
+                        $AllWsusProducts = $WsusServer.GetUpdateCategories()
                         foreach ($Product in $Products)
                         {
-                            if ($WsusProduct = Get-WsusProduct | Where-Object -FilterScript { $_.Product.Title -eq $Product })
+                            if ($WsusProduct = $AllWsusProducts | Where-Object -FilterScript { $_.Title -eq $Product })
                             {
-                                $ProductCollection.Add($WsusServer.GetUpdateCategory($WsusProduct.Product.Id))
+                                $WsusProduct | Foreach-Object {
+                                    $ProductCollection.Add($_)
+                                }
                             }
                         }
 
@@ -262,7 +276,7 @@ function Set-TargetResource
                     {
                         New-InvalidOperationException -Message (
                             $script:localizedData.RuleFailedToCreate -f $Name
-                        ) -ErrorRecord $_
+                        )
                     }
                 }
                 'Absent'
@@ -278,6 +292,10 @@ function Set-TargetResource
                 }
             }
         }
+        elseif ($WsusServer)
+        {
+            $WsusNotConfigured = $true
+        }
         else
         {
             Write-Verbose -Message $script:localizedData.GetWsusServerFailed
@@ -287,6 +305,11 @@ function Set-TargetResource
     {
         $errorMessage = $script:localizedData.RuleFailedToCreate -f $Name
         New-InvalidOperationException -Message $errorMessage -ErrorRecord $_
+    }
+
+    if ($WsusNotConfigured)
+    {
+        New-InvalidOperationException -Message $script:localizedData.WSUSConfigurationFailed
     }
 
     if ( -Not (Test-TargetResource @PSBoundParameters))
@@ -385,6 +408,8 @@ function Test-TargetResource
         [System.Boolean]
         $RunRuleNow
     )
+
+    Assert-Module -ModuleName UpdateServices
 
     $result = $true
 
