@@ -1153,12 +1153,35 @@ Describe 'DSC_UpdateServicesServer\Set-TargetResource' -Tag 'Set' {
 
     Context 'When none of the requested products exist on the server' {
         BeforeAll {
+            # Counts the calls that would have cleared the product selection.
+            $script:mockSubscription = [PSCustomObject] @{
+                SetUpdateCategoriesCallCount = 0
+            }
+
+            $script:mockSubscription | Add-Member -MemberType ScriptMethod -Name SetUpdateCategories -Value {
+                $this.SetUpdateCategoriesCallCount++
+            }
+
+            $script:mockSubscription | Add-Member -MemberType ScriptMethod -Name Save -Value {}
+
+            $mockSubscriptionReference = $script:mockSubscription
+
             <#
                 Return a real collection so that the resource can count what was
                 added to it, as the WSUS collection types do.
             #>
             Mock -CommandName New-Object -MockWith {
                 return [System.Collections.ArrayList]::new()
+            }
+
+            Mock -CommandName Get-WsusServer -MockWith {
+                $mockWsusServer = CommonTestHelper\Get-WsusServerTemplate
+                $mockWsusServer | Add-Member -Force -MemberType NoteProperty -Name MockSubscription -Value $mockSubscriptionReference
+                $mockWsusServer | Add-Member -Force -MemberType ScriptMethod -Name GetSubscription -Value {
+                    return $this.MockSubscription
+                }
+
+                return $mockWsusServer
             }
         }
 
@@ -1175,6 +1198,8 @@ Describe 'DSC_UpdateServicesServer\Set-TargetResource' -Tag 'Set' {
 
                 { Set-TargetResource @testParams } | Should -Throw -ExpectedMessage ('*' + $errorMessage + '*')
             }
+
+            $script:mockSubscription.SetUpdateCategoriesCallCount | Should -Be 0
         }
     }
 
